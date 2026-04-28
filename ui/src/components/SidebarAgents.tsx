@@ -123,7 +123,10 @@ function SidebarAgentItem({
                 ? "opacity-100"
                 : "pointer-events-none opacity-0 group-hover/agent:pointer-events-auto group-hover/agent:opacity-100 group-focus-within/agent:pointer-events-auto group-focus-within/agent:opacity-100",
             )}
-            aria-label={`Open actions for ${agent.name}`}
+            aria-label={t("sidebarAgents.openActionsForAgent", {
+              defaultValue: `Open actions for ${agent.name}`,
+              agentName: agent.name,
+            })}
           >
             <MoreHorizontal className="h-3.5 w-3.5" />
           </Button>

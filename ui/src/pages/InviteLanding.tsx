@@ -65,44 +65,55 @@ function mapInviteAuthFeedback(
   error: unknown,
   authMode: AuthMode,
   email: string,
+  t: (key: string, options?: Record<string, unknown>) => string,
 ): AuthFeedback {
   const code = getAuthErrorCode(error);
   const message = getAuthErrorMessage(error);
-  const emailLabel = email.trim().length > 0 ? email.trim() : "that email";
+  const emailLabel = email.trim().length > 0 ? email.trim() : t("invite.authFeedback.thatEmail", { defaultValue: "that email" });
 
   if (code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
     return {
       tone: "info",
-      message: `An account already exists for ${emailLabel}. Sign in below to continue with this invite.`,
+      message: t("invite.authFeedback.accountExists", {
+        defaultValue: `An account already exists for ${emailLabel}. Sign in below to continue with this invite.`,
+        emailLabel,
+      }),
     };
   }
 
   if (code === "INVALID_EMAIL_OR_PASSWORD") {
     return {
       tone: "error",
-      message:
-        "That email and password did not match an existing Paperclip account. Check both fields, or create an account first if you are new here.",
+      message: t("invite.authFeedback.invalidCredentials", {
+        defaultValue:
+          "That email and password did not match an existing Paperclip account. Check both fields, or create an account first if you are new here.",
+      }),
     };
   }
 
   if (authMode === "sign_in" && message === "Request failed: 401") {
     return {
       tone: "error",
-      message:
-        "That email and password did not match an existing Paperclip account. Check both fields, or create an account first if you are new here.",
+      message: t("invite.authFeedback.invalidCredentials", {
+        defaultValue:
+          "That email and password did not match an existing Paperclip account. Check both fields, or create an account first if you are new here.",
+      }),
     };
   }
 
   if (authMode === "sign_up" && message === "Request failed: 422") {
     return {
       tone: "info",
-      message: `An account may already exist for ${emailLabel}. Try signing in instead.`,
+      message: t("invite.authFeedback.accountMayExist", {
+        defaultValue: `An account may already exist for ${emailLabel}. Try signing in instead.`,
+        emailLabel,
+      }),
     };
   }
 
   return {
     tone: "error",
-    message: message ?? "Authentication failed",
+    message: message ?? t("invite.authFeedback.authenticationFailed", { defaultValue: "Authentication failed" }),
   };
 }
 
@@ -420,7 +431,7 @@ export function InviteLandingPage() {
       }
     },
     onError: (err) => {
-      const nextFeedback = mapInviteAuthFeedback(err, authMode, email);
+      const nextFeedback = mapInviteAuthFeedback(err, authMode, email, t);
       if (getAuthErrorCode(err) === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL") {
         setAuthMode("sign_in");
         setPassword("");
@@ -663,7 +674,10 @@ export function InviteLandingPage() {
                   >
                     {joinAdapterOptions.map((type) => (
                       <option key={type} value={type} disabled={!ENABLED_INVITE_ADAPTERS.has(type)}>
-                        {getAdapterLabel(type)}{!ENABLED_INVITE_ADAPTERS.has(type) ? " (Coming soon)" : ""}
+                        {getAdapterLabel(type)}
+                        {!ENABLED_INVITE_ADAPTERS.has(type)
+                          ? ` (${t("invite.agent.comingSoon", { defaultValue: "Coming soon" })})`
+                          : ""}
                       </option>
                     ))}
                   </select>

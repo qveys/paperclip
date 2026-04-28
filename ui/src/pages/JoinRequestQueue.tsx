@@ -19,6 +19,19 @@ export function JoinRequestQueue() {
   const queryClient = useQueryClient();
   const [status, setStatus] = useState<"pending_approval" | "approved" | "rejected">("pending_approval");
   const [requestType, setRequestType] = useState<"all" | "human" | "agent">("all");
+  const statusLabel = (value: "pending_approval" | "approved" | "rejected") => {
+    if (value === "pending_approval") {
+      return t("joinRequests.status.pendingApproval", { defaultValue: "Pending approval" });
+    }
+    if (value === "approved") {
+      return t("joinRequests.status.approved", { defaultValue: "Approved" });
+    }
+    return t("joinRequests.status.rejected", { defaultValue: "Rejected" });
+  };
+  const requestTypeLabel = (value: "human" | "agent") =>
+    value === "human"
+      ? t("joinRequests.type.human", { defaultValue: "Human" })
+      : t("joinRequests.type.agent", { defaultValue: "Agent" });
 
   useEffect(() => {
     setBreadcrumbs([
@@ -134,9 +147,9 @@ export function JoinRequestQueue() {
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge variant={request.status === "pending_approval" ? "secondary" : request.status === "approved" ? "outline" : "destructive"}>
-                      {request.status.replace("_", " ")}
+                      {statusLabel(request.status)}
                     </Badge>
-                    <Badge variant="outline">{request.requestType}</Badge>
+                    <Badge variant="outline">{requestTypeLabel(request.requestType)}</Badge>
                     {request.adapterType ? <Badge variant="outline">{request.adapterType}</Badge> : null}
                   </div>
                   <div>
@@ -177,7 +190,11 @@ export function JoinRequestQueue() {
                   <div className="text-xs font-medium uppercase tracking-wide">{t("joinRequests.inviteContext", { defaultValue: "Invite context" })}</div>
                   <div className="mt-2">
                     {request.invite
-                      ? `${request.invite.allowedJoinTypes} join invite${request.invite.humanRole ? ` • default role ${request.invite.humanRole}` : ""}`
+                      ? t("joinRequests.inviteContextValue", {
+                          defaultValue: `${request.invite.allowedJoinTypes} join invite${request.invite.humanRole ? ` • default role ${request.invite.humanRole}` : ""}`,
+                          allowedJoinTypes: request.invite.allowedJoinTypes,
+                          humanRole: request.invite.humanRole ?? "",
+                        })
                       : t("joinRequests.inviteMetadataUnavailable", { defaultValue: "Invite metadata unavailable" })}
                   </div>
                   {request.invite?.inviteMessage ? (
