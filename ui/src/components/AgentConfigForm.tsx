@@ -559,7 +559,13 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                       String(config.promptTemplate ?? ""),
                     )}
                     onChange={(v) => mark("adapterConfig", "promptTemplate", v ?? "")}
-                    placeholder={String(tx("agentConfig.placeholders.promptTemplate", { defaultValue: "You are agent {{ agent.name }}. Your role is {{ agent.role }}..." }))}
+                    placeholder={String(
+                      tx("agentConfig.placeholders.promptTemplate", {
+                        defaultValue: "You are agent {{agentName}}. Your role is {{agentRole}}...",
+                        agentName: "{{ agent.name }}",
+                        agentRole: "{{ agent.role }}",
+                      }),
+                    )}
                     contentClassName="min-h-[88px] text-sm font-mono"
                     imageUploadHandler={async (file) => {
                       const namespace = `agents/${props.agent.id}/prompt-template`;
