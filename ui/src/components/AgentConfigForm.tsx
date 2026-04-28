@@ -581,12 +581,12 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       {environmentsEnabled ? (
         <div className={cn(!cards && (isCreate ? "border-t border-border" : "border-b border-border"))}>
           {cards
-            ? <h3 className="text-sm font-medium mb-3">Execution</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">Execution</div>
+            ? <h3 className="text-sm font-medium mb-3">{tx("agentConfig.execution", { defaultValue: "Execution" })}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{tx("agentConfig.execution", { defaultValue: "Execution" })}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
             <Field
-              label="Default environment"
+              label={String(tx("agentConfig.fields.defaultEnvironment", { defaultValue: "Default environment" }))}
               hint="Agent-level default execution target. Project and issue settings can still override this."
             >
               <select
@@ -601,7 +601,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                   mark("identity", "defaultEnvironmentId", nextValue || null);
                 }}
               >
-                <option value="">Company default (Local)</option>
+                <option value="">{tx("agentConfig.companyDefaultLocal", { defaultValue: "Company default (Local)" })}</option>
                 {runnableEnvironments.map((environment) => (
                   <option key={environment.id} value={environment.id}>
                     {environment.name} · {environment.driver}
@@ -757,11 +757,11 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       {isLocal && (
         <div className={cn(!cards && "border-b border-border")}>
           {cards
-            ? <h3 className="text-sm font-medium mb-3">Permissions &amp; Configuration</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">Permissions &amp; Configuration</div>
+            ? <h3 className="text-sm font-medium mb-3">{tx("agentConfig.permissionsAndConfiguration", { defaultValue: "Permissions & Configuration" })}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{tx("agentConfig.permissionsAndConfiguration", { defaultValue: "Permissions & Configuration" })}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
-              <Field label="Command" hint={help.localCommand}>
+              <Field label={String(tx("agentConfig.fields.command", { defaultValue: "Command" }))} hint={help.localCommand}>
                 <DraftInput
                   value={
                     isCreate
@@ -904,7 +904,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                 />
               </Field>
 
-              <Field label="Environment variables" hint={help.envVars}>
+              <Field label={String(tx("agentConfig.fields.environmentVariables", { defaultValue: "Environment variables" }))} hint={help.envVars}>
                 <EnvVarEditor
                   value={
                     isCreate
@@ -962,12 +962,12 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       {isCreate && showCreateRunPolicySection ? (
         <div className={cn(!cards && "border-b border-border")}>
           {cards
-            ? <h3 className="text-sm font-medium flex items-center gap-2 mb-3"><Heart className="h-3 w-3" /> Run Policy</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground flex items-center gap-2"><Heart className="h-3 w-3" /> Run Policy</div>
+            ? <h3 className="text-sm font-medium flex items-center gap-2 mb-3"><Heart className="h-3 w-3" /> {tx("agentConfig.runPolicy", { defaultValue: "Run Policy" })}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground flex items-center gap-2"><Heart className="h-3 w-3" /> {tx("agentConfig.runPolicy", { defaultValue: "Run Policy" })}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
             <ToggleWithNumber
-              label="Heartbeat on interval"
+              label={String(tx("agentConfig.fields.heartbeatOnInterval", { defaultValue: "Heartbeat on interval" }))}
               hint={help.heartbeatInterval}
               checked={val!.heartbeatEnabled}
               onCheckedChange={(v) => set!({ heartbeatEnabled: v })}
@@ -983,13 +983,13 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
       ) : !isCreate ? (
         <div className={cn(!cards && "border-b border-border")}>
           {cards
-            ? <h3 className="text-sm font-medium flex items-center gap-2 mb-3"><Heart className="h-3 w-3" /> Run Policy</h3>
-            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground flex items-center gap-2"><Heart className="h-3 w-3" /> Run Policy</div>
+            ? <h3 className="text-sm font-medium flex items-center gap-2 mb-3"><Heart className="h-3 w-3" /> {tx("agentConfig.runPolicy", { defaultValue: "Run Policy" })}</h3>
+            : <div className="px-4 py-2 text-xs font-medium text-muted-foreground flex items-center gap-2"><Heart className="h-3 w-3" /> {tx("agentConfig.runPolicy", { defaultValue: "Run Policy" })}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg overflow-hidden" : "")}>
             <div className={cn(cards ? "p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
               <ToggleWithNumber
-                label="Heartbeat on interval"
+                label={String(tx("agentConfig.fields.heartbeatOnInterval", { defaultValue: "Heartbeat on interval" }))}
                 hint={help.heartbeatInterval}
                 checked={eff("heartbeat", "enabled", heartbeat.enabled === true)}
                 onCheckedChange={(v) => mark("heartbeat", "enabled", v)}
@@ -1009,7 +1009,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
             >
             <div className="space-y-3">
               <ToggleField
-                label="Wake on demand"
+                label={String(tx("agentConfig.fields.wakeOnDemand", { defaultValue: "Wake on demand" }))}
                 hint={help.wakeOnDemand}
                 checked={eff(
                   "heartbeat",

@@ -640,14 +640,14 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
             </p>
           </div>
         </PropertyRow>
-        <PropertyRow label={<FieldLabel label="Created" state="idle" />}>
+        <PropertyRow label={<FieldLabel label={t("projectProperties.created", { defaultValue: "Created" })} state="idle" />}>
           <span className="text-sm">{formatDate(project.createdAt)}</span>
         </PropertyRow>
-        <PropertyRow label={<FieldLabel label="Updated" state="idle" />}>
+        <PropertyRow label={<FieldLabel label={t("projectProperties.updated", { defaultValue: "Updated" })} state="idle" />}>
           <span className="text-sm">{formatDate(project.updatedAt)}</span>
         </PropertyRow>
         {project.targetDate && (
-          <PropertyRow label={<FieldLabel label="Target Date" state="idle" />}>
+          <PropertyRow label={<FieldLabel label={t("projectProperties.targetDate", { defaultValue: "Target Date" })} state="idle" />}>
             <span className="text-sm">{formatDate(project.targetDate)}</span>
           </PropertyRow>
         )}
@@ -658,13 +658,13 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
       <div className="space-y-1 py-4">
         <div className="space-y-2">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span>Codebase</span>
+            <span>{t("projectProperties.codebase", { defaultValue: "Codebase" })}</span>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   type="button"
                   className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-border text-[10px] text-muted-foreground hover:text-foreground"
-                  aria-label="Codebase help"
+                  aria-label={t("projectProperties.codebaseHelpAria", { defaultValue: "Codebase help" })}
                 >
                   ?
                 </button>
@@ -676,7 +676,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
           </div>
           <div className="space-y-2 rounded-md border border-border/70 p-3">
             <div className="space-y-1">
-              <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Repo</div>
+              <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{t("projectProperties.repo", { defaultValue: "Repo" })}</div>
               {codebase.repoUrl ? (
                 <div className="flex items-center justify-between gap-2">
                   {isSafeExternalUrl(codebase.repoUrl) ? (
@@ -713,7 +713,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       variant="ghost"
                       size="icon-xs"
                       onClick={clearRepoWorkspace}
-                      aria-label="Clear repo"
+                      aria-label={t("projectProperties.clearRepoAria", { defaultValue: "Clear repo" })}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -739,7 +739,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
             </div>
 
             <div className="space-y-1">
-              <div className="text-[11px] uppercase tracking-wide text-muted-foreground">Local folder</div>
+              <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{t("projectProperties.localFolder", { defaultValue: "Local folder" })}</div>
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 space-y-1">
                   <div className="min-w-0 break-all font-mono text-xs text-muted-foreground">
@@ -767,7 +767,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                       variant="ghost"
                       size="icon-xs"
                       onClick={clearLocalWorkspace}
-                      aria-label="Clear local folder"
+                      aria-label={t("projectProperties.clearLocalFolderAria", { defaultValue: "Clear local folder" })}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -901,13 +901,13 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
             <p className="text-xs text-destructive">{workspaceError}</p>
           )}
           {createWorkspace.isError && (
-            <p className="text-xs text-destructive">Failed to save workspace.</p>
+            <p className="text-xs text-destructive">{t("projectProperties.workspaceSaveFailed", { defaultValue: "Failed to save workspace." })}</p>
           )}
           {removeWorkspace.isError && (
-            <p className="text-xs text-destructive">Failed to delete workspace.</p>
+            <p className="text-xs text-destructive">{t("projectProperties.workspaceDeleteFailed", { defaultValue: "Failed to delete workspace." })}</p>
           )}
           {updateWorkspace.isError && (
-            <p className="text-xs text-destructive">Failed to update workspace.</p>
+            <p className="text-xs text-destructive">{t("projectProperties.workspaceUpdateFailed", { defaultValue: "Failed to update workspace." })}</p>
           )}
         </div>
 
@@ -917,13 +917,13 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
 
             <div className="py-1.5 space-y-2">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span>Execution Workspaces</span>
+                <span>{t("projectProperties.executionWorkspaces", { defaultValue: "Execution Workspaces" })}</span>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
                       type="button"
                       className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-border text-[10px] text-muted-foreground hover:text-foreground"
-                      aria-label="Execution workspaces help"
+                      aria-label={t("projectProperties.executionWorkspacesHelpAria", { defaultValue: "Execution workspaces help" })}
                     >
                       ?
                     </button>
