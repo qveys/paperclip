@@ -609,7 +609,10 @@ export function CompanySettings() {
           {t("companySettings.sections.general", { defaultValue: "General" })}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
-          <Field label="Company name" hint="The display name for your company.">
+          <Field
+            label={t("companySettings.general.companyNameLabel", { defaultValue: "Company name" })}
+            hint={t("companySettings.general.companyNameHint", { defaultValue: "The display name for your company." })}
+          >
             <input
               className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
               type="text"
@@ -618,14 +621,14 @@ export function CompanySettings() {
             />
           </Field>
           <Field
-            label="Description"
-            hint="Optional description shown in the company profile."
+            label={t("companySettings.general.descriptionLabel", { defaultValue: "Description" })}
+            hint={t("companySettings.general.descriptionHint", { defaultValue: "Optional description shown in the company profile." })}
           >
             <input
               className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
               type="text"
               value={description}
-              placeholder="Optional company description"
+              placeholder={t("companySettings.general.descriptionPlaceholder", { defaultValue: "Optional company description" })}
               onChange={(e) => setDescription(e.target.value)}
             />
           </Field>
@@ -649,8 +652,8 @@ export function CompanySettings() {
             </div>
             <div className="flex-1 space-y-3">
               <Field
-                label="Logo"
-                hint="Upload a PNG, JPEG, WEBP, GIF, or SVG logo image."
+                label={t("companySettings.appearance.logoLabel", { defaultValue: "Logo" })}
+                hint={t("companySettings.appearance.logoHint", { defaultValue: "Upload a PNG, JPEG, WEBP, GIF, or SVG logo image." })}
               >
                 <div className="space-y-2">
                   <input
@@ -667,7 +670,9 @@ export function CompanySettings() {
                         onClick={handleClearLogo}
                         disabled={clearLogoMutation.isPending}
                       >
-                        {clearLogoMutation.isPending ? "Removing..." : "Remove logo"}
+                        {clearLogoMutation.isPending
+                          ? t("companySettings.appearance.removingLogo", { defaultValue: "Removing..." })
+                          : t("companySettings.appearance.removeLogo", { defaultValue: "Remove logo" })}
                       </Button>
                     </div>
                   )}
@@ -676,7 +681,7 @@ export function CompanySettings() {
                       {logoUploadError ??
                         (logoUploadMutation.error instanceof Error
                           ? logoUploadMutation.error.message
-                          : "Logo upload failed")}
+                          : t("companySettings.appearance.logoUploadFailed", { defaultValue: "Logo upload failed" }))}
                     </span>
                   )}
                   {clearLogoMutation.isError && (
@@ -685,13 +690,15 @@ export function CompanySettings() {
                     </span>
                   )}
                   {logoUploadMutation.isPending && (
-                    <span className="text-xs text-muted-foreground">Uploading logo...</span>
+                    <span className="text-xs text-muted-foreground">
+                      {t("companySettings.appearance.uploadingLogo", { defaultValue: "Uploading logo..." })}
+                    </span>
                   )}
                 </div>
               </Field>
               <Field
-                label="Brand color"
-                hint="Sets the hue for the company icon. Leave empty for auto-generated color."
+                label={t("companySettings.appearance.brandColorLabel", { defaultValue: "Brand color" })}
+                hint={t("companySettings.appearance.brandColorHint", { defaultValue: "Sets the hue for the company icon. Leave empty for auto-generated color." })}
               >
                 <div className="flex items-center gap-2">
                   <input
@@ -709,7 +716,7 @@ export function CompanySettings() {
                         setBrandColor(v);
                       }
                     }}
-                    placeholder="Auto"
+                    placeholder={t("companySettings.appearance.auto", { defaultValue: "Auto" })}
                     className="w-28 rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm font-mono outline-none"
                   />
                   {brandColor && (
@@ -757,25 +764,27 @@ export function CompanySettings() {
       {environmentsEnabled ? (
       <div className="space-y-4" data-testid="company-settings-environments-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Environments
+          {t("companySettings.sections.environments", { defaultValue: "Environments" })}
         </div>
         <div className="space-y-4 rounded-md border border-border px-4 py-4">
           <div className="rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-            Environment choices use the same adapter support matrix as agent defaults. SSH is always available for
-            remote-managed adapters, and sandbox environments appear only when a run-capable sandbox provider plugin is
-            installed.
+            {t("companySettings.environment.helpText", {
+              defaultValue: "Environment choices use the same adapter support matrix as agent defaults. SSH is always available for remote-managed adapters, and sandbox environments appear only when a run-capable sandbox provider plugin is installed.",
+            })}
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full min-w-[34rem] text-left text-xs">
-              <caption className="sr-only">Environment support by adapter</caption>
+              <caption className="sr-only">
+                {t("companySettings.environment.supportCaption", { defaultValue: "Environment support by adapter" })}
+              </caption>
               <thead className="border-b border-border text-muted-foreground">
                 <tr>
-                  <th className="py-2 pr-3 font-medium">Adapter</th>
-                  <th className="px-3 py-2 font-medium">Local</th>
-                  <th className="px-3 py-2 font-medium">SSH</th>
+                  <th className="py-2 pr-3 font-medium">{t("companySettings.environment.adapter", { defaultValue: "Adapter" })}</th>
+                  <th className="px-3 py-2 font-medium">{t("companySettings.environment.local", { defaultValue: "Local" })}</th>
+                  <th className="px-3 py-2 font-medium">{t("companySettings.environment.ssh", { defaultValue: "SSH" })}</th>
                   {sandboxSupportVisible ? (
-                    <th className="px-3 py-2 font-medium">Sandbox</th>
+                    <th className="px-3 py-2 font-medium">{t("companySettings.environment.sandbox", { defaultValue: "Sandbox" })}</th>
                   ) : null}
                 </tr>
               </thead>
@@ -810,7 +819,9 @@ export function CompanySettings() {
 
           <div className="space-y-3">
             {(environments ?? []).length === 0 ? (
-              <div className="text-sm text-muted-foreground">No environments saved for this company yet.</div>
+              <div className="text-sm text-muted-foreground">
+                {t("companySettings.environment.noneSaved", { defaultValue: "No environments saved for this company yet." })}
+              </div>
             ) : (
               (environments ?? []).map((environment) => {
                 const probe = probeResults[environment.id] ?? null;
@@ -830,14 +841,21 @@ export function CompanySettings() {
                         ) : null}
                         {environment.driver === "ssh" ? (
                           <div className="text-xs text-muted-foreground">
-                            {typeof environment.config.host === "string" ? environment.config.host : "SSH host"} ·{" "}
-                            {typeof environment.config.username === "string" ? environment.config.username : "user"}
+                            {typeof environment.config.host === "string"
+                              ? environment.config.host
+                              : t("companySettings.environment.sshHost", { defaultValue: "SSH host" })}{" "}
+                            ·{" "}
+                            {typeof environment.config.username === "string"
+                              ? environment.config.username
+                              : t("companySettings.environment.user", { defaultValue: "user" })}
                           </div>
                         ) : environment.driver === "sandbox" ? (
                           <div className="text-xs text-muted-foreground">
                             {(() => {
                               const provider =
-                                typeof environment.config.provider === "string" ? environment.config.provider : "sandbox";
+                                typeof environment.config.provider === "string"
+                                  ? environment.config.provider
+                                  : t("companySettings.environment.sandbox", { defaultValue: "sandbox" });
                               const displayName =
                                 environmentCapabilities?.sandboxProviders?.[provider]?.displayName ?? provider;
                               const summary = summarizeSandboxConfig(environment.config as Record<string, unknown>);
@@ -845,7 +863,9 @@ export function CompanySettings() {
                             })()}
                           </div>
                         ) : (
-                          <div className="text-xs text-muted-foreground">Runs on this Paperclip host.</div>
+                          <div className="text-xs text-muted-foreground">
+                            {t("companySettings.environment.runsOnHost", { defaultValue: "Runs on this Paperclip host." })}
+                          </div>
                         )}
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
@@ -857,10 +877,10 @@ export function CompanySettings() {
                             disabled={environmentProbeMutation.isPending}
                           >
                             {environmentProbeMutation.isPending
-                              ? "Testing..."
+                              ? t("companySettings.environment.testing", { defaultValue: "Testing..." })
                               : environment.driver === "ssh"
-                                ? "Test connection"
-                                : "Test provider"}
+                                ? t("companySettings.environment.testConnection", { defaultValue: "Test connection" })
+                                : t("companySettings.environment.testProvider", { defaultValue: "Test provider" })}
                           </Button>
                         ) : null}
                         <Button
@@ -868,7 +888,9 @@ export function CompanySettings() {
                           variant="ghost"
                           onClick={() => handleEditEnvironment(environment)}
                         >
-                          {isEditing ? "Editing" : "Edit"}
+                          {isEditing
+                            ? t("companySettings.environment.editing", { defaultValue: "Editing" })
+                            : t("companySettings.environment.edit", { defaultValue: "Edit" })}
                         </Button>
                       </div>
                     </div>
@@ -894,10 +916,15 @@ export function CompanySettings() {
 
           <div className="border-t border-border/60 pt-4">
             <div className="mb-3 text-sm font-medium">
-              {editingEnvironmentId ? "Edit environment" : "Add environment"}
+              {editingEnvironmentId
+                ? t("companySettings.environment.editEnvironment", { defaultValue: "Edit environment" })
+                : t("companySettings.environment.addEnvironment", { defaultValue: "Add environment" })}
             </div>
             <div className="space-y-3">
-              <Field label="Name" hint="Operator-facing name for this execution target.">
+              <Field
+                label={t("companySettings.environment.nameLabel", { defaultValue: "Name" })}
+                hint={t("companySettings.environment.nameHint", { defaultValue: "Operator-facing name for this execution target." })}
+              >
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -905,7 +932,10 @@ export function CompanySettings() {
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, name: e.target.value }))}
                 />
               </Field>
-              <Field label="Description" hint="Optional note about what this machine is for.">
+              <Field
+                label={t("companySettings.environment.descriptionLabel", { defaultValue: "Description" })}
+                hint={t("companySettings.environment.descriptionHint", { defaultValue: "Optional note about what this machine is for." })}
+              >
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -913,7 +943,10 @@ export function CompanySettings() {
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, description: e.target.value }))}
                 />
               </Field>
-              <Field label="Driver" hint="Local runs on this host. SSH stores a remote machine target. Sandbox stores plugin-backed provider config on the shared environment seam.">
+              <Field
+                label={t("companySettings.environment.driverLabel", { defaultValue: "Driver" })}
+                hint={t("companySettings.environment.driverHint", { defaultValue: "Local runs on this host. SSH stores a remote machine target. Sandbox stores plugin-backed provider config on the shared environment seam." })}
+              >
                 <select
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   value={environmentForm.driver}
