@@ -1,0 +1,39 @@
+name: i18n-extract
+
+on:
+  pull_request:
+    paths:
+      - "ui/src/**"
+      - "ui/i18next.config.ts"
+      - "ui/package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/i18n-extract.yml"
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Extract i18n keys
+        run: pnpm --filter @paperclipai/ui exec i18next-cli extract --config i18next.config.ts
+
+      - name: Ensure English locale extraction is committed
+        run: |
+          if ! git diff --exit-code -- ui/src/i18n/locales/en/; then
+            echo "::error::English locale files changed after extraction. Run 'pnpm --filter @paperclipai/ui exec i18next-cli extract --config i18next.config.ts' locally and commit ui/src/i18n/locales/en/ updates."
+            exit 1
+          fi
