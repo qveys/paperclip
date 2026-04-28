@@ -208,7 +208,12 @@ export function JoinRequestQueue() {
                       defaultValue: `Submitted ${new Date(request.createdAt).toLocaleString()}`,
                     })}
                   </div>
-                  <div>{t("joinRequests.sourceIp", { defaultValue: `Source IP ${request.requestIp}` })}</div>
+                  <div>
+                    {t("joinRequests.sourceIp", {
+                      defaultValue: "Source IP {{ip}}",
+                      ip: request.requestIp,
+                    })}
+                  </div>
                   {request.requestType === "agent" && request.capabilities ? <div>{request.capabilities}</div> : null}
                 </div>
               </div>

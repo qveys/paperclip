@@ -27,13 +27,6 @@ import { cn } from "../lib/utils";
 import { MarkdownEditor, type MarkdownEditorRef } from "./MarkdownEditor";
 import { StatusBadge } from "./StatusBadge";
 
-const levelLabels: Record<string, string> = {
-  company: "Company",
-  team: "Team",
-  agent: "Agent",
-  task: "Task",
-};
-
 export function NewGoalDialog() {
   const { t: tx } = useT("issues");
   const { newGoalOpen, newGoalDefaults, closeNewGoal } = useDialog();
@@ -105,6 +98,11 @@ export function NewGoalDialog() {
   }
 
   const currentParent = (goals ?? []).find((g) => g.id === appliedParentId);
+  const levelLabel = (value: string) => tx(`goals.properties.levelValues.${value}`, {
+    defaultValue: tx(`newGoalDialog.levelLabels.${value}`, {
+      defaultValue: value,
+    }),
+  });
 
   return (
     <Dialog
@@ -219,7 +217,7 @@ export function NewGoalDialog() {
             <PopoverTrigger asChild>
               <button className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-xs hover:bg-accent/50 transition-colors">
                 <Layers className="h-3 w-3 text-muted-foreground" />
-                {tx(`goals.properties.levelValues.${level}`, { defaultValue: levelLabels[level] ?? level })}
+                {levelLabel(level)}
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-40 p-1" align="start">
@@ -232,7 +230,7 @@ export function NewGoalDialog() {
                   )}
                   onClick={() => { setLevel(l); setLevelOpen(false); }}
                 >
-                  {tx(`goals.properties.levelValues.${l}`, { defaultValue: levelLabels[l] ?? l })}
+                  {levelLabel(l)}
                 </button>
               ))}
             </PopoverContent>
