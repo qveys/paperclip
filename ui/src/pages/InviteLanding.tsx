@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { AGENT_ADAPTER_TYPES } from "@paperclipai/shared";
 import type { AgentAdapterType, JoinRequest } from "@paperclipai/shared";
 import { Button } from "@/components/ui/button";
@@ -127,6 +128,7 @@ type AwaitingJoinApprovalPanelProps = {
   claimSecret?: string | null;
   claimApiKeyPath?: string | null;
   onboardingTextUrl?: string | null;
+  t: (key: string, options?: Record<string, unknown>) => string;
 };
 
 function InviteCompanyLogo({
@@ -159,9 +161,10 @@ function AwaitingJoinApprovalPanel({
   claimSecret = null,
   claimApiKeyPath = null,
   onboardingTextUrl = null,
+  t,
 }: AwaitingJoinApprovalPanelProps) {
   const approvalUrl = `${window.location.origin}/company/settings/access`;
-  const approverLabel = invitedByUserName ?? "A company admin";
+  const approverLabel = invitedByUserName ?? t("invite.approverFallback", { defaultValue: "A company admin" });
 
   return (
     <div className="min-h-screen bg-zinc-950 px-6 py-12 text-zinc-100">
@@ -173,38 +176,51 @@ function AwaitingJoinApprovalPanel({
             companyBrandColor={companyBrandColor}
             className="h-12 w-12 border border-zinc-800 rounded-none"
           />
-          <h1 className="text-lg font-semibold">Request to join {companyDisplayName}</h1>
+          <h1 className="text-lg font-semibold">
+            {t("invite.pending.title", {
+              defaultValue: `Request to join ${companyDisplayName}`,
+            })}
+          </h1>
         </div>
         <div className="mt-4 space-y-3">
           <p className="text-sm text-zinc-400">
-            Your request is still awaiting approval. {approverLabel} must approve your request to join.
+            {t("invite.pending.description", {
+              defaultValue: `Your request is still awaiting approval. ${approverLabel} must approve your request to join.`,
+            })}
           </p>
           <div className="border border-zinc-800 p-3">
-            <p className="text-xs text-zinc-500 mb-1">Approval page</p>
+            <p className="text-xs text-zinc-500 mb-1">{t("invite.pending.approvalPage", { defaultValue: "Approval page" })}</p>
             <a
               href={approvalUrl}
               className="text-sm text-zinc-200 underline underline-offset-2 hover:text-zinc-100"
             >
-              Company Settings → Access
+              {t("invite.pending.approvalLink", { defaultValue: "Company Settings → Access" })}
             </a>
           </div>
           <p className="text-sm text-zinc-400">
-            Ask them to visit <a href={approvalUrl} className="text-zinc-200 underline underline-offset-2 hover:text-zinc-100">Company Settings → Access</a> to approve your request.
+            {t("invite.pending.askAdminPrefix", { defaultValue: "Ask them to visit" })}{" "}
+            <a href={approvalUrl} className="text-zinc-200 underline underline-offset-2 hover:text-zinc-100">
+              {t("invite.pending.approvalLink", { defaultValue: "Company Settings → Access" })}
+            </a>{" "}
+            {t("invite.pending.askAdminSuffix", { defaultValue: "to approve your request." })}
           </p>
           <p className="text-xs text-zinc-500">
-            Refresh this page after you've been approved — you'll be redirected automatically.
+            {t("invite.pending.refreshHint", {
+              defaultValue: "Refresh this page after you've been approved - you'll be redirected automatically.",
+            })}
           </p>
         </div>
         {claimSecret && claimApiKeyPath ? (
           <div className="mt-4 space-y-1 border border-zinc-800 p-3 text-xs text-zinc-400">
-            <div className="text-zinc-200">Claim secret</div>
+            <div className="text-zinc-200">{t("invite.pending.claimSecret", { defaultValue: "Claim secret" })}</div>
             <div className="font-mono break-all">{claimSecret}</div>
             <div className="font-mono break-all">POST {claimApiKeyPath}</div>
           </div>
         ) : null}
         {onboardingTextUrl ? (
           <div className="mt-4 text-xs text-zinc-400">
-            Onboarding: <span className="font-mono break-all">{onboardingTextUrl}</span>
+            {t("invite.pending.onboarding", { defaultValue: "Onboarding:" })}{" "}
+            <span className="font-mono break-all">{onboardingTextUrl}</span>
           </div>
         ) : null}
       </div>
@@ -213,6 +229,7 @@ function AwaitingJoinApprovalPanel({
 }
 
 export function InviteLandingPage() {
+  const { t } = useTranslation("auth");
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { setSelectedCompanyId } = useCompany();
@@ -284,7 +301,8 @@ export function InviteLandingPage() {
       companiesQuery.data?.some((company) => company.id === invite?.companyId),
     );
   const companyName = invite?.companyName?.trim() || null;
-  const companyDisplayName = companyName || "this Paperclip company";
+  const companyDisplayName =
+    companyName || t("invite.companyFallback", { defaultValue: "this Paperclip company" });
   const companyLogoUrl = invite?.companyLogoUrl?.trim() || null;
   const companyBrandColor = invite?.companyBrandColor?.trim() || null;
   const invitedByUserName = invite?.invitedByUserName?.trim() || null;
@@ -309,7 +327,7 @@ export function InviteLandingPage() {
   const sessionLabel =
     sessionQuery.data?.user.name?.trim() ||
     sessionQuery.data?.user.email?.trim() ||
-    "this account";
+    t("invite.accountFallback", { defaultValue: "this account" });
 
   const authCanSubmit =
     email.trim().length > 0 &&
@@ -412,31 +430,35 @@ export function InviteLandingPage() {
   });
 
   const joinButtonLabel = useMemo(() => {
-    if (!invite) return "Continue";
-    if (invite.inviteType === "bootstrap_ceo") return "Accept invite";
-    if (showsAgentForm) return "Submit request";
-    return sessionQuery.data ? "Accept invite" : "Continue";
-  }, [invite, sessionQuery.data, showsAgentForm]);
+    if (!invite) return t("invite.actions.continue", { defaultValue: "Continue" });
+    if (invite.inviteType === "bootstrap_ceo") return t("invite.actions.acceptInvite", { defaultValue: "Accept invite" });
+    if (showsAgentForm) return t("invite.actions.submitRequest", { defaultValue: "Submit request" });
+    return sessionQuery.data
+      ? t("invite.actions.acceptInvite", { defaultValue: "Accept invite" })
+      : t("invite.actions.continue", { defaultValue: "Continue" });
+  }, [invite, sessionQuery.data, showsAgentForm, t]);
 
   if (!token) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-destructive">Invalid invite token.</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-destructive">{t("invite.invalidToken", { defaultValue: "Invalid invite token." })}</div>;
   }
 
   if (inviteQuery.isLoading || healthQuery.isLoading || sessionQuery.isLoading) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Loading invite...</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{t("invite.loading", { defaultValue: "Loading invite..." })}</div>;
   }
 
   if (isCheckingExistingMembership) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Checking your access...</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{t("invite.checkingAccess", { defaultValue: "Checking your access..." })}</div>;
   }
 
   if (inviteQuery.error || !invite) {
     return (
       <div className="mx-auto max-w-xl py-10">
         <div className="border border-border bg-card p-6" data-testid="invite-error">
-          <h1 className="text-lg font-semibold">Invite not available</h1>
+          <h1 className="text-lg font-semibold">{t("invite.notAvailable", { defaultValue: "Invite not available" })}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            This invite may be expired, revoked, or already used.
+            {t("invite.notAvailableDescription", {
+              defaultValue: "This invite may be expired, revoked, or already used.",
+            })}
           </p>
         </div>
       </div>
@@ -448,7 +470,7 @@ export function InviteLandingPage() {
     inviteJoinRequestType === "human" &&
     isCurrentMember
   ) {
-    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">Opening company...</div>;
+    return <div className="mx-auto max-w-xl py-10 text-sm text-muted-foreground">{t("invite.openingCompany", { defaultValue: "Opening company..." })}</div>;
   }
 
   if (inviteJoinRequestStatus === "pending_approval") {
@@ -458,6 +480,7 @@ export function InviteLandingPage() {
         companyLogoUrl={companyLogoUrl}
         companyBrandColor={companyBrandColor}
         invitedByUserName={invitedByUserName}
+        t={t}
       />
     );
   }
@@ -466,11 +489,11 @@ export function InviteLandingPage() {
     return (
       <div className="mx-auto max-w-xl py-10">
         <div className="border border-border bg-card p-6" data-testid="invite-error">
-          <h1 className="text-lg font-semibold">Invite not available</h1>
+          <h1 className="text-lg font-semibold">{t("invite.notAvailable", { defaultValue: "Invite not available" })}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             {inviteJoinRequestStatus === "rejected"
-              ? "This join request was not approved."
-              : "This invite has already been used."}
+              ? t("invite.joinRejected", { defaultValue: "This join request was not approved." })
+              : t("invite.alreadyUsed", { defaultValue: "This invite has already been used." })}
           </p>
         </div>
       </div>
@@ -481,10 +504,10 @@ export function InviteLandingPage() {
     return (
       <div className="min-h-screen bg-zinc-950 px-6 py-12 text-zinc-100">
         <div className="mx-auto max-w-md border border-zinc-800 bg-zinc-950 p-6">
-          <h1 className="text-lg font-semibold">Bootstrap complete</h1>
+          <h1 className="text-lg font-semibold">{t("invite.bootstrapComplete", { defaultValue: "Bootstrap complete" })}</h1>
           <div className="mt-4">
             <Button asChild className="rounded-none">
-              <Link to="/">Open board</Link>
+              <Link to="/">{t("invite.openBoard", { defaultValue: "Open board" })}</Link>
             </Button>
           </div>
         </div>
@@ -514,11 +537,11 @@ export function InviteLandingPage() {
                 companyBrandColor={companyBrandColor}
                 className="h-12 w-12 border border-zinc-800 rounded-none"
               />
-              <h1 className="text-lg font-semibold">You joined the company</h1>
+              <h1 className="text-lg font-semibold">{t("invite.joinedCompany", { defaultValue: "You joined the company" })}</h1>
             </div>
             <div className="mt-4">
               <Button asChild className="w-full rounded-none">
-                <Link to="/">Open board</Link>
+                <Link to="/">{t("invite.openBoard", { defaultValue: "Open board" })}</Link>
               </Button>
             </div>
           </div>
@@ -532,6 +555,7 @@ export function InviteLandingPage() {
           claimSecret={claimSecret}
           claimApiKeyPath={claimApiKeyPath}
           onboardingTextUrl={onboardingTextUrl}
+          t={t}
         />
       )
     );
