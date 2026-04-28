@@ -79,6 +79,10 @@ export function ActiveAgentsPanel({
   const runs = liveRuns ?? [];
   const visibleRuns = useMemo(() => runs.slice(0, cardLimit), [cardLimit, runs]);
   const hiddenRunCount = Math.max(0, runs.length - visibleRuns.length);
+  const hiddenRunsLabel = tx("activeAgentsPanel.moreRuns", {
+    count: hiddenRunCount,
+    defaultValue: `${hiddenRunCount} more active/recent run${hiddenRunCount === 1 ? "" : "s"}`,
+  });
   const { data: issues } = useQuery({
     queryKey: [...queryKeys.issues.list(companyId), "with-routine-executions"],
     queryFn: () => issuesApi.list(companyId, { includeRoutineExecutions: true }),
@@ -130,7 +134,7 @@ export function ActiveAgentsPanel({
       {showMoreLink && hiddenRunCount > 0 && (
         <div className="mt-3 flex justify-end text-xs text-muted-foreground">
           <Link to="/dashboard/live" className="hover:text-foreground hover:underline">
-            {hiddenRunCount} more active/recent run{hiddenRunCount === 1 ? "" : "s"}
+            {hiddenRunsLabel}
           </Link>
         </div>
       )}
