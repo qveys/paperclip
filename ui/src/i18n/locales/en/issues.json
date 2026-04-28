@@ -1,4 +1,152 @@
 {
+  "approvals": {
+    "addCommentPlaceholder": "",
+    "approve": "",
+    "approving": "",
+    "backToApprovals": "",
+    "boardCommenter": "",
+    "breadcrumb": "",
+    "budgetLine": "",
+    "budgetOverrideHint": "",
+    "card": {
+      "createdTime": "",
+      "decisionNoteLabel": "",
+      "requestedBy": ""
+    },
+    "comments_one": "",
+    "comments_other": "",
+    "confirmed": "",
+    "decisionNote": "",
+    "deleteDisapprovedAgent": "",
+    "deleteDisapprovedConfirm": "",
+    "errors": {
+      "approveFailed": "",
+      "approveFailedShort": "",
+      "commentFailed": "",
+      "deleteFailed": "",
+      "rejectFailed": "",
+      "rejectFailedShort": "",
+      "resubmitFailed": "",
+      "revisionRequestFailed": ""
+    },
+    "fallbackLabel": "",
+    "fields": {
+      "adapter": "",
+      "capabilities": "",
+      "icon": "",
+      "metric": "",
+      "name": "",
+      "onApproval": "",
+      "proposedComment": "",
+      "recommendedAction": "",
+      "risks": "",
+      "role": "",
+      "scope": "",
+      "summary": "",
+      "title": "",
+      "window": ""
+    },
+    "linkedIssues": "",
+    "linkedIssuesHint": "",
+    "markResubmitted": "",
+    "noApprovals": "",
+    "noPending": "",
+    "notFound": "",
+    "openHiredAgent": "",
+    "postComment": "",
+    "posting": "",
+    "reject": "",
+    "rejecting": "",
+    "requestedBy": "",
+    "requestingAgentNotified": "",
+    "requestRevision": "",
+    "reviewLinkedIssue": "",
+    "reviewLinkedIssues": "",
+    "seeFullRequest": "",
+    "selectCompanyFirst": "",
+    "status": {
+      "revisionRequested": ""
+    },
+    "tabAll": "",
+    "tabPending": "",
+    "viewDetails": ""
+  },
+  "goals": {
+    "breadcrumb": "",
+    "detail": {
+      "descriptionPlaceholder": "",
+      "errors": {
+        "noCompanySelected": ""
+      },
+      "fallbackTitle": "",
+      "noLinkedProjects": "",
+      "noSubGoals": "",
+      "projectsCount_one": "",
+      "projectsCount_other": "",
+      "showProperties": "",
+      "subGoalButton": "",
+      "subGoalsCount_one": "",
+      "subGoalsCount_other": ""
+    },
+    "empty": {
+      "action": "",
+      "message": ""
+    },
+    "newGoal": "",
+    "properties": {
+      "created": "",
+      "level": "",
+      "none": "",
+      "owner": "",
+      "parentGoal": "",
+      "status": "",
+      "updated": ""
+    },
+    "selectCompany": "",
+    "tree": {
+      "empty": ""
+    }
+  },
+  "interactionCard": {
+    "acceptDrafts": "Accept drafts",
+    "accepting": "Accepting...",
+    "acceptSelectedDrafts": "Accept selected drafts",
+    "askUserQuestions": "Ask user questions",
+    "cancelDecline": "Cancel decline",
+    "confirmationRequested": "Confirmation requested",
+    "confirming": "Confirming...",
+    "createdAt": "interactionCard.createdAt",
+    "declineReasonRequired": "A decline reason is required.",
+    "manyDraftIssues": "interactionCard.manyDraftIssues",
+    "noAnswerRecorded": "No answer recorded.",
+    "oneDraftIssue": "1 draft issue",
+    "proposedBy": "interactionCard.proposedBy",
+    "questionN": "interactionCard.questionN",
+    "questionsForOperator": "Questions for the operator",
+    "reject": "Reject",
+    "rejectPlaceholder": "Add a short reason for rejecting this suggestion",
+    "resetSelection": "Reset selection",
+    "resolvedBy": "Resolved by",
+    "saveRejection": "Save rejection",
+    "saving": "Saving...",
+    "submitAfterForm": "Submit once after you finish the full form.",
+    "submittedSummary": "Submitted summary",
+    "submitting": "Submitting...",
+    "suggestedTaskTree": "Suggested task tree",
+    "tryAgain": "Try again"
+  },
+  "issueRow": {
+    "dismissFromInbox": "Dismiss from inbox",
+    "markAsRead": "Mark as read"
+  },
   "pageTitle": "Issues",
+  "runLedger": {
+    "ariaLabel": "Issue run ledger",
+    "latestRun": "Latest run",
+    "noRunsLinked": "No runs linked yet.",
+    "title": "Run ledger",
+    "waitingFirstRun": "Waiting for the first run record.",
+    "watchdogDecisionNotRecorded": "Watchdog decision not recorded"
+  },
   "selectCompany": "Select a company to view issues."
 }

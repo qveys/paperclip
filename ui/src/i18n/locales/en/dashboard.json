@@ -1,28 +1,197 @@
 {
-  "welcome": "Welcome to Paperclip. Set up your first company and agent to get started.",
-  "getStarted": "Get Started",
-  "selectCompany": "Create or select a company to view the dashboard.",
-  "noAgents": "You have no agents.",
-  "createAgentHere": "Create one here",
   "activeBudgetIncidents": "{count} active budget incident{suffix}",
-  "budgetIncidentDetails": "{agents} agents paused · {projects} projects paused · {approvals} pending budget approvals",
-  "openBudgets": "Open budgets",
-  "agentsEnabled": "Agents Enabled",
+  "activity": {
+    "allTypes": "",
+    "filterByType": "",
+    "noActivity": "",
+    "selectCompany": ""
+  },
+  "activityCharts": {
+    "noIssues": "",
+    "noRuns": ""
+  },
   "agentMetricDescription": "{running} running, {paused} paused, {errors} errors",
-  "tasksInProgress": "Tasks In Progress",
-  "taskMetricDescription": "{open} open, {blocked} blocked",
-  "monthSpend": "Month Spend",
-  "monthSpendBudget": "{percent}% of {budget} budget",
-  "unlimitedBudget": "Unlimited budget",
-  "pendingApprovals": "Pending Approvals",
-  "pendingApprovalDescription": "{count} budget overrides awaiting board review",
+  "agentsEnabled": "Agents Enabled",
   "awaitingBoardReview": "Awaiting board review",
-  "runActivity": "Run Activity",
+  "budgetIncidentCard": {
+    "applying": "",
+    "budgetExceedsSpendError": "",
+    "budgetPlaceholder": "",
+    "keepPaused": "",
+    "newBudgetLabel": "",
+    "projectPausedMessage": "",
+    "raiseBudgetResume": "",
+    "scopePausedMessage": ""
+  },
+  "budgetIncidentDetails": "{agents} agents paused · {projects} projects paused · {approvals} pending budget approvals",
+  "budgetPolicyCard": {
+    "budget": "",
+    "budgetPlaceholder": "",
+    "budgetUsd": "",
+    "disabled": "",
+    "hardStop": "",
+    "healthy": "",
+    "heartbeatsPausedMessage": "",
+    "noCapConfigured": "",
+    "observed": "",
+    "ofLimit": "",
+    "paused": "",
+    "pauseReasonSuffix": "",
+    "projectPausedMessage": "",
+    "remaining": "",
+    "saving": "",
+    "setBudget": "",
+    "softAlertAt": "",
+    "unlimited": "",
+    "updateBudget": "",
+    "validDollarAmountError": "",
+    "warning": ""
+  },
+  "costs": {
+    "allBillers": "All billers",
+    "allProviders": "",
+    "billers": {
+      "empty": "No billable events in this period."
+    },
+    "budgets": {
+      "activeIncidents": "Active incidents",
+      "activeIncidentsHeading": "Active incidents",
+      "activeIncidentsHelp": "Resolve hard stops here by raising the budget or explicitly keeping the scope paused.",
+      "activeIncidentsSubtitle": "Open soft or hard threshold crossings",
+      "description": "Hard-stop spend limits for agents and projects. Provider subscription quota stays separate and appears under Providers.",
+      "empty": "No budget policies yet. Set agent and project budgets from their detail pages, or use the existing company monthly budget control.",
+      "pausedAgents": "Paused agents",
+      "pausedAgentsSubtitle": "Agent heartbeats blocked by budget",
+      "pausedProjects": "Paused projects",
+      "pausedProjectsSubtitle": "Project execution blocked by budget",
+      "pendingApprovals": "Pending approvals",
+      "pendingApprovalsSubtitle": "Budget override approvals awaiting board action",
+      "title": "Budget control plane"
+    },
+    "byAgent": {
+      "description": "What each agent consumed in the selected period.",
+      "empty": "No cost events yet.",
+      "title": "By agent"
+    },
+    "byProject": {
+      "description": "Run costs attributed through project-linked issues.",
+      "empty": "No project-attributed run costs yet.",
+      "title": "By project",
+      "unattributed": "Unattributed"
+    },
+    "custom": {
+      "selectDateRange": "Select a start and end date to load data."
+    },
+    "empty": {
+      "selectCompany": "Select a company to view costs."
+    },
+    "financeByBiller": {
+      "description": "Account-level financial events grouped by who charged or credited them.",
+      "empty": "No finance events yet.",
+      "title": "By biller"
+    },
+    "financeTimeline": {
+      "empty": "No finance events yet. Add account-level charges once biller invoices or credits land."
+    },
+    "inferenceLedger": {
+      "budgetConsumed": "costs.inferenceLedger.budgetConsumed",
+      "budgetValue": "costs.inferenceLedger.budgetValue",
+      "description": "Request-scoped inference spend for the selected period.",
+      "title": "Inference ledger",
+      "unlimitedBudget": "Unlimited budget",
+      "usage": "usage"
+    },
+    "metrics": {
+      "budget": "Budget",
+      "budgetOpen": "Open",
+      "budgetPausedSubtitle": "costs.metrics.budgetPausedSubtitle",
+      "financeEvents": "Finance events",
+      "financeEventsSubtitle": "costs.metrics.financeEventsSubtitle",
+      "financeNet": "Finance net",
+      "financeNetSubtitle": "costs.metrics.financeNetSubtitle",
+      "inferenceSpend": "Inference spend",
+      "inferenceSpendSubtitle": "costs.metrics.inferenceSpendSubtitle",
+      "noMonthlyCap": "No monthly cap configured"
+    },
+    "providers": {
+      "empty": "No cost events in this period."
+    },
+    "range": {
+      "to": "to"
+    },
+    "subtitle": "Inference spend, platform fees, credits, and live quota windows.",
+    "tabs": {
+      "billers": "Billers",
+      "budgets": "Budgets",
+      "finance": "Finance",
+      "overview": "Overview",
+      "providers": "Providers"
+    },
+    "title": "Costs"
+  },
+  "createAgentHere": "Create one here",
+  "dashboard": {
+    "activeBudgetIncidents_one": "",
+    "activeBudgetIncidents_other": "",
+    "agentMetricDescription": "",
+    "agentsEnabled": "",
+    "awaitingBoardReview": "",
+    "budgetIncidentDetails": "",
+    "createAgentHere": "",
+    "getStarted": "",
+    "issuesByPriority": "",
+    "issuesByStatus": "",
+    "last14Days": "",
+    "monthSpend": "",
+    "monthSpendBudget": "",
+    "noAgents": "",
+    "noTasksYet": "",
+    "openBudgets": "",
+    "pendingApprovalDescription_one": "",
+    "pendingApprovalDescription_other": "",
+    "pendingApprovals": "",
+    "recentActivity": "",
+    "recentTasks": "",
+    "runActivity": "",
+    "selectCompany": "",
+    "successRate": "",
+    "taskMetricDescription": "",
+    "tasksInProgress": "",
+    "unlimitedBudget": "",
+    "welcome": ""
+  },
+  "getStarted": "Get Started",
   "issuesByPriority": "Issues by Priority",
   "issuesByStatus": "Issues by Status",
-  "successRate": "Success Rate",
   "last14Days": "Last 14 days",
+  "liveRunWidget": {
+    "activeRecent": "",
+    "createCompany": "",
+    "description": "",
+    "noRuns": "",
+    "selectCompany": "",
+    "showingUpTo": "",
+    "title": ""
+  },
+  "monthSpend": "Month Spend",
+  "monthSpendBudget": "{percent}% of {budget} budget",
+  "nav": {
+    "activity": "",
+    "costs": "",
+    "dashboard": ""
+  },
+  "noAgents": "You have no agents.",
+  "noTasksYet": "No tasks yet.",
+  "openBudgets": "Open budgets",
+  "pendingApprovalDescription": "{count} budget overrides awaiting board review",
+  "pendingApprovals": "Pending Approvals",
   "recentActivity": "Recent Activity",
   "recentTasks": "Recent Tasks",
-  "noTasksYet": "No tasks yet."
+  "runActivity": "Run Activity",
+  "selectCompany": "Create or select a company to view the dashboard.",
+  "successRate": "Success Rate",
+  "taskMetricDescription": "{open} open, {blocked} blocked",
+  "tasksInProgress": "Tasks In Progress",
+  "unlimitedBudget": "Unlimited budget",
+  "welcome": "Welcome to Paperclip. Set up your first company and agent to get started."
 }

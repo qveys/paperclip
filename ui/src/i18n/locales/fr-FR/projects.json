@@ -1,0 +1,31 @@
+{
+  "projectProperties": {
+    "allGoalsLinked": "",
+    "clearLocalFolderAria": "",
+    "clearRepoAria": "",
+    "codebase": "",
+    "codebaseHelpAria": "",
+    "created": "",
+    "description": "",
+    "env": "",
+    "envHint": "",
+    "executionWorkspaces": "",
+    "executionWorkspacesHelpAria": "",
+    "goalAction": "",
+    "goals": "",
+    "localFolder": "",
+    "name": "",
+    "noDescription": "",
+    "placeholders": {
+      "description": "",
+      "projectName": ""
+    },
+    "repo": "",
+    "status": "",
+    "targetDate": "",
+    "updated": "",
+    "workspaceDeleteFailed": "",
+    "workspaceSaveFailed": "",
+    "workspaceUpdateFailed": ""
+  }
+}

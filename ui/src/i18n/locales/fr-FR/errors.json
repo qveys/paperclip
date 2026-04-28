@@ -1,12 +1,20 @@
 {
-  "notFound": {
-    "pageTitle": "Page introuvable"
-  },
   "error": {
-    "unauthorized": "Non autorisé",
     "forbidden": "Interdit",
+    "internal": "Erreur interne du serveur",
     "notFound": "Introuvable",
-    "validation": "Erreur de validation",
-    "internal": "Erreur interne du serveur"
+    "unauthorized": "Non autorisé",
+    "validation": "Erreur de validation"
+  },
+  "notFound": {
+    "breadcrumb": "",
+    "companyNotFound": "",
+    "goHome": "",
+    "noCompanyPrefixMatch": "",
+    "openDashboard": "",
+    "pageNotFound": "",
+    "pageTitle": "Page introuvable",
+    "requestedPath": "",
+    "routeMissing": ""
   }
 }

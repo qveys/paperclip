@@ -102,9 +102,9 @@
     "alphaTitle": "Les plugins sont en alpha.",
     "availablePlugins": "Plugins disponibles",
     "breadcrumbs": {
+      "company": "Entreprise",
       "plugins": "Plugins",
-      "settings": "Réglages",
-      "company": "Entreprise"
+      "settings": "Réglages"
     },
     "cancel": "Annuler",
     "close": "Fermer",
@@ -220,6 +220,9 @@
     "recentJobRuns": "Exécutions de job récentes",
     "recentLogs": "Journaux récents",
     "recentLogsDescription": "Dernières {count} entrées de journal",
+    "recentLogsDescription_one": "",
+    "recentLogsDescription_many": "",
+    "recentLogsDescription_other": "",
     "recentWebhookDeliveries": "Livraisons de webhook récentes",
     "runtimeDashboard": "Tableau de bord d'exécution",
     "runtimeDashboardDescription": "Processus worker, jobs planifiés et livraisons de webhooks",

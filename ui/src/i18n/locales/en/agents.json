@@ -1,20 +1,96 @@
 {
-  "pageTitle": "Agents",
-  "selectCompany": "Select a company to view agents.",
-  "tabAll": "All",
-  "tabActive": "Active",
-  "tabPaused": "Paused",
-  "tabError": "Error",
-  "filters": "Filters",
-  "showTerminated": "Show terminated",
-  "listView": "List view",
-  "orgView": "Org view",
-  "newAgent": "New Agent",
+  "activeAgentsPanel": {
+    "empty": "",
+    "finishedRelative": "",
+    "liveNow": "",
+    "startedRelative": "",
+    "title": ""
+  },
+  "agentActionButtons": {
+    "pause": "",
+    "resume": "",
+    "runNow": ""
+  },
+  "agentConfig": {
+    "adapter": "",
+    "bootstrapPromptLegacyHint": "Bootstrap prompt is legacy and will be removed in a future release. Consider moving this content into the agent's prompt template or instructions file instead.",
+    "companyDefaultLocal": "Company default (Local)",
+    "execution": "Execution",
+    "fields": {
+      "capabilities": "Capabilities",
+      "command": "Command",
+      "defaultEnvironment": "Default environment",
+      "environmentVariables": "Environment variables",
+      "heartbeatOnInterval": "Heartbeat on interval",
+      "name": "Name",
+      "promptTemplate": "Prompt Template",
+      "reportsTo": "Reports to",
+      "title": "Title",
+      "wakeOnDemand": "Wake on demand"
+    },
+    "identity": "",
+    "permissionsAndConfiguration": "Permissions & Configuration",
+    "placeholders": {
+      "agentName": "Agent name",
+      "agentTitle": "e.g. VP of Engineering",
+      "capabilities": "Describe what this agent can do...",
+      "promptTemplate": "You are agent {{ agent.name }}. Your role is {{ agent.role }}..."
+    },
+    "runPolicy": "Run Policy",
+    "save": "",
+    "saving": "",
+    "unsavedChanges": ""
+  },
+  "agentIconPicker": {
+    "noIconsMatch": "",
+    "searchPlaceholder": ""
+  },
+  "agentProperties": {
+    "adapter": "",
+    "created": "",
+    "lastError": "",
+    "lastHeartbeat": "",
+    "reportsTo": "",
+    "role": "",
+    "session": "",
+    "status": "",
+    "title": ""
+  },
+  "agents": {
+    "count_one": "",
+    "count_other": "",
+    "empty": "",
+    "filters": "",
+    "newAgent": "",
+    "noMatch": "",
+    "noOrg": "",
+    "pageTitle": "",
+    "selectCompany": "",
+    "showTerminated": "",
+    "tabActive": "",
+    "tabAll": "",
+    "tabError": "",
+    "tabPaused": ""
+  },
+  "common": {
+    "cancel": "Cancel"
+  },
   "count": "{count} agent{suffix}",
   "empty": "Create your first agent to get started.",
+  "filters": "Filters",
+  "listView": "List view",
+  "live": "Live",
+  "liveWithCount": "Live ({count})",
+  "newAgent": "New Agent",
+  "noHeartbeat": "—",
   "noMatch": "No agents match the selected filter.",
   "noOrg": "No organizational hierarchy defined.",
-  "noHeartbeat": "—",
-  "live": "Live",
-  "liveWithCount": "Live ({count})"
+  "orgView": "Org view",
+  "pageTitle": "Agents",
+  "selectCompany": "Select a company to view agents.",
+  "showTerminated": "Show terminated",
+  "tabActive": "Active",
+  "tabAll": "All",
+  "tabError": "Error",
+  "tabPaused": "Paused"
 }

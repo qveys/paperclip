@@ -1,0 +1,31 @@
+{
+  "projectProperties": {
+    "allGoalsLinked": "All goals linked.",
+    "clearLocalFolderAria": "Clear local folder",
+    "clearRepoAria": "Clear repo",
+    "codebase": "Codebase",
+    "codebaseHelpAria": "Codebase help",
+    "created": "Created",
+    "description": "Description",
+    "env": "Env",
+    "envHint": "Applied to all runs for issues in this project. Project values override agent env on key conflicts.",
+    "executionWorkspaces": "Execution Workspaces",
+    "executionWorkspacesHelpAria": "Execution workspaces help",
+    "goalAction": "Goal",
+    "goals": "Goals",
+    "localFolder": "Local folder",
+    "name": "Name",
+    "noDescription": "No description",
+    "placeholders": {
+      "description": "Add a description...",
+      "projectName": "Project name"
+    },
+    "repo": "Repo",
+    "status": "Status",
+    "targetDate": "Target Date",
+    "updated": "Updated",
+    "workspaceDeleteFailed": "Failed to delete workspace.",
+    "workspaceSaveFailed": "Failed to save workspace.",
+    "workspaceUpdateFailed": "Failed to update workspace."
+  }
+}
