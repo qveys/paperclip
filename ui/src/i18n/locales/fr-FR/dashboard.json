@@ -364,12 +364,31 @@
       "selectCompany": ""
     },
     "financeByBiller": {
+      "credits": "",
+      "debits": "",
       "description": "",
       "empty": "",
+      "estimated": "",
+      "eventKindCounts": "",
+      "net": "",
+      "title": ""
+    },
+    "financeByKind": {
+      "debitsValue": "",
+      "description": "",
+      "empty": "",
+      "eventBillerCounts": "",
       "title": ""
     },
     "financeTimeline": {
-      "empty": ""
+      "description": "",
+      "empty": "",
+      "emptyPeriod": "",
+      "estimated": "",
+      "invoiceValue": "",
+      "regionValue": "",
+      "tierValue": "",
+      "title": ""
     },
     "inferenceLedger": {
       "budgetConsumed": "",

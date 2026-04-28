@@ -1,4 +1,5 @@
 {
+  "adapter": "",
   "approvals": {
     "fields": {
       "skills": ""
@@ -10,9 +11,40 @@
       "requestBoardApproval": ""
     }
   },
+  "approve": "",
+  "assignTask": "",
+  "boardClaim": {
+    "actions": {
+      "claiming": "",
+      "claimOwnership": ""
+    },
+    "auth": {
+      "requiredDescription": "",
+      "requiredTitle": "",
+      "signInOrCreate": ""
+    },
+    "description": "",
+    "errors": {
+      "challengeInvalidOrExpired": "",
+      "challengeUnavailable": "",
+      "challengeUnavailableTitle": "",
+      "claimFailed": "",
+      "invalidUrl": ""
+    },
+    "states": {
+      "loading": ""
+    },
+    "success": {
+      "description": "",
+      "openBoard": "",
+      "title": ""
+    },
+    "title": ""
+  },
   "breadcrumbBar": {
     "openSidebar": "Ouvrir la barre latérale"
   },
+  "budget": "",
   "budgetIncidentCard": {
     "dismissed": "",
     "escalated": "",
@@ -24,6 +56,9 @@
     "lifetimeBudget": "",
     "monthlyUtcBudget": ""
   },
+  "cancel": "",
+  "command": "",
+  "commandNotes": "",
   "commandPalette": {
     "actions": "Actions",
     "activity": "Activité",
@@ -43,8 +78,506 @@
   },
   "common": {
     "cancel": "",
+    "saving": "",
     "settings": "",
     "updating": ""
+  },
+  "companies": {
+    "actions": {
+      "cancel": "",
+      "delete": "",
+      "deleteCompany": "",
+      "deleting": "",
+      "newCompany": "",
+      "rename": ""
+    },
+    "breadcrumb": "",
+    "deleteConfirm": {
+      "message": ""
+    },
+    "states": {
+      "loading": ""
+    },
+    "stats": {
+      "agentPlural": "",
+      "agentSingular": "",
+      "createdAt": "",
+      "issuePlural": "",
+      "issueSingular": "",
+      "unlimitedBudget": ""
+    }
+  },
+  "companyAccess": {
+    "access": "",
+    "actions": {
+      "cancel": "",
+      "edit": "",
+      "remove": "",
+      "removeMember": "",
+      "removing": "",
+      "saveAccess": "",
+      "saving": ""
+    },
+    "agents": "",
+    "approveHuman": "",
+    "assignedIssuesCleanedUp_one": "",
+    "assignedIssuesCleanedUp_many": "",
+    "assignedIssuesCleanedUp_other": "",
+    "checkingAssignedIssues": "",
+    "company": "",
+    "defaultRole": "",
+    "editMember": {
+      "companyRole": "",
+      "description": "",
+      "membershipStatus": "",
+      "title": ""
+    },
+    "failedToApproveJoinRequest": "",
+    "failedToLoadMembers": "",
+    "failedToRejectJoinRequest": "",
+    "failedToRemoveMember": "",
+    "failedToUpdateMember": "",
+    "grants": {
+      "description": "",
+      "implicitFromRole": "",
+      "implicitFromRoleDescription": "",
+      "includedImplicitly": "",
+      "noRoleSelected": "",
+      "storedExplicitly": "",
+      "title": ""
+    },
+    "humans": "",
+    "humansDescription": "",
+    "instanceAdminNoMembership": "",
+    "inviteMetadataUnavailable": "",
+    "issueReassignment": "",
+    "joinInviteContext": "",
+    "joinRequestApproved": "",
+    "joinRequestRejected": "",
+    "leaveUnassigned": "",
+    "loading": "",
+    "memberRemoved": "",
+    "memberUpdated": "",
+    "moreIssueCount_one": "",
+    "moreIssueCount_many": "",
+    "moreIssueCount_other": "",
+    "noEmailAvailable": "",
+    "noExplicitGrants": "",
+    "noPermission": "",
+    "noUserMemberships": "",
+    "openAssignedIssueCount_one": "",
+    "openAssignedIssueCount_many": "",
+    "openAssignedIssueCount_other": "",
+    "pendingCount_one": "",
+    "pendingCount_many": "",
+    "pendingCount_other": "",
+    "pendingHumanJoins": "",
+    "pendingHumanJoinsDescription": "",
+    "permissions": {
+      "agentsCreate": "",
+      "environmentsManage": "",
+      "joinsApprove": "",
+      "tasksAssign": "",
+      "tasksAssignScope": "",
+      "tasksManageActiveCheckouts": "",
+      "usersInvite": "",
+      "usersManagePermissions": ""
+    },
+    "rejectHuman": "",
+    "removeMember": {
+      "description": "",
+      "title": ""
+    },
+    "selectCompanyToManage": "",
+    "selectedRole": "",
+    "settings": "",
+    "status": {
+      "active": "",
+      "pending": "",
+      "suspended": ""
+    },
+    "submittedAt": "",
+    "subtitle": "",
+    "table": {
+      "action": "",
+      "grants": "",
+      "role": "",
+      "status": "",
+      "userAccount": ""
+    },
+    "thisMember": "",
+    "title": "",
+    "unknownError": "",
+    "unknownHumanRequester": "",
+    "unset": ""
+  },
+  "companyExport": {
+    "actions": {
+      "showMoreIssues": ""
+    },
+    "breadcrumb": {
+      "export": "",
+      "orgChart": ""
+    },
+    "buildingExport": "",
+    "company": "",
+    "export": "",
+    "filesSelected": "",
+    "packageFiles": "",
+    "preview": {
+      "selectFile": ""
+    },
+    "search": {
+      "placeholder": ""
+    },
+    "states": {
+      "loading": "",
+      "selectCompany": ""
+    },
+    "toast": {
+      "downloaded": {
+        "title": ""
+      },
+      "exportFailed": {
+        "buildBody": "",
+        "loadBody": "",
+        "title": ""
+      }
+    },
+    "warningsCount_one": "",
+    "warningsCount_many": "",
+    "warningsCount_other": ""
+  },
+  "companyImport": {
+    "actions": {
+      "badge": {
+        "skip": ""
+      },
+      "chooseZip": "",
+      "importFileCount_one": "",
+      "importFileCount_many": "",
+      "importFileCount_other": "",
+      "importing": "",
+      "previewImport": "",
+      "previewing": ""
+    },
+    "adapters": {
+      "agentCount_one": "",
+      "agentCount_many": "",
+      "agentCount_other": "",
+      "configure": "",
+      "title": ""
+    },
+    "breadcrumb": {
+      "import": "",
+      "orgChart": ""
+    },
+    "collision": {
+      "rename": "",
+      "replace": "",
+      "skip": ""
+    },
+    "errors": {
+      "noPackageFiles": "",
+      "noSourceConfigured": "",
+      "selectZipPackage": ""
+    },
+    "fields": {
+      "collisionStrategy": "",
+      "collisionStrategyHint": "",
+      "githubUrl": "",
+      "githubUrlHint": "",
+      "githubUrlPlaceholder": "",
+      "newCompanyName": "",
+      "newCompanyNameHint": "",
+      "newCompanyNamePlaceholder": "",
+      "target": "",
+      "targetHint": ""
+    },
+    "kinds": {
+      "agent": ""
+    },
+    "localZip": {
+      "fileCount_one": "",
+      "fileCount_many": "",
+      "fileCount_other": "",
+      "helpText": ""
+    },
+    "preview": {
+      "binaryNotAvailable": "",
+      "conflictCount_one": "",
+      "conflictCount_many": "",
+      "conflictCount_other": "",
+      "errorCount_one": "",
+      "errorCount_many": "",
+      "errorCount_other": "",
+      "fileSelection": "",
+      "packageFiles": "",
+      "selectFile": "",
+      "title": ""
+    },
+    "renames": {
+      "confirm": "",
+      "itemCount_one": "",
+      "itemCount_many": "",
+      "itemCount_other": "",
+      "skip": "",
+      "skipped": "",
+      "title": ""
+    },
+    "source": {
+      "description": "",
+      "githubRepo": "",
+      "localZip": "",
+      "title": ""
+    },
+    "states": {
+      "selectCompany": ""
+    },
+    "target": {
+      "createNewCompany": "",
+      "existingCompany": ""
+    },
+    "toast": {
+      "importComplete": {
+        "body_one": "",
+        "body_many": "",
+        "body_other": "",
+        "title": ""
+      },
+      "importFailed": {
+        "body": "",
+        "title": ""
+      },
+      "packageReadFailed": {
+        "body": "",
+        "title": ""
+      },
+      "previewFailed": {
+        "body": "",
+        "title": ""
+      }
+    }
+  },
+  "companyInvites": {
+    "actions": {
+      "createInvite": "",
+      "creating": "",
+      "loadingMore": "",
+      "openInvite": "",
+      "reviewRequest": "",
+      "revoke": "",
+      "viewMore": ""
+    },
+    "breadcrumb": {
+      "company": "",
+      "invites": "",
+      "settings": ""
+    },
+    "common": {
+      "emDash": "",
+      "unknownError": ""
+    },
+    "createInvite": {
+      "chooseRole": "",
+      "description": "",
+      "historyHint": "",
+      "singleUseNote": "",
+      "title": ""
+    },
+    "history": {
+      "description": "",
+      "empty": "",
+      "openQueue": "",
+      "title": ""
+    },
+    "latestInvite": {
+      "copied": "",
+      "domainHint": "",
+      "title": ""
+    },
+    "roles": {
+      "operator": {
+        "defaultBadge": ""
+      }
+    },
+    "state": {
+      "accepted": "",
+      "active": "",
+      "expired": "",
+      "revoked": ""
+    },
+    "states": {
+      "loadFailed": "",
+      "loading": "",
+      "noPermission": "",
+      "selectCompany": ""
+    },
+    "subtitle": "",
+    "table": {
+      "action": "",
+      "created": "",
+      "inactive": "",
+      "invitedBy": "",
+      "joinRequest": "",
+      "role": "",
+      "state": "",
+      "unknownInviter": ""
+    },
+    "title": "",
+    "toast": {
+      "clipboardUnavailable": {
+        "body": "",
+        "title": ""
+      },
+      "created": {
+        "bodyCopied": "",
+        "bodyReady": "",
+        "title": ""
+      },
+      "createFailed": {
+        "title": ""
+      },
+      "revoked": {
+        "title": ""
+      },
+      "revokeFailed": {
+        "title": ""
+      }
+    }
+  },
+  "companyRail": {
+    "addCompany": ""
+  },
+  "companySettings": {
+    "actions": {
+      "saveChanges": "",
+      "saving": ""
+    },
+    "appearance": {
+      "auto": "",
+      "brandColorHint": "",
+      "brandColorLabel": "",
+      "clear": "",
+      "logoHint": "",
+      "logoLabel": "",
+      "logoUploadFailed": "",
+      "removeLogo": "",
+      "removingLogo": "",
+      "uploadingLogo": ""
+    },
+    "breadcrumb": {
+      "company": "",
+      "settings": ""
+    },
+    "companyPackages": {
+      "export": "",
+      "import": "",
+      "movedNoticePrefix": "",
+      "movedNoticeSuffix": "",
+      "orgChart": ""
+    },
+    "dangerZone": {
+      "alreadyArchived": "",
+      "archiveCompany": "",
+      "archiveConfirm": "",
+      "archiveHint": "",
+      "archiving": "",
+      "failedToArchive": ""
+    },
+    "environment": {
+      "actions": {
+        "cancel": "",
+        "createEnvironment": "",
+        "creating": "",
+        "saveEnvironment": "",
+        "saving": "",
+        "testDraft": "",
+        "testing": ""
+      },
+      "adapter": "",
+      "addEnvironment": "",
+      "descriptionHint": "",
+      "descriptionLabel": "",
+      "driverHint": "",
+      "driverLabel": "",
+      "edit": "",
+      "editEnvironment": "",
+      "editing": "",
+      "errors": {
+        "failedToSave": ""
+      },
+      "helpText": "",
+      "local": "",
+      "nameHint": "",
+      "nameLabel": "",
+      "noneSaved": "",
+      "runsOnHost": "",
+      "sandbox": "",
+      "sandboxProviderSummary": "",
+      "ssh": "",
+      "sshHost": "",
+      "support": {
+        "no": "",
+        "yes": ""
+      },
+      "supportCaption": "",
+      "testConnection": "",
+      "testing": "",
+      "testProvider": "",
+      "toast": {
+        "created": "",
+        "draftProbeFailed": "",
+        "draftProbePassed": "",
+        "probeFailed": "",
+        "probeFailedBody": "",
+        "probePassed": "",
+        "readyBody": "",
+        "saveFailed": "",
+        "saveFailedBody": "",
+        "updated": ""
+      },
+      "user": ""
+    },
+    "errors": {
+      "failedToSave": ""
+    },
+    "general": {
+      "companyNameHint": "",
+      "companyNameLabel": "",
+      "descriptionHint": "",
+      "descriptionLabel": "",
+      "descriptionPlaceholder": ""
+    },
+    "hiring": {
+      "requireApprovalHint": "",
+      "requireApprovalLabel": ""
+    },
+    "invites": {
+      "copied": "",
+      "copiedSnippet": "",
+      "copySnippet": "",
+      "failedToCreateInvite": "",
+      "generateHint": "",
+      "generateHintTooltip": "",
+      "generatePrompt": "",
+      "generating": "",
+      "promptTitle": ""
+    },
+    "sections": {
+      "appearance": "",
+      "companyPackages": "",
+      "dangerZone": "",
+      "environments": "",
+      "general": "",
+      "hiring": "",
+      "invites": ""
+    },
+    "states": {
+      "noCompanySelected": "",
+      "saved": ""
+    },
+    "title": ""
   },
   "companySettingsSidebar": {
     "access": "",
@@ -53,6 +586,166 @@
     "invites": "",
     "title": ""
   },
+  "companySkills": {
+    "actions": {
+      "add": "",
+      "cancel": "",
+      "checkForUpdates": "",
+      "close": "",
+      "edit": "",
+      "installUpdate": "",
+      "remove": "",
+      "removeSkill": "",
+      "removing": "",
+      "save": "",
+      "saving": "",
+      "stopEditing": ""
+    },
+    "addSourceDialog": {
+      "browseSkillsSh": "",
+      "browseSkillsShHint": "",
+      "description": "",
+      "searchGithub": "",
+      "searchGithubHint": "",
+      "title": ""
+    },
+    "breadcrumb": {
+      "detail": "",
+      "skills": ""
+    },
+    "deleteDialog": {
+      "confirmGeneric": "",
+      "confirmNamed": "",
+      "currentlyUsedBy": "",
+      "description": "",
+      "detachFirst": "",
+      "title": ""
+    },
+    "list": {
+      "collapseSkill": "",
+      "expandSkill": "",
+      "noFilterMatches": ""
+    },
+    "newSkill": {
+      "create": "",
+      "creating": "",
+      "descriptionPlaceholder": "",
+      "namePlaceholder": "",
+      "slugPlaceholder": ""
+    },
+    "pane": {
+      "defaultFile": "",
+      "meta": {
+        "copiedPath": "",
+        "editable": "",
+        "key": "",
+        "mode": "",
+        "noAgentsAttached": "",
+        "pin": "",
+        "readOnly": "",
+        "source": "",
+        "tracking": "",
+        "untracked": "",
+        "upToDate": "",
+        "usedBy": ""
+      },
+      "removeDisabledReason": "",
+      "selectFile": "",
+      "selectSkill": "",
+      "viewMode": {
+        "code": "",
+        "view": ""
+      }
+    },
+    "scan": {
+      "refreshing": "",
+      "scanning": ""
+    },
+    "scanSummary": {
+      "conflicts_one": "",
+      "conflicts_many": "",
+      "conflicts_other": "",
+      "final_one": "",
+      "final_many": "",
+      "final_other": "",
+      "found_one": "",
+      "found_many": "",
+      "found_other": "",
+      "imported_one": "",
+      "imported_many": "",
+      "imported_other": "",
+      "skipped_one": "",
+      "skipped_many": "",
+      "skipped_other": "",
+      "updated_one": "",
+      "updated_many": "",
+      "updated_other": ""
+    },
+    "sidebar": {
+      "availableCount_one": "",
+      "availableCount_many": "",
+      "availableCount_other": "",
+      "filterPlaceholder": "",
+      "scanTitle": "",
+      "sourcePlaceholder": "",
+      "title": ""
+    },
+    "source": {
+      "catalog": "",
+      "catalogManaged": "",
+      "folder": "",
+      "folderManaged": "",
+      "github": "",
+      "githubManaged": "",
+      "paperclip": "",
+      "paperclipManaged": "",
+      "skillsSh": "",
+      "skillsShManaged": "",
+      "url": "",
+      "urlManaged": ""
+    },
+    "states": {
+      "selectCompany": ""
+    },
+    "toast": {
+      "failedToCreateSkill": "",
+      "failedToImportSkillSource": "",
+      "failedToInstallSkillUpdate": "",
+      "failedToRemoveSkill": "",
+      "failedToSaveSkillFile": "",
+      "failedToScanProjects": "",
+      "importWarnings": "",
+      "pinnedToRef": "",
+      "projectSkillScanComplete": "",
+      "projectSkillScanFailed": "",
+      "removeFailed": "",
+      "saveFailed": "",
+      "scanWarnings": "",
+      "skillConflictsFound": "",
+      "skillCreated": "",
+      "skillCreatedBody": "",
+      "skillCreationFailed": "",
+      "skillImportFailed": "",
+      "skillRemoved": "",
+      "skillRemovedBody": "",
+      "skillsAdded_one": "",
+      "skillsAdded_many": "",
+      "skillsAdded_other": "",
+      "skillSaved": "",
+      "skillsImported": "",
+      "skillUpdated": "",
+      "updateFailed": ""
+    }
+  },
+  "companySwitcher": {
+    "companies": "",
+    "companySettings": "",
+    "manageCompanies": "",
+    "noCompanies": "",
+    "selectCompany": ""
+  },
+  "context": "",
+  "copyAgentId": "",
   "costs": {
     "financeLedger": {
       "credits": "",
@@ -67,22 +760,41 @@
       "title": ""
     }
   },
+  "dashboard": "",
+  "details": "",
   "devRestartBanner": {
     "autoRestartOn": "Redémarrage automatique activé",
     "autoRestartWill": "Le redémarrage automatique se déclenchera lorsque l'instance sera inactive",
     "changed": "Modifié",
+    "daysAgo_one": "",
+    "daysAgo_many": "",
+    "daysAgo_other": "",
+    "hoursAgo_one": "",
+    "hoursAgo_many": "",
+    "hoursAgo_other": "",
+    "justNow": "",
+    "minutesAgo_one": "",
+    "minutesAgo_many": "",
+    "minutesAgo_other": "",
     "moreCount_one": " +{{count}} de plus",
+    "moreCount_many": "",
     "moreCount_other": " +{{count}} de plus",
     "pendingMigrations": "Migrations en attente",
     "reasonBoth": "les fichiers du serveur ont changé et des migrations sont en attente",
     "reasonChanges": "les fichiers du serveur ont changé depuis le démarrage de ce serveur",
     "reasonMigrations": "les migrations en attente nécessitent un démarrage frais",
     "restartAfter": "Redémarrer <code>pnpm dev:once</code> après que le travail actif soit sûr à interrompre",
+    "restartAfterPrefix": "",
+    "restartAfterSuffix": "",
     "restartRequired": "Redémarrage requis",
     "updated": "mis à jour {{time}}",
     "waitingForIdle_one": "En attente de {{count}} exécution en direct pour terminer",
+    "waitingForIdle_many": "",
     "waitingForIdle_other": "En attente de {{count}} exécutions en direct pour terminer"
   },
+  "dismiss": "",
+  "dismissFromInbox": "",
+  "environment": "",
   "executionWorkspaceCloseDialog": {
     "aheadBehind": "",
     "alreadyArchived": "",
@@ -235,6 +947,9 @@
     "workspaceSettings": "",
     "workspaceSettingsDescription": ""
   },
+  "failedRun": "",
+  "hideFullLog": "",
+  "inbox": "",
   "instanceAccess": {
     "activeCompanyMemberships_one": "",
     "activeCompanyMemberships_many": "",
@@ -317,19 +1032,27 @@
   "instanceGeneral": {
     "active": "",
     "aiFeedbackSharing": "",
+    "aiFeedbackSharingDescription": "",
     "alwaysAllow": "",
     "alwaysAllowDescription": "",
     "authReadiness": "",
     "backupRetention": "",
+    "backupRetentionDescription": "",
     "bootstrapInvite": "",
     "bootstrapStatus": "",
     "breadcrumb": {
       "general": "",
       "instanceSettings": ""
     },
+    "censorLogsDescription": "",
     "censorUsernameInLogs": "",
     "daily": "",
     "daysLabel": "",
+    "deployment": {
+      "authenticatedPrivate": "",
+      "authenticatedPublic": "",
+      "localTrusted": ""
+    },
     "deploymentAndAuth": "",
     "doNotAllow": "",
     "doNotAllowDescription": "",
@@ -338,7 +1061,9 @@
       "signOutFailed": "",
       "updateFailed": ""
     },
+    "feedbackPromptRetest": "",
     "keyboardShortcuts": "",
+    "keyboardShortcutsDescription": "",
     "loading": "",
     "monthly": "",
     "monthsLabel": "",
@@ -352,6 +1077,7 @@
     "setupRequired": "",
     "signingOut": "",
     "signOut": "",
+    "signOutDescription": "",
     "subtitle": "",
     "title": "",
     "toggleKeyboardShortcuts": "",
@@ -418,30 +1144,46 @@
       "title": ""
     }
   },
+  "invocation": "",
   "issueDetail": {
+    "activeSubtreePauseReleased": "",
     "archiveFromInbox": "",
     "backToInbox": "",
     "copyAsMarkdown": "",
     "copyIssueAsMarkdown": "",
     "costSummary": "",
     "hideThisIssue": "",
+    "issueUpdateFailed": "",
     "loadEarlierComments": "",
     "loadingEarlierComments": "",
+    "modeApplied": "",
     "moreActions": "",
     "moreIssueActions": "",
+    "noActiveSubtreePauseHold": "",
     "noActivityYet": "",
     "noCostDataYet": "",
     "noProject": "",
+    "pleaseTryAgain": "",
     "properties": "",
     "showProperties": "",
+    "subtreeControlApplied": "",
+    "subtreePaused": "",
+    "subtreePausedRunsCancelled_one": "",
+    "subtreePausedRunsCancelled_many": "",
+    "subtreePausedRunsCancelled_other": "",
+    "subtreeResumed": "",
     "tokenBreakdown": "",
     "tokenBreakdownWithCache": "",
-    "tokens": ""
+    "tokens": "",
+    "unableToApplySubtreeControl": "",
+    "unableToSaveIssueChanges": "",
+    "unableToSaveSubIssueChanges": ""
   },
   "issueProperties": {
     "addBlocker": "",
     "addLabel": "",
     "addSubIssue": "",
+    "approval": "",
     "approvers": "",
     "assignee": "",
     "assignToMe": "",
@@ -450,13 +1192,18 @@
     "blockedBy": "",
     "blocking": "",
     "branch": "",
+    "by": "",
+    "clickToCopy": "",
     "completed": "",
+    "copied": "",
     "created": "",
     "createdBy": "",
     "createLabel": "",
     "creatingLabel": "",
     "depth": "",
     "execution": "",
+    "executionPending": "",
+    "executionRequestedChanges": "",
     "folder": "",
     "labels": "",
     "newLabel": "",
@@ -465,14 +1212,22 @@
     "noLabels": "",
     "none": "",
     "noParent": "",
+    "noParticipants": "",
     "noProject": "",
     "parent": "",
     "priority": "",
     "project": "",
     "relatedTasks": "",
+    "requester": "",
+    "review": "",
     "reviewers": "",
+    "runApprovalNow": "",
+    "runReviewNow": "",
     "searchAssignees": "",
+    "searchIssues": "",
     "searchLabels": "",
+    "searchParticipants": "",
+    "searchProjects": "",
     "service": "",
     "started": "",
     "status": "",
@@ -483,6 +1238,7 @@
     "user": "",
     "viewWorkspace": "",
     "viewWorkspaceTasks": "",
+    "with": "",
     "workspace": ""
   },
   "issueWorkspaceCard": {
@@ -546,6 +1302,10 @@
     "closeSidebar": "Fermer la barre latérale",
     "skipToMainContent": "Aller au contenu principal"
   },
+  "live": "",
+  "loadingLog": "",
+  "loadWorkspaceLogFailed": "",
+  "markAsRead": "",
   "mobileBottomNav": {
     "agents": "Agents",
     "ariaLabel": "Navigation mobile",
@@ -612,28 +1372,163 @@
     "thinkingEffort": "",
     "upload": ""
   },
+  "newProjectDialog": {
+    "addDescription": "",
+    "addGoal": "",
+    "allGoalsSelected": "",
+    "createProject": "",
+    "createProjectFailed": "",
+    "creating": "",
+    "goal": "",
+    "localFolder": "",
+    "localFolderAbsolutePathError": "",
+    "localFolderHelp": "",
+    "localFolderPlaceholder": "",
+    "newProject": "",
+    "noCompanySelected": "",
+    "noGoal": "",
+    "optional": "",
+    "projectName": "",
+    "removeGoalAria": "",
+    "repoUrl": "",
+    "repoUrlError": "",
+    "repoUrlHelp": "",
+    "repoUrlPlaceholder": "",
+    "targetDate": ""
+  },
+  "noPersistedLogLines": "",
   "onboarding": {
+    "adapterEnvironmentCheck": "",
+    "adapterEnvironmentCheckHelp": "",
+    "adapterEnvironmentStatus": {
+      "failed": "",
+      "passed": "",
+      "warnings": ""
+    },
     "adapterType": "",
     "agentName": "",
     "agentNamePlaceholder": "",
     "agentRunTasksHelp": "",
+    "andRetry": "",
+    "authFailsSet": "",
+    "back": "",
+    "claudeFailedWithAnthropicPrefix": "",
+    "claudeFailedWithAnthropicSuffix": "",
     "close": "",
+    "comingSoon": "",
     "companyGoalPlaceholder": "",
     "companyHelp": "",
     "companyName": "",
     "companyNamePlaceholder": "",
+    "createAndOpenIssue": "",
     "createFirstAgent": "",
+    "creating": "",
+    "default": "",
+    "defaultTaskDescription": "",
+    "defaultTaskTitle": "",
+    "descriptionOptional": "",
+    "errors": {
+      "adapterEnvironmentTestFailed": "",
+      "createOrSelectCompanyBeforeEnvTest": "",
+      "failedToCreateAgent": "",
+      "failedToCreateCompany": "",
+      "failedToCreateTask": "",
+      "failedToLoadOpenCodeModels": "",
+      "failedToUnsetAnthropicAndRetry": "",
+      "noOpenCodeModelsDiscovered": "",
+      "opencodeConfiguredModelUnavailable": "",
+      "opencodeModelRequired": "",
+      "opencodeModelsStillLoading": "",
+      "unsetAnthropicRetryStillFailing": ""
+    },
+    "gatewayUrl": "",
+    "giveItSomethingToDo": "",
+    "hintLabel": "",
+    "inEnvOrRun": "",
+    "loginRequiredRun": "",
+    "manualDebug": "",
     "missionOptional": "",
+    "model": "",
+    "moreAgentAdapterTypes": "",
     "nameYourCompany": "",
+    "next": "",
+    "noModelsDiscovered": "",
+    "passed": "",
+    "promptLabel": "",
+    "readyToLaunch": "",
+    "readyToLaunchHelp": "",
+    "recommended": "",
+    "retrying": "",
+    "searchModels": "",
+    "selectModelRequired": "",
     "tabs": {
       "agent": "",
       "company": "",
       "launch": "",
       "task": ""
+    },
+    "taskDescriptionPlaceholder": "",
+    "taskHelp": "",
+    "taskTitle": "",
+    "taskTitlePlaceholder": "",
+    "testing": "",
+    "testNow": "",
+    "unsetAnthropicApiKey": "",
+    "webhookUrl": ""
+  },
+  "outputFeedbackButtons": {
+    "addShortNote": "",
+    "alwaysAllow": "",
+    "changeLater": "",
+    "choose": "",
+    "dismiss": "",
+    "dontAllow": "",
+    "helpful": "",
+    "needsWork": "",
+    "preferenceDescription": "",
+    "preferenceTitle": "",
+    "readTerms": "",
+    "savedLocally": "",
+    "saveNote": "",
+    "toKeepLocal": "",
+    "toShare": "",
+    "whatCouldBeBetter": ""
+  },
+  "pathInstructionsModal": {
+    "choose": "",
+    "descriptionPrefix": "",
+    "descriptionSuffix": "",
+    "linux": {
+      "step1": "",
+      "step2": "",
+      "step3": "",
+      "tip": ""
+    },
+    "mac": {
+      "step1": "",
+      "step2": "",
+      "step3": "",
+      "step4": "",
+      "tip": ""
+    },
+    "platformLinux": "",
+    "platformMac": "",
+    "platformWindows": "",
+    "title": "",
+    "windows": {
+      "step1": "",
+      "step2": "",
+      "step3": "",
+      "tip": ""
     }
   },
+  "pendingApproval": "",
   "projectDetail": {
+    "addDescription": "",
+    "budget": "",
+    "changeProjectColor": "",
     "cleanupAttentionNeeded": "",
+    "configuration": "",
     "executionWorkspaceStatus": {
       "active": "Actif",
       "archived": "Archivé",
@@ -641,8 +1536,19 @@
       "idle": "Inactif",
       "inReview": "En revue"
     },
+    "failedToArchiveProject": "",
+    "failedToUnarchiveProject": "",
+    "issues": "",
+    "loadingWorkspaces": "",
+    "noCompanySelected": "",
     "noWorkspaceActivity": "",
+    "overview": "",
+    "project": "",
+    "projects": "",
     "projectsBreadcrumb": "",
+    "status": "",
+    "targetDate": "",
+    "workspaces": "",
     "workspacesTab": ""
   },
   "projectWorkspaceDetail": {
@@ -751,9 +1657,25 @@
     "stopServices": "Arrêter les services",
     "updatedAgo": "Mis à jour {{time}}"
   },
+  "prompt": "",
   "propertiesPanel": {
     "title": "Propriétés"
   },
+  "reject": "",
+  "reportsToPicker": {
+    "chooseLabel": "",
+    "currentTerminated": "",
+    "disabledEmptyLabel": "",
+    "noManager": "",
+    "reportsToWithName": "",
+    "savedManagerMissing": "",
+    "terminatedSuffix": "",
+    "unknownManager": ""
+  },
+  "requestedBy": "",
+  "resetSessions": "",
+  "retry": "",
+  "retrying": "",
   "routineDetail": {
     "actions": {
       "enableAutomaticTriggers": "",
@@ -769,6 +1691,10 @@
       "title": ""
     },
     "assignee": "",
+    "defaultAgentRequiredBanner": "",
+    "errors": {
+      "notFound": ""
+    },
     "for": "",
     "in": "",
     "noAssignee": "",
@@ -790,6 +1716,8 @@
       "secret": "",
       "url": "",
       "webhookSecret": "",
+      "webhookSecretRotated": "",
+      "webhookTriggerCreated": "",
       "webhookUrl": ""
     },
     "status": {
@@ -809,6 +1737,7 @@
       "clipboardDenied": "",
       "copied": "",
       "copyFailed": "",
+      "defaultAgentRequired": "",
       "defaultAgentRequiredBody": "",
       "rotateSecretFailed": "",
       "rotateSecretFailedBody": "",
@@ -835,17 +1764,57 @@
     "triggers": {
       "adding": "",
       "addTrigger": "",
+      "api": "",
+      "comingSoonSuffix": "",
       "empty": "",
       "kind": "",
+      "label": "",
+      "last": "",
+      "next": "",
       "replayWindow": "",
+      "rotateSecret": "",
+      "saveTrigger": "",
       "schedule": "",
-      "signingMode": ""
+      "signingMode": "",
+      "webhook": ""
     },
     "unsavedChanges": ""
   },
+  "routineRunVariablesDialog": {
+    "agent": "",
+    "agentRequired": "",
+    "chooseValue": "",
+    "chooseWorkspace": "",
+    "defaultAgentRequired": "",
+    "description": "",
+    "false": "",
+    "missing": "",
+    "noAgentsFound": "",
+    "noProject": "",
+    "noProjectsFound": "",
+    "noValue": "",
+    "project": "",
+    "running": "",
+    "searchAgents": "",
+    "searchProjects": "",
+    "selectAgent": "",
+    "submit": "",
+    "title": "",
+    "true": ""
+  },
   "routines": {
     "actions": {
-      "create": ""
+      "archive": "",
+      "create": "",
+      "disableNamed": "",
+      "edit": "",
+      "enable": "",
+      "enableNamed": "",
+      "moreFor": "",
+      "pause": "",
+      "restore": "",
+      "running": "",
+      "runNow": ""
     },
     "advanced": {
       "catchup": "",
@@ -853,17 +1822,37 @@
       "hint": "",
       "title": ""
     },
+    "afterCreationHint": "",
     "assignee": "",
+    "count_one": "",
+    "count_many": "",
+    "count_other": "",
     "creating": "",
     "empty": {
+      "noRoutines": "",
       "selectCompany": ""
     },
     "errors": {
-      "create": ""
+      "create": "",
+      "load": ""
+    },
+    "fallback": {
+      "never": "",
+      "noDefaultAgent": "",
+      "noProject": "",
+      "unassigned": "",
+      "unknownAgent": "",
+      "unknownProject": ""
     },
     "for": "",
     "group": "",
+    "groupBy": {
+      "assignee": "",
+      "none": "",
+      "project": ""
+    },
     "in": "",
+    "newRoutine": "",
     "newRoutineHint": "",
     "noAssignee": "",
     "noAssigneesFound": "",
@@ -877,18 +1866,96 @@
     "recentRuns": "",
     "searchAssignees": "",
     "searchProjects": "",
+    "status": {
+      "archived": "",
+      "draft": "",
+      "paused": ""
+    },
+    "statusLabel": {
+      "archived": "",
+      "draft": "",
+      "off": "",
+      "on": ""
+    },
     "subtitle": "",
     "title": "",
     "toast": {
       "created": "",
       "createdDraft": "",
       "createdWithAssignee": "",
+      "defaultAgentRequired": "",
       "defaultAgentRequiredBody": "",
       "runFailed": "",
       "runFailedBody": "",
       "updateFailed": "",
       "updateFailedBody": ""
     }
+  },
+  "routineVariablesEditor": {
+    "defaultOption": "",
+    "defaultValue": "",
+    "detectedFromPlaceholders": "",
+    "false": "",
+    "hint": "",
+    "label": "",
+    "noDefault": "",
+    "numberPlaceholder": "",
+    "options": "",
+    "optionsPlaceholder": "",
+    "promptUserBeforeRun": "",
+    "required": "",
+    "true": "",
+    "type": "",
+    "variables": ""
+  },
+  "runHeartbeat": "",
+  "runLedger": {
+    "continuationAttempt": "",
+    "lastUseful": {
+      "noConcreteAction": "",
+      "noneRecorded": "",
+      "noneYet": "",
+      "noUsefulOutput": "",
+      "unavailable": "",
+      "waitingNextAttempt": ""
+    },
+    "silenceAge": {
+      "hours_one": "",
+      "hours_many": "",
+      "hours_other": "",
+      "hoursMinutes": "",
+      "minutes_one": "",
+      "minutes_many": "",
+      "minutes_other": "",
+      "underOneMinute": ""
+    },
+    "stop": {
+      "adapterFailed": "",
+      "budgetPaused": "",
+      "cancelled": "",
+      "completed": "",
+      "completedWithDetail": "",
+      "paused": "",
+      "processLost": "",
+      "timeout": "",
+      "timeoutSeconds": "",
+      "timeoutWithDetail": ""
+    },
+    "stopStatus": {
+      "none": "",
+      "retryPending": "",
+      "stillRunning": "",
+      "unavailable": "",
+      "waitingToStart": ""
+    },
+    "summary": {
+      "queuedFor": "",
+      "retryScheduledFor": "",
+      "runningBy": "",
+      "statusBy": ""
+    },
+    "watchdogDecisionForbidden": "",
+    "watchdogDecisionRecordFailed": ""
   },
   "runTranscript": {
     "collapseCommandDetails": "",
@@ -955,6 +2022,9 @@
     "title": "",
     "uxLab": ""
   },
+  "save": "",
+  "saving": "",
+  "showFullLog": "",
   "sidebar": {
     "activity": "Activité",
     "company": "Entreprise",
@@ -1028,10 +2098,14 @@
     "signingOut": "",
     "signOut": ""
   },
+  "terminate": "",
   "toastViewport": {
     "ariaLabel": "Notifications",
     "dismiss": "Ignorer la notification"
   },
+  "updated": "",
+  "workingDir": "",
+  "workspace": "",
   "workspaceRuntimeControls": {
     "health": {
       "healthy": "sain",

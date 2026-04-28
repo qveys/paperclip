@@ -187,29 +187,58 @@
     "acceptDrafts": "",
     "accepting": "",
     "acceptSelectedDrafts": "",
+    "allDraftsSelected": "",
+    "answer": "",
     "askUserQuestions": "",
     "cancelDecline": "",
+    "confirm": "",
     "confirmationRequested": "",
     "confirming": "",
+    "createdAll": "",
+    "createdAndSkipped": "",
     "createdAt": "",
+    "decline": "",
+    "declineReasonPlaceholder": "",
     "declineReasonRequired": "",
+    "declineReasonRevisePlan": "",
+    "defaultParent": "",
+    "issuePlural": "",
+    "issueSingular": "",
     "manyDraftIssues": "",
+    "manyQuestions_one": "",
+    "manyQuestions_many": "",
+    "manyQuestions_other": "",
     "noAnswerRecorded": "",
+    "noReasonProvided": "",
     "oneDraftIssue": "",
+    "oneQuestion": "",
+    "optional": "",
+    "pickMany": "",
+    "pickOne": "",
     "proposedBy": "",
     "questionN": "",
     "questionsForOperator": "",
     "reject": "",
+    "rejectionReason": "",
     "rejectPlaceholder": "",
+    "required": "",
     "resetSelection": "",
+    "resolutionSummary": "",
     "resolvedBy": "",
     "saveRejection": "",
     "saving": "",
+    "someDraftsSelected": "",
     "submitAfterForm": "",
+    "submitAnswers": "",
     "submittedSummary": "",
     "submitting": "",
     "suggestedTaskTree": "",
-    "tryAgain": ""
+    "tryAgain": "",
+    "wakesAssignee": "",
+    "wakesOnConfirm": "",
+    "willBeSkipped_one": "",
+    "willBeSkipped_many": "",
+    "willBeSkipped_other": ""
   },
   "issue": {
     "addReviewerOrApprover": "Ajouter un relecteur ou un approbateur",
@@ -289,6 +318,26 @@
     "titlePlaceholder": "Titre du ticket",
     "upload": "Téléverser"
   },
+  "issueBlockedNotice": {
+    "blockerLabel": {
+      "plural": "",
+      "single": ""
+    },
+    "body": {
+      "blockedBy": "",
+      "blockedUntilTodo": "",
+      "stalledPlural": "",
+      "stalledSingle": ""
+    },
+    "completion": {
+      "plural": "",
+      "single": ""
+    },
+    "labels": {
+      "stalledInReview": "",
+      "ultimatelyWaitingOn": ""
+    }
+  },
   "issueChat": {
     "addShortNote": "Ajouter une courte note",
     "agent": "Agent IA",
@@ -334,6 +383,51 @@
     "whatCouldBeBetter": "Qu'est-ce qui aurait pu être mieux ?",
     "worked": "A fonctionné",
     "working": "En cours"
+  },
+  "issueColumns": {
+    "actions": {
+      "columns": "",
+      "columnsTitle": "",
+      "resetDefaults": "",
+      "resetDefaultsHint": ""
+    },
+    "assignee": {
+      "unassigned": "",
+      "userFallback": ""
+    },
+    "descriptions": {
+      "assignee": "",
+      "id": "",
+      "labels": "",
+      "parent": "",
+      "project": "",
+      "status": "",
+      "updated": "",
+      "workspace": ""
+    },
+    "labels": {
+      "assignee": "",
+      "id": "",
+      "parent": "",
+      "project": "",
+      "status": "",
+      "tags": "",
+      "updated": "",
+      "workspace": ""
+    },
+    "live": "",
+    "menu": {
+      "desktopIssueRows": ""
+    },
+    "parent": {
+      "subIssue": ""
+    },
+    "project": {
+      "none": ""
+    },
+    "workspace": {
+      "filterByWorkspace": ""
+    }
   },
   "issueDetail": {
     "activity": "Activité",
@@ -402,12 +496,130 @@
     "uploadFailed": "Échec du téléversement",
     "uploading": "Téléversement..."
   },
+  "issueDocumentsSection": {
+    "actions": {
+      "cancel": "",
+      "collapseDocument": "",
+      "copied": "",
+      "copyDocument": "",
+      "createDocument": "",
+      "delete": "",
+      "deleteDocument": "",
+      "documentActions": "",
+      "downloadDocument": "",
+      "editDocument": "",
+      "expandDocument": "",
+      "hideRemote": "",
+      "keepMyDraft": "",
+      "new": "",
+      "newDocument": "",
+      "overwriteRemote": "",
+      "reloadRemote": "",
+      "restoreRevision": "",
+      "returnToLatest": "",
+      "reviewRemote": "",
+      "viewDiff": ""
+    },
+    "confirmDelete": {
+      "message": ""
+    },
+    "conflict": {
+      "help": "",
+      "remoteRevision": ""
+    },
+    "errors": {
+      "bodyRequired": "",
+      "copyFailed": "",
+      "couldNotSave": "",
+      "deleteFailed": "",
+      "keyBodyRequired": "",
+      "keyFormatInvalid": "",
+      "remoteReloadFailed": "",
+      "restoreFailed": "",
+      "saveFailed": "",
+      "saveOrCancelBeforeRevision": ""
+    },
+    "heading": {
+      "documents": ""
+    },
+    "labels": {
+      "plan": ""
+    },
+    "placeholders": {
+      "documentKey": "",
+      "markdownBody": "",
+      "optionalTitle": ""
+    },
+    "revisions": {
+      "current": "",
+      "historicalPreviewHelp": "",
+      "history": "",
+      "loading": "",
+      "noneYet": "",
+      "short": "",
+      "updatedAt": "",
+      "viewing": ""
+    },
+    "status": {
+      "autosaving": "",
+      "deleting": "",
+      "outOfDate": "",
+      "restoring": "",
+      "saved": "",
+      "saving": "",
+      "viewingHistoricalRevision": ""
+    },
+    "validation": {
+      "keyFormat": ""
+    }
+  },
   "issueFilters": {
     "creator": "Créateur",
     "hideRoutineRuns": "Masquer les exécutions planifiées",
     "noCreatorsMatch": "Aucun créateur correspondant.",
     "removeCreator": "Retirer le créateur {creator}",
     "searchCreators": "Rechercher des créateurs..."
+  },
+  "issueFiltersPopover": {
+    "actions": {
+      "clear": ""
+    },
+    "assignee": {
+      "me": "",
+      "noAssignee": ""
+    },
+    "button": {
+      "filter": "",
+      "filtersCount_one": "",
+      "filtersCount_many": "",
+      "filtersCount_other": ""
+    },
+    "creator": {
+      "noMatch": "",
+      "remove": "",
+      "searchPlaceholder": ""
+    },
+    "heading": {
+      "filters": ""
+    },
+    "sections": {
+      "assignee": "",
+      "creator": "",
+      "labels": "",
+      "priority": "",
+      "project": "",
+      "quickFilters": "",
+      "status": "",
+      "visibility": "",
+      "workspace": ""
+    },
+    "visibility": {
+      "hideRoutineRuns": "",
+      "liveRunsOnly": ""
+    }
+  },
+  "issueLinkQuicklook": {
+    "unableToLoadPreview": ""
   },
   "issueList": {
     "boardView": "Vue tableau",
@@ -496,9 +708,38 @@
   },
   "runLedger": {
     "ariaLabel": "",
+    "childSummaryActive": "",
+    "childSummaryTerminal": "",
+    "childWork": "",
+    "continueMonitoring": "",
+    "dismissedReason": "",
+    "elapsed": "",
+    "exhausted": "",
+    "extendedPeriod": "",
+    "historicalRunsWillAppear": "",
+    "lastUsefulAction": "",
     "latestRun": "",
+    "latestRunSilentFor": "",
+    "live": "",
+    "markFalsePositive": "",
+    "moreChildren_one": "",
+    "moreChildren_many": "",
+    "moreChildren_other": "",
+    "nextAction": "",
     "noRunsLinked": "",
+    "olderRunsNotShown_one": "",
+    "olderRunsNotShown_many": "",
+    "olderRunsNotShown_other": "",
+    "outputSilenceWarning": "",
+    "recoveryContext": "",
+    "retryOf": "",
+    "reviewIssue": "",
+    "snooze1h": "",
+    "snoozedReason": "",
+    "staleRunAlert": "",
+    "stop": "",
     "title": "",
+    "unknown": "",
     "waitingFirstRun": "",
     "watchdogDecisionNotRecorded": ""
   }

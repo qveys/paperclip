@@ -236,6 +236,34 @@
   "board": "Board",
   "boardAccessRequired": "Board access required",
   "boardAuthRequired": "Board authentication required",
+  "boardClaim": {
+    "actions": {
+      "claiming": "Claiming...",
+      "claimOwnership": "Claim ownership"
+    },
+    "auth": {
+      "requiredDescription": "Sign in or create an account, then return to this page to claim Board ownership.",
+      "requiredTitle": "Sign in required",
+      "signInOrCreate": "Sign in / Create account"
+    },
+    "description": "This will promote your user to instance admin and migrate company ownership access from local trusted mode.",
+    "errors": {
+      "challengeInvalidOrExpired": "Challenge is invalid or expired.",
+      "challengeUnavailable": "Claim challenge unavailable.",
+      "challengeUnavailableTitle": "Claim challenge unavailable",
+      "claimFailed": "Failed to claim board ownership",
+      "invalidUrl": "Invalid board claim URL."
+    },
+    "states": {
+      "loading": "Loading claim challenge..."
+    },
+    "success": {
+      "description": "This instance is now linked to your authenticated user.",
+      "openBoard": "Open board",
+      "title": "Board ownership claimed"
+    },
+    "title": "Claim Board ownership"
+  },
   "boardMutationRequiresTrustedOrigin": "Board mutation requires trusted browser origin",
   "boardUserContextRequired": "Board user context required",
   "boardView": "Board view",
@@ -290,6 +318,7 @@
   "cachedTokens": "Cached tokens",
   "calledTools": "called {count} tool{suffix}",
   "canAssignTasks": "Can assign tasks",
+  "cancel": "",
   "cancelFailed": "Cancel failed",
   "cancelled": "Cancelled",
   "cancelledTitle": "CLI auth challenge cancelled",
@@ -381,26 +410,374 @@
   "commandFailed": "Command failed",
   "commandLabel": "Command:",
   "commandNotes": "Command notes",
+  "commandPalette": {
+    "actions": "Actions",
+    "activity": "Activity",
+    "agents": "Agents",
+    "costs": "Costs",
+    "createNewAgent": "Create new agent",
+    "createNewIssue": "Create new issue",
+    "createNewProject": "Create new project",
+    "dashboard": "Dashboard",
+    "goals": "Goals",
+    "inbox": "Inbox",
+    "issues": "Issues",
+    "noResults": "No results found.",
+    "pages": "Pages",
+    "projects": "Projects",
+    "searchPlaceholder": "Search issues, agents, projects..."
+  },
   "commentFailed": "Comment failed",
   "comments": "Comments ({count})",
   "common": {
     "cancel": "Cancel",
+    "saving": "Saving...",
     "settings": "Settings",
     "updating": "Updating..."
   },
   "companies": "Companies",
   "company": "Company",
+  "companyAccess": {
+    "access": "Access",
+    "actions": {
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "remove": "Remove",
+      "removeMember": "Remove member",
+      "removing": "Removing...",
+      "saveAccess": "Save access",
+      "saving": "Saving..."
+    },
+    "agents": "Agents",
+    "approveHuman": "Approve human",
+    "assignedIssuesCleanedUp_one": "{{count}} assigned issue{{suffix}} cleaned up.",
+    "assignedIssuesCleanedUp_other": "{{count}} assigned issue{{suffix}} cleaned up.",
+    "checkingAssignedIssues": "Checking assigned issues...",
+    "company": "Company",
+    "defaultRole": "default role",
+    "editMember": {
+      "companyRole": "Company role",
+      "description": "Update company role, membership status, and explicit grants for {{memberName}}.",
+      "membershipStatus": "Membership status",
+      "title": "Edit member"
+    },
+    "failedToApproveJoinRequest": "Failed to approve join request",
+    "failedToLoadMembers": "Failed to load company members.",
+    "failedToRejectJoinRequest": "Failed to reject join request",
+    "failedToRemoveMember": "Failed to remove member",
+    "failedToUpdateMember": "Failed to update member",
+    "grants": {
+      "description": "Roles provide implicit grants automatically. Explicit grants below are only for overrides and extra access that should persist even if the role changes.",
+      "implicitFromRole": "Implicit grants from role",
+      "implicitFromRoleDescription": "{{role}} currently includes these permissions automatically.",
+      "includedImplicitly": "Included implicitly by the {{role}} role. Add an explicit grant only if it should stay after the role changes.",
+      "noRoleSelected": "No role is selected, so this member has no implicit grants right now.",
+      "storedExplicitly": "Stored explicitly for this member.",
+      "title": "Grants"
+    },
+    "humans": "Humans",
+    "humansDescription": "Manage human company memberships, status, and grants here.",
+    "instanceAdminNoMembership": "This account can manage access here through instance-admin privileges, but it does not currently hold an active company membership.",
+    "inviteMetadataUnavailable": "Invite metadata unavailable",
+    "issueReassignment": "Issue reassignment",
+    "joinInviteContext": "{{joinTypes}} join invite{{defaultRole}}",
+    "joinRequestApproved": "Join request approved",
+    "joinRequestRejected": "Join request rejected",
+    "leaveUnassigned": "Leave unassigned",
+    "loading": "Loading company access...",
+    "memberRemoved": "Member removed",
+    "memberUpdated": "Member updated",
+    "moreIssueCount_one": "{{count}} more issue{{suffix}}",
+    "moreIssueCount_other": "{{count}} more issue{{suffix}}",
+    "noEmailAvailable": "No email available",
+    "noExplicitGrants": "No explicit grants",
+    "noPermission": "You do not have permission to manage company members.",
+    "noUserMemberships": "No user memberships found for this company yet.",
+    "openAssignedIssueCount_one": "{{count}} open assigned issue{{suffix}}",
+    "openAssignedIssueCount_other": "{{count}} open assigned issue{{suffix}}",
+    "pendingCount_one": "{{count}} pending",
+    "pendingCount_other": "{{count}} pending",
+    "pendingHumanJoins": "Pending human joins",
+    "pendingHumanJoinsDescription": "Review human join requests before they become active company members.",
+    "permissions": {
+      "agentsCreate": "Create agents",
+      "environmentsManage": "Manage environments",
+      "joinsApprove": "Approve join requests",
+      "tasksAssign": "Assign tasks",
+      "tasksAssignScope": "Assign scoped tasks",
+      "tasksManageActiveCheckouts": "Manage active task checkouts",
+      "usersInvite": "Invite humans and agents",
+      "usersManagePermissions": "Manage members and grants"
+    },
+    "rejectHuman": "Reject human",
+    "removeMember": {
+      "description": "Archive {{memberName}} and move active assignments before hiding this user from assignment fields.",
+      "title": "Remove member"
+    },
+    "selectCompanyToManage": "Select a company to manage access.",
+    "selectedRole": "selected",
+    "settings": "Settings",
+    "status": {
+      "active": "Active",
+      "pending": "Pending",
+      "suspended": "Suspended"
+    },
+    "submittedAt": "Submitted {{submittedAt}}",
+    "subtitle": "Manage company user memberships, membership status, and explicit permission grants for {{companyName}}.",
+    "table": {
+      "action": "Action",
+      "grants": "Grants",
+      "role": "Role",
+      "status": "Status",
+      "userAccount": "User account"
+    },
+    "thisMember": "this member",
+    "title": "Company Access",
+    "unknownError": "Unknown error",
+    "unknownHumanRequester": "Unknown human requester",
+    "unset": "Unset"
+  },
   "companyBudgetsDescription": "Company-wide monthly policy.",
   "companyBudgetsTitle": "Company budgets",
   "companyDescription": "This is the organization your agents will work for.",
+  "companyExport": {
+    "actions": {
+      "showMoreIssues": "Show more issues ({{visible}} of {{total}})"
+    },
+    "breadcrumb": {
+      "export": "Export",
+      "orgChart": "Org Chart"
+    },
+    "buildingExport": "Building export...",
+    "company": "Company",
+    "export": "export",
+    "filesSelected": "{{selected}} / {{total}} file{{suffix}} selected",
+    "packageFiles": "Package files",
+    "preview": {
+      "selectFile": "Select a file to preview its contents."
+    },
+    "search": {
+      "placeholder": "Search files..."
+    },
+    "states": {
+      "loading": "Loading export data...",
+      "selectCompany": "Select a company to export."
+    },
+    "toast": {
+      "downloaded": {
+        "title": "Export downloaded"
+      },
+      "exportFailed": {
+        "buildBody": "Failed to build export package.",
+        "loadBody": "Failed to load export data.",
+        "title": "Export failed"
+      }
+    },
+    "warningsCount_one": "{{count}} warning{{suffix}}",
+    "warningsCount_other": "{{count}} warning{{suffix}}"
+  },
   "companyExportTitle": "{name} export",
   "companyFallback": "Company",
   "companyGoalPlaceholder": "What is this company trying to achieve?",
+  "companyImport": {
+    "actions": {
+      "badge": {
+        "skip": "skip"
+      },
+      "chooseZip": "Choose zip",
+      "importFileCount_one": "Import {{count}} file{{suffix}}",
+      "importFileCount_other": "Import {{count}} file{{suffix}}",
+      "importing": "Importing...",
+      "previewImport": "Preview import",
+      "previewing": "Previewing..."
+    },
+    "adapters": {
+      "agentCount_one": "{{count}} agent{{suffix}}",
+      "agentCount_other": "{{count}} agent{{suffix}}",
+      "configure": "configure adapter",
+      "title": "Adapters"
+    },
+    "breadcrumb": {
+      "import": "Import",
+      "orgChart": "Org Chart"
+    },
+    "collision": {
+      "rename": "Rename on conflict",
+      "replace": "Replace existing",
+      "skip": "Skip on conflict"
+    },
+    "errors": {
+      "noPackageFiles": "No package files were found in the selected zip archive.",
+      "noSourceConfigured": "No source configured.",
+      "selectZipPackage": "Select a .zip company package."
+    },
+    "fields": {
+      "collisionStrategy": "Collision strategy",
+      "collisionStrategyHint": "Board imports can rename, skip, or replace matching company content.",
+      "githubUrl": "GitHub URL",
+      "githubUrlHint": "Repo tree path or blob URL to COMPANY.md (e.g. github.com/owner/repo/tree/main/company).",
+      "githubUrlPlaceholder": "https://github.com/owner/repo/tree/main/company",
+      "newCompanyName": "New company name",
+      "newCompanyNameHint": "Optional override. Leave blank to use the package name.",
+      "newCompanyNamePlaceholder": "Imported Company",
+      "target": "Target",
+      "targetHint": "Import into this company or create a new one."
+    },
+    "kinds": {
+      "agent": "agent"
+    },
+    "localZip": {
+      "fileCount_one": "{{name}} with {{count}} file{{suffix}}",
+      "fileCount_other": "{{name}} with {{count}} file{{suffix}}",
+      "helpText": "Upload a .zip exported directly from Paperclip. Re-zipped archives created by Finder, Explorer, or other zip tools may not import correctly."
+    },
+    "preview": {
+      "binaryNotAvailable": "Binary asset preview is not available for this file type.",
+      "conflictCount_one": "{{count}} conflict{{suffix}}",
+      "conflictCount_other": "{{count}} conflict{{suffix}}",
+      "errorCount_one": "{{count}} error{{suffix}}",
+      "errorCount_other": "{{count}} error{{suffix}}",
+      "fileSelection": "{{selected}} / {{total}} file{{suffix}} selected",
+      "packageFiles": "Package files",
+      "selectFile": "Select a file to preview its contents.",
+      "title": "Import preview"
+    },
+    "renames": {
+      "confirm": "confirm rename",
+      "itemCount_one": "{{count}} item{{suffix}}",
+      "itemCount_other": "{{count}} item{{suffix}}",
+      "skip": "skip",
+      "skipped": "skipped",
+      "title": "Renames"
+    },
+    "source": {
+      "description": "Choose a GitHub repo or upload a local Paperclip zip package.",
+      "githubRepo": "GitHub repo",
+      "localZip": "Local zip",
+      "title": "Import source"
+    },
+    "states": {
+      "selectCompany": "Select a company to import into."
+    },
+    "target": {
+      "createNewCompany": "Create new company",
+      "existingCompany": "Existing company: {{name}}"
+    },
+    "toast": {
+      "importComplete": {
+        "body_one": "{{companyName}}: {{count}} agent{{suffix}} processed.",
+        "body_other": "{{companyName}}: {{count}} agent{{suffix}} processed.",
+        "title": "Import complete"
+      },
+      "importFailed": {
+        "body": "Failed to apply import.",
+        "title": "Import failed"
+      },
+      "packageReadFailed": {
+        "body": "Failed to read folder.",
+        "title": "Package read failed"
+      },
+      "previewFailed": {
+        "body": "Failed to preview import.",
+        "title": "Preview failed"
+      }
+    }
+  },
+  "companyInvites": {
+    "actions": {
+      "createInvite": "Create invite",
+      "creating": "Creating...",
+      "loadingMore": "Loading more...",
+      "openInvite": "Open invite",
+      "reviewRequest": "Review request",
+      "revoke": "Revoke",
+      "viewMore": "View more"
+    },
+    "breadcrumb": {
+      "company": "Company",
+      "invites": "Invites",
+      "settings": "Settings"
+    },
+    "common": {
+      "emDash": "—",
+      "unknownError": "Unknown error"
+    },
+    "createInvite": {
+      "chooseRole": "Choose a role",
+      "description": "Generate a human invite link and choose the default access it should request.",
+      "historyHint": "Invite history below keeps the audit trail.",
+      "singleUseNote": "Each invite link is single-use. The first successful use consumes the link and creates or reuses the matching join request before approval.",
+      "title": "Create invite"
+    },
+    "history": {
+      "description": "Review invite status, role, inviter, and any linked join request.",
+      "empty": "No invites have been created for this company yet.",
+      "openQueue": "Open join request queue",
+      "title": "Invite history"
+    },
+    "latestInvite": {
+      "copied": "Copied",
+      "domainHint": "This URL includes the current Paperclip domain returned by the server.",
+      "title": "Latest invite link"
+    },
+    "roles": {
+      "operator": {
+        "defaultBadge": "Default"
+      }
+    },
+    "state": {
+      "accepted": "Accepted",
+      "active": "Active",
+      "expired": "Expired",
+      "revoked": "Revoked"
+    },
+    "states": {
+      "loadFailed": "Failed to load invites.",
+      "loading": "Loading invites...",
+      "noPermission": "You do not have permission to manage company invites.",
+      "selectCompany": "Select a company to manage invites."
+    },
+    "subtitle": "Create human invite links for company access. New invite links are copied to your clipboard when they are generated.",
+    "table": {
+      "action": "Action",
+      "created": "Created",
+      "inactive": "Inactive",
+      "invitedBy": "Invited by",
+      "joinRequest": "Join request",
+      "role": "Role",
+      "state": "State",
+      "unknownInviter": "Unknown inviter"
+    },
+    "title": "Company Invites",
+    "toast": {
+      "clipboardUnavailable": {
+        "body": "Copy the invite URL manually from the field below.",
+        "title": "Clipboard unavailable"
+      },
+      "created": {
+        "bodyCopied": "Invite ready below and copied to clipboard.",
+        "bodyReady": "Invite ready below.",
+        "title": "Invite created"
+      },
+      "createFailed": {
+        "title": "Failed to create invite"
+      },
+      "revoked": {
+        "title": "Invite revoked"
+      },
+      "revokeFailed": {
+        "title": "Failed to revoke invite"
+      }
+    }
+  },
   "companyName": "Company name",
   "companyNameHint": "The display name for your company.",
   "companyNameLabel": "Company name",
   "companyNamePlaceholder": "Acme Corp",
   "companyPackagesSection": "Company Packages",
+  "companyRail": {
+    "addCompany": "Add company"
+  },
   "companySettings": "Company Settings",
   "companySettingsSidebar": {
     "access": "Access",
@@ -411,6 +788,13 @@
   },
   "companySkills": "Company skills",
   "companySkillsDescription": "Optional skills from the company library. Built-in Paperclip runtime skills are added automatically.",
+  "companySwitcher": {
+    "companies": "Companies",
+    "companySettings": "Company Settings",
+    "manageCompanies": "Manage Companies",
+    "noCompanies": "No companies",
+    "selectCompany": "Select company"
+  },
   "companyTitle": "Company not found",
   "completed": "Completed",
   "concreteLocation": "Concrete location",
@@ -626,6 +1010,30 @@
   "detectedHint": "Detected from `{{name}}` placeholders in the routine title and instructions.",
   "detecting": "Detecting...",
   "detectModel": "Detect model",
+  "devRestartBanner": {
+    "autoRestartOn": "Auto-Restart On",
+    "autoRestartWill": "Auto-restart will trigger when the instance is idle",
+    "changed": "Changed",
+    "daysAgo_one": "{{count}}d ago",
+    "daysAgo_other": "{{count}}d ago",
+    "hoursAgo_one": "{{count}}h ago",
+    "hoursAgo_other": "{{count}}h ago",
+    "justNow": "just now",
+    "minutesAgo_one": "{{count}}m ago",
+    "minutesAgo_other": "{{count}}m ago",
+    "moreCount_one": " +{{count}} more",
+    "moreCount_other": " +{{count}} more",
+    "pendingMigrations": "Pending migrations",
+    "reasonBoth": "backend files changed and migrations are pending",
+    "reasonChanges": "backend files changed since this server booted",
+    "reasonMigrations": "pending migrations need a fresh boot",
+    "restartAfterPrefix": "Restart",
+    "restartAfterSuffix": "after the active work is safe to interrupt",
+    "restartRequired": "Restart Required",
+    "updated": "updated {{time}}",
+    "waitingForIdle_one": "Waiting for {{count}} live run to finish",
+    "waitingForIdle_other": "Waiting for {{count}} live run to finish"
+  },
   "diagnosticsTitle": "Connectivity diagnostics",
   "diff": "diff",
   "direction.credit": "Credit",
@@ -1216,19 +1624,27 @@
   "instanceGeneral": {
     "active": "Active",
     "aiFeedbackSharing": "AI feedback sharing",
+    "aiFeedbackSharingDescription": "Control whether thumbs up and thumbs down votes can send the voted AI output to Paperclip Labs. Votes are always saved locally.",
     "alwaysAllow": "Always allow",
     "alwaysAllowDescription": "Share voted AI outputs automatically.",
     "authReadiness": "Auth readiness",
     "backupRetention": "Backup retention",
+    "backupRetentionDescription": "Configure how long automatic database backups are retained. Backups run roughly every hour and are compressed with gzip. Within the daily window all backups are kept; beyond that, one backup per week and one per month are preserved.",
     "bootstrapInvite": "Bootstrap invite",
     "bootstrapStatus": "Bootstrap status",
     "breadcrumb": {
       "general": "General",
       "instanceSettings": "Instance Settings"
     },
+    "censorLogsDescription": "Hide the username segment in home-directory paths and similar operator-visible log output. Standalone username mentions outside of paths are not yet masked in the live transcript view. This is off by default.",
     "censorUsernameInLogs": "Censor username in logs",
     "daily": "Daily",
     "daysLabel": "{{days}} days",
+    "deployment": {
+      "authenticatedPrivate": "Authenticated private mode requires sign-in and is intended for LAN, VPN, or other private-network deployments.",
+      "authenticatedPublic": "Authenticated public mode requires sign-in for board access and is intended for public URLs.",
+      "localTrusted": "Local trusted mode is optimized for a local operator. Browser requests run as local board context and no sign-in is required."
+    },
     "deploymentAndAuth": "Deployment and auth",
     "doNotAllow": "Don't allow",
     "doNotAllowDescription": "Keep voted AI outputs local only.",
@@ -1237,7 +1653,9 @@
       "signOutFailed": "Failed to sign out.",
       "updateFailed": "Failed to update general settings."
     },
+    "feedbackPromptRetest": "To retest the first-use prompt in local dev, remove the feedbackDataSharingPreference key from the instance_settings.general JSON row for this instance, or set it back to \"prompt\". Unset and \"prompt\" both mean no default has been chosen yet.",
     "keyboardShortcuts": "Keyboard shortcuts",
+    "keyboardShortcutsDescription": "Enable app keyboard shortcuts, including inbox navigation and global shortcuts like creating issues or toggling panels. This is off by default.",
     "loading": "Loading general settings...",
     "monthly": "Monthly",
     "monthsLabel": "{{months}} months",
@@ -1251,6 +1669,7 @@
     "setupRequired": "Setup required",
     "signingOut": "Signing out...",
     "signOut": "Sign out",
+    "signOutDescription": "Sign out of this Paperclip instance. You will be redirected to the login page.",
     "subtitle": "Configure instance-wide preferences including log display, keyboard shortcuts, backup retention, and data sharing.",
     "title": "General",
     "toggleKeyboardShortcuts": "Toggle keyboard shortcuts",
@@ -1343,30 +1762,44 @@
   "issueCount": "{count} issue{suffix}",
   "issueCountTooltip": "{day}: {count} issues",
   "issueDetail": {
+    "activeSubtreePauseReleased": "Active subtree pause released.",
     "archiveFromInbox": "Archive from inbox",
     "backToInbox": "Back to inbox",
     "copyAsMarkdown": "Copy as markdown",
     "copyIssueAsMarkdown": "Copy issue as markdown",
     "costSummary": "Cost Summary",
     "hideThisIssue": "Hide this issue",
+    "issueUpdateFailed": "Issue update failed",
     "loadEarlierComments": "Load earlier comments",
     "loadingEarlierComments": "Loading earlier comments...",
+    "modeApplied": "{{mode}} applied",
     "moreActions": "More actions",
     "moreIssueActions": "More issue actions",
+    "noActiveSubtreePauseHold": "No active subtree pause hold is available to resume.",
     "noActivityYet": "No activity yet.",
     "noCostDataYet": "No cost data yet.",
     "noProject": "No project",
+    "pleaseTryAgain": "Please try again.",
     "properties": "Properties",
     "showProperties": "Show properties",
+    "subtreeControlApplied": "Subtree control applied.",
+    "subtreePaused": "Subtree paused",
+    "subtreePausedRunsCancelled_one": "Subtree paused. {{count}} run{{suffix}} cancelled.",
+    "subtreePausedRunsCancelled_other": "Subtree paused. {{count}} run{{suffix}} cancelled.",
+    "subtreeResumed": "Subtree resumed",
     "tokenBreakdown": "(in {{input}}, out {{output}})",
     "tokenBreakdownWithCache": "(in {{input}}, out {{output}}, cached {{cached}})",
-    "tokens": "Tokens"
+    "tokens": "Tokens",
+    "unableToApplySubtreeControl": "Unable to apply subtree control",
+    "unableToSaveIssueChanges": "Unable to save issue changes",
+    "unableToSaveSubIssueChanges": "Unable to save sub-issue changes"
   },
   "issueFallback": "Issue",
   "issueProperties": {
     "addBlocker": "Add blocker",
     "addLabel": "Add label",
     "addSubIssue": "Add sub-issue",
+    "approval": "Approval",
     "approvers": "Approvers",
     "assignee": "Assignee",
     "assignToMe": "Assign to me",
@@ -1375,13 +1808,18 @@
     "blockedBy": "Blocked by",
     "blocking": "Blocking",
     "branch": "Branch",
+    "by": "by",
+    "clickToCopy": "Click to copy",
     "completed": "Completed",
+    "copied": "Copied!",
     "created": "Created",
     "createdBy": "Created by",
     "createLabel": "Create label",
     "creatingLabel": "Creating...",
     "depth": "Depth",
     "execution": "Execution",
+    "executionPending": "{{stageLabel}} pending{{participantSuffix}}",
+    "executionRequestedChanges": "{{stageLabel}} requested changes{{participantSuffix}}",
     "folder": "Folder",
     "labels": "Labels",
     "newLabel": "New label",
@@ -1390,14 +1828,22 @@
     "noLabels": "No labels",
     "none": "None",
     "noParent": "No parent",
+    "noParticipants": "No {{role}}",
     "noProject": "No project",
     "parent": "Parent",
     "priority": "Priority",
     "project": "Project",
     "relatedTasks": "Related Tasks",
+    "requester": "Requester",
+    "review": "Review",
     "reviewers": "Reviewers",
+    "runApprovalNow": "Run approval now",
+    "runReviewNow": "Run review now",
     "searchAssignees": "Search assignees...",
+    "searchIssues": "Search issues...",
     "searchLabels": "Search labels...",
+    "searchParticipants": "Search {{role}}...",
+    "searchProjects": "Search projects...",
     "service": "Service",
     "started": "Started",
     "status": "Status",
@@ -1408,6 +1854,7 @@
     "user": "User",
     "viewWorkspace": "View workspace",
     "viewWorkspaceTasks": "View workspace tasks",
+    "with": "with",
     "workspace": "Workspace"
   },
   "issueReferenceFallback": "issue",
@@ -1738,6 +2185,30 @@
   "newLabel": "New label",
   "newProject": "New project",
   "newProjectAria": "New project",
+  "newProjectDialog": {
+    "addDescription": "Add description...",
+    "addGoal": "+ Goal",
+    "allGoalsSelected": "All goals already selected.",
+    "createProject": "Create project",
+    "createProjectFailed": "Failed to create project.",
+    "creating": "Creating...",
+    "goal": "Goal",
+    "localFolder": "Local folder",
+    "localFolderAbsolutePathError": "Local folder must be a full absolute path.",
+    "localFolderHelp": "Set an absolute path on this machine where local agents will read and write files for this project.",
+    "localFolderPlaceholder": "/absolute/path/to/workspace",
+    "newProject": "New project",
+    "noCompanySelected": "No company selected",
+    "noGoal": "No goal",
+    "optional": "optional",
+    "projectName": "Project name",
+    "removeGoalAria": "Remove goal {{goalTitle}}",
+    "repoUrl": "Repo URL",
+    "repoUrlError": "Repo must use a valid GitHub or GitHub Enterprise repo URL.",
+    "repoUrlHelp": "Link a GitHub repository so agents can clone, read, and push code for this project.",
+    "repoUrlPlaceholder": "https://github.com/org/repo",
+    "targetDate": "Target date"
+  },
   "newRoutine": "New routine",
   "newRoutineDescription": "Define the recurring work first. Default project and agent are optional for draft routines.",
   "newShort": "New",
@@ -1855,24 +2326,83 @@
   "on": "on",
   "onApproval": "On approval",
   "onboarding": {
+    "adapterEnvironmentCheck": "Adapter environment check",
+    "adapterEnvironmentCheckHelp": "Runs a live probe that asks the adapter CLI to respond with hello.",
+    "adapterEnvironmentStatus": {
+      "failed": "Failed",
+      "passed": "Passed",
+      "warnings": "Warnings"
+    },
     "adapterType": "Adapter type",
     "agentName": "Agent name",
     "agentNamePlaceholder": "CEO",
     "agentRunTasksHelp": "Choose how this agent will run tasks.",
+    "andRetry": "and retry.",
+    "authFailsSet": "If auth fails, set",
+    "back": "Back",
+    "claudeFailedWithAnthropicPrefix": "Claude failed while",
+    "claudeFailedWithAnthropicSuffix": "is set. You can clear it in this CEO adapter config and retry the probe.",
     "close": "Close",
+    "comingSoon": "Coming soon",
     "companyGoalPlaceholder": "What is this company trying to achieve?",
     "companyHelp": "This is the organization your agents will work for.",
     "companyName": "Company name",
     "companyNamePlaceholder": "Acme Corp",
+    "createAndOpenIssue": "Create & Open Issue",
     "createFirstAgent": "Create your first agent",
+    "creating": "Creating...",
+    "default": "Default",
+    "defaultTaskDescription": "onboarding.defaultTaskDescription",
+    "defaultTaskTitle": "Hire your first engineer and create a hiring plan",
+    "descriptionOptional": "Description (optional)",
+    "errors": {
+      "adapterEnvironmentTestFailed": "Adapter environment test failed",
+      "createOrSelectCompanyBeforeEnvTest": "Create or select a company before testing adapter environment.",
+      "failedToCreateAgent": "Failed to create agent",
+      "failedToCreateCompany": "Failed to create company",
+      "failedToCreateTask": "Failed to create task",
+      "failedToLoadOpenCodeModels": "Failed to load OpenCode models.",
+      "failedToUnsetAnthropicAndRetry": "Failed to unset ANTHROPIC_API_KEY and retry.",
+      "noOpenCodeModelsDiscovered": "No OpenCode models discovered. Run `opencode models` and authenticate providers.",
+      "opencodeConfiguredModelUnavailable": "Configured OpenCode model is unavailable: {{modelId}}",
+      "opencodeModelRequired": "OpenCode requires an explicit model in provider/model format.",
+      "opencodeModelsStillLoading": "OpenCode models are still loading. Please wait and try again.",
+      "unsetAnthropicRetryStillFailing": "Retried with ANTHROPIC_API_KEY unset in adapter config, but the environment test is still failing."
+    },
+    "gatewayUrl": "Gateway URL",
+    "giveItSomethingToDo": "Give it something to do",
+    "hintLabel": "Hint:",
+    "inEnvOrRun": "in env or run",
+    "loginRequiredRun": "If login is required, run",
+    "manualDebug": "Manual debug",
     "missionOptional": "Mission / goal (optional)",
+    "model": "Model",
+    "moreAgentAdapterTypes": "More Agent Adapter Types",
     "nameYourCompany": "Name your company",
+    "next": "Next",
+    "noModelsDiscovered": "No models discovered.",
+    "passed": "Passed",
+    "promptLabel": "Prompt:",
+    "readyToLaunch": "Ready to launch",
+    "readyToLaunchHelp": "Everything is set up. Launching now will create the starter task, wake the agent, and open the issue.",
+    "recommended": "Recommended",
+    "retrying": "Retrying...",
+    "searchModels": "Search models...",
+    "selectModelRequired": "Select model (required)",
     "tabs": {
       "agent": "Agent",
       "company": "Company",
       "launch": "Launch",
       "task": "Task"
-    }
+    },
+    "taskDescriptionPlaceholder": "Add more detail about what the agent should do...",
+    "taskHelp": "Give your agent a small task to start with — a bug fix, a research question, writing a script.",
+    "taskTitle": "Task title",
+    "taskTitlePlaceholder": "e.g. Research competitor pricing",
+    "testing": "Testing...",
+    "testNow": "Test now",
+    "unsetAnthropicApiKey": "Unset ANTHROPIC_API_KEY",
+    "webhookUrl": "Webhook URL"
   },
   "onboardingTextTitle": "Agent-readable onboarding text",
   "onDay": "on day",
@@ -1905,6 +2435,24 @@
   "outOfDate": "Out of date",
   "outOfDateBody": "This document changed while you were editing. Your local draft is preserved and autosave is paused.",
   "output": "Output",
+  "outputFeedbackButtons": {
+    "addShortNote": "Add a short note",
+    "alwaysAllow": "Always allow",
+    "changeLater": "You can change this later in Instance Settings > General.",
+    "choose": "Choose",
+    "dismiss": "Dismiss",
+    "dontAllow": "Don't allow",
+    "helpful": "Helpful",
+    "needsWork": "Needs work",
+    "preferenceDescription": "Choose whether voted AI outputs can be shared with Paperclip Labs. This answer becomes the default for future thumbs up and thumbs down votes.",
+    "preferenceTitle": "Save your feedback sharing preference",
+    "readTerms": "Read our terms of service",
+    "savedLocally": "This vote is always saved locally.",
+    "saveNote": "Save note",
+    "toKeepLocal": "to keep this vote and future votes local.",
+    "toShare": "to share this vote and future voted AI outputs. Choose",
+    "whatCouldBeBetter": "What could have been better?"
+  },
   "outputTokens": "Output tokens",
   "overall": "Overall",
   "overriddenBy": "Overridden by {adapter}",
@@ -1933,6 +2481,34 @@
   "parentWorkspaceWarning": "Warning: this sub-issue will no longer use the parent issue workspace{workspace}.",
   "path": "Path",
   "pathCopied": "Path copied",
+  "pathInstructionsModal": {
+    "choose": "Choose",
+    "descriptionPrefix": "Paste the absolute path (e.g.",
+    "descriptionSuffix": "into the input field.",
+    "linux": {
+      "step1": "Open a terminal and navigate to the directory with cd.",
+      "step2": "Run pwd to print the full path.",
+      "step3": "Copy the output and paste here.",
+      "tip": "In most file managers, Ctrl+L reveals the full path in the address bar."
+    },
+    "mac": {
+      "step1": "Open Finder and navigate to the folder.",
+      "step2": "Right-click (or Control-click) the folder.",
+      "step3": "Hold the Option (⌥) key - \"Copy\" changes to \"Copy as Pathname\".",
+      "step4": "Click \"Copy as Pathname\", then paste here.",
+      "tip": "You can also open Terminal, type cd, drag the folder into the terminal window, and press Enter. Then type pwd to see the full path."
+    },
+    "platformLinux": "Linux",
+    "platformMac": "macOS",
+    "platformWindows": "Windows",
+    "title": "How to get a full path",
+    "windows": {
+      "step1": "Open File Explorer and navigate to the folder.",
+      "step2": "Click in the address bar at the top - the full path will appear.",
+      "step3": "Copy the path, then paste here.",
+      "tip": "Alternatively, hold Shift and right-click the folder, then select \"Copy as path\"."
+    }
+  },
   "pathPlaceholder": "/path/to/project",
   "pathsAndRefs": "Paths and refs",
   "pathsStartingWith": "{count} paths, starting with {path}",
@@ -2006,9 +2582,24 @@
   "projectDefaultHint": "This issue will use the project default workspace configuration when it runs.",
   "projectDescription": "Linked project pill with its color.",
   "projectDetail": {
+    "addDescription": "Add a description...",
+    "budget": "Budget",
+    "changeProjectColor": "Change project color",
     "cleanupAttentionNeeded": "",
+    "configuration": "Configuration",
+    "failedToArchiveProject": "Failed to archive project",
+    "failedToUnarchiveProject": "Failed to unarchive project",
+    "issues": "Issues",
+    "loadingWorkspaces": "Loading workspaces...",
+    "noCompanySelected": "No company selected",
     "noWorkspaceActivity": "",
+    "overview": "Overview",
+    "project": "Project",
+    "projects": "Projects",
     "projectsBreadcrumb": "",
+    "status": "Status",
+    "targetDate": "Target Date",
+    "workspaces": "Workspaces",
     "workspacesTab": ""
   },
   "projectFallback": "Project",
@@ -2253,6 +2844,16 @@
   "repoRoot": "Repo root",
   "repoRootLabel": "Repo root:",
   "reportsTo": "Reports to",
+  "reportsToPicker": {
+    "chooseLabel": "Reports to...",
+    "currentTerminated": "Current: {{name}} (terminated)",
+    "disabledEmptyLabel": "Reports to: N/A (CEO)",
+    "noManager": "No manager",
+    "reportsToWithName": "Reports to {{name}}{{terminatedSuffix}}",
+    "savedManagerMissing": "Saved manager is missing from this company. Choose a new manager or clear.",
+    "terminatedSuffix": " (terminated)",
+    "unknownManager": "Unknown manager (stale ID)"
+  },
   "repoUrl": "Repo URL",
   "repoUrlHelp": "Link a GitHub repository so agents can clone, read, and push code for this project.",
   "repoUrlInvalid": "Repo must use a valid GitHub or GitHub Enterprise repo URL.",
@@ -2348,6 +2949,10 @@
       "title": "Advanced delivery settings"
     },
     "assignee": "Assignee",
+    "defaultAgentRequiredBanner": "Default agent required. This routine can stay as a draft and still run manually, but automation stays paused until you assign a default agent.",
+    "errors": {
+      "notFound": "Routine not found"
+    },
     "for": "For",
     "in": "in",
     "noAssignee": "No assignee",
@@ -2369,6 +2974,8 @@
       "secret": "Secret",
       "url": "URL",
       "webhookSecret": "Webhook secret",
+      "webhookSecretRotated": "Webhook secret rotated",
+      "webhookTriggerCreated": "Webhook trigger created",
       "webhookUrl": "Webhook URL"
     },
     "status": {
@@ -2388,6 +2995,7 @@
       "clipboardDenied": "Clipboard access was denied.",
       "copied": "routineDetail.toast.copied",
       "copyFailed": "routineDetail.toast.copyFailed",
+      "defaultAgentRequired": "Default agent required",
       "defaultAgentRequiredBody": "Set a default agent before enabling routine automation.",
       "rotateSecretFailed": "Failed to rotate webhook secret",
       "rotateSecretFailedBody": "Paperclip could not rotate the webhook secret.",
@@ -2414,15 +3022,62 @@
     "triggers": {
       "adding": "Adding...",
       "addTrigger": "Add trigger",
+      "api": "API",
+      "comingSoonSuffix": " — COMING SOON",
       "empty": "No triggers configured yet.",
       "kind": "Kind",
+      "label": "Label",
+      "last": "Last",
+      "next": "Next",
       "replayWindow": "Replay window (seconds)",
+      "rotateSecret": "Rotate secret",
+      "saveTrigger": "Save trigger",
       "schedule": "Schedule",
-      "signingMode": "Signing mode"
+      "signingMode": "Signing mode",
+      "webhook": "Webhook"
     },
     "unsavedChanges": "Unsaved changes"
   },
+  "routineRunVariablesDialog": {
+    "agent": "Agent",
+    "agentRequired": "Agent *",
+    "chooseValue": "Choose a value",
+    "chooseWorkspace": "Choose an existing workspace before running.",
+    "defaultAgentRequired": "Default agent required for this run.",
+    "description": "Choose the agent and optional project for this one run. Routine defaults are prefilled and won't be changed.",
+    "false": "False",
+    "missing": "Missing",
+    "noAgentsFound": "No agents found.",
+    "noProject": "No project",
+    "noProjectsFound": "No projects found.",
+    "noValue": "No value",
+    "project": "Project",
+    "running": "Running...",
+    "searchAgents": "Search agents...",
+    "searchProjects": "Search projects...",
+    "selectAgent": "Select an agent",
+    "submit": "Run routine",
+    "title": "Run routine",
+    "true": "True"
+  },
   "routines": "Routines",
+  "routineVariablesEditor": {
+    "defaultOption": "Default option",
+    "defaultValue": "Default value",
+    "detectedFromPlaceholders": "Detected from `{{name}}` placeholders in the routine title and instructions.",
+    "false": "False",
+    "hint": "Use `{{variable_name}}` placeholders in the instructions to prompt for inputs when the routine runs.",
+    "label": "Label",
+    "noDefault": "No default",
+    "numberPlaceholder": "42",
+    "options": "Options",
+    "optionsPlaceholder": "high, medium, low",
+    "promptUserBeforeRun": "Prompt the user for this value before each manual run.",
+    "required": "Required",
+    "true": "True",
+    "type": "Type",
+    "variables": "Variables"
+  },
   "row.agent.budgetUpdated": "updated budget for",
   "row.agent.configRolledBack": "rolled back config for",
   "row.agent.created": "created",
@@ -2566,6 +3221,52 @@
   "runFailedTitle": "Routine run failed",
   "runHeartbeat": "Run Heartbeat",
   "runHeartbeatEvery": "Run heartbeat every",
+  "runLedger": {
+    "continuationAttempt": "Continuation attempt {{attempt}}",
+    "lastUseful": {
+      "noConcreteAction": "No concrete action",
+      "noneRecorded": "None recorded",
+      "noneYet": "No action recorded yet",
+      "noUsefulOutput": "No useful output",
+      "unavailable": "Unavailable",
+      "waitingNextAttempt": "Waiting for next attempt"
+    },
+    "silenceAge": {
+      "hours_one": "{{count}} hour",
+      "hours_other": "{{count}} hour",
+      "hoursMinutes": "{{hours}}h {{minutes}}m",
+      "minutes_one": "{{count}} minute",
+      "minutes_other": "{{count}} minute",
+      "underOneMinute": "under 1 minute"
+    },
+    "stop": {
+      "adapterFailed": "adapter failed",
+      "budgetPaused": "budget paused",
+      "cancelled": "cancelled",
+      "completed": "completed",
+      "completedWithDetail": "completed ({{timeoutText}})",
+      "paused": "paused",
+      "processLost": "process lost",
+      "timeout": "timeout",
+      "timeoutSeconds": "{{seconds}}s timeout",
+      "timeoutWithDetail": "timeout ({{timeoutText}})"
+    },
+    "stopStatus": {
+      "none": "No stop reason",
+      "retryPending": "Retry pending",
+      "stillRunning": "Still running",
+      "unavailable": "Unavailable",
+      "waitingToStart": "Waiting to start"
+    },
+    "summary": {
+      "queuedFor": "Queued for {{agentName}}",
+      "retryScheduledFor": "Automatic retry scheduled for {{agentName}}",
+      "runningBy": "Running now by {{agentName}}",
+      "statusBy": "{{status}} by {{agentName}}"
+    },
+    "watchdogDecisionForbidden": "Only the board or the assigned recovery owner can record watchdog decisions",
+    "watchdogDecisionRecordFailed": "Paperclip could not record the watchdog decision."
+  },
   "running": "Running...",
   "runningClaudeLogin": "Running Claude login...",
   "runNow": "Run now",
