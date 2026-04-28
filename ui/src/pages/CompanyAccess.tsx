@@ -26,6 +26,7 @@ import { useBreadcrumbs } from "@/context/BreadcrumbContext";
 import { useCompany } from "@/context/CompanyContext";
 import { useToast } from "@/context/ToastContext";
 import { queryKeys } from "@/lib/queryKeys";
+import { useTranslation } from "react-i18next";
 
 const permissionLabels: Record<PermissionKey, string> = {
   "agents:create": "Create agents",
@@ -58,6 +59,7 @@ function getImplicitGrantKeys(role: CompanyMember["membershipRole"]) {
 }
 
 export function CompanyAccess() {
+  const { t } = useTranslation();
   const { selectedCompany, selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const { pushToast } = useToast();
@@ -71,11 +73,11 @@ export function CompanyAccess() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: selectedCompany?.name ?? "Company", href: "/dashboard" },
-      { label: "Settings", href: "/company/settings" },
-      { label: "Access" },
+      { label: selectedCompany?.name ?? t("companyAccess.company", { defaultValue: "Company" }), href: "/dashboard" },
+      { label: t("companyAccess.settings", { defaultValue: "Settings" }), href: "/company/settings" },
+      { label: t("companyAccess.access", { defaultValue: "Access" }) },
     ]);
-  }, [selectedCompany?.name, setBreadcrumbs]);
+  }, [selectedCompany?.name, setBreadcrumbs, t]);
 
   const membersQuery = useQuery({
     queryKey: queryKeys.access.companyMembers(selectedCompanyId ?? ""),
@@ -114,14 +116,14 @@ export function CompanyAccess() {
       setEditingMemberId(null);
       await refreshAccessData();
       pushToast({
-        title: "Member updated",
+        title: t("companyAccess.memberUpdated", { defaultValue: "Member updated" }),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to update member",
-        body: error instanceof Error ? error.message : "Unknown error",
+        title: t("companyAccess.failedToUpdateMember", { defaultValue: "Failed to update member" }),
+        body: error instanceof Error ? error.message : t("companyAccess.unknownError", { defaultValue: "Unknown error" }),
         tone: "error",
       });
     },
@@ -132,14 +134,14 @@ export function CompanyAccess() {
     onSuccess: async () => {
       await refreshAccessData();
       pushToast({
-        title: "Join request approved",
+        title: t("companyAccess.joinRequestApproved", { defaultValue: "Join request approved" }),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to approve join request",
-        body: error instanceof Error ? error.message : "Unknown error",
+        title: t("companyAccess.failedToApproveJoinRequest", { defaultValue: "Failed to approve join request" }),
+        body: error instanceof Error ? error.message : t("companyAccess.unknownError", { defaultValue: "Unknown error" }),
         tone: "error",
       });
     },
@@ -150,14 +152,14 @@ export function CompanyAccess() {
     onSuccess: async () => {
       await refreshAccessData();
       pushToast({
-        title: "Join request rejected",
+        title: t("companyAccess.joinRequestRejected", { defaultValue: "Join request rejected" }),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to reject join request",
-        body: error instanceof Error ? error.message : "Unknown error",
+        title: t("companyAccess.failedToRejectJoinRequest", { defaultValue: "Failed to reject join request" }),
+        body: error instanceof Error ? error.message : t("companyAccess.unknownError", { defaultValue: "Unknown error" }),
         tone: "error",
       });
     },
@@ -202,18 +204,22 @@ export function CompanyAccess() {
         await queryClient.invalidateQueries({ queryKey: queryKeys.issues.listTouchedByMe(selectedCompanyId) });
       }
       pushToast({
-        title: "Member removed",
+        title: t("companyAccess.memberRemoved", { defaultValue: "Member removed" }),
         body:
           result.reassignedIssueCount > 0
-            ? `${result.reassignedIssueCount} assigned issue${result.reassignedIssueCount === 1 ? "" : "s"} cleaned up.`
+            ? t("companyAccess.assignedIssuesCleanedUp", {
+              defaultValue: "{{count}} assigned issue{{suffix}} cleaned up.",
+              count: result.reassignedIssueCount,
+              suffix: result.reassignedIssueCount === 1 ? "" : "s",
+            })
             : undefined,
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to remove member",
-        body: error instanceof Error ? error.message : "Unknown error",
+        title: t("companyAccess.failedToRemoveMember", { defaultValue: "Failed to remove member" }),
+        body: error instanceof Error ? error.message : t("companyAccess.unknownError", { defaultValue: "Unknown error" }),
         tone: "error",
       });
     },
@@ -232,20 +238,20 @@ export function CompanyAccess() {
   }, [removingMember]);
 
   if (!selectedCompanyId) {
-    return <div className="text-sm text-muted-foreground">Select a company to manage access.</div>;
+    return <div className="text-sm text-muted-foreground">{t("companyAccess.selectCompanyToManage", { defaultValue: "Select a company to manage access." })}</div>;
   }
 
   if (membersQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading company access…</div>;
+    return <div className="text-sm text-muted-foreground">{t("companyAccess.loading", { defaultValue: "Loading company access..." })}</div>;
   }
 
   if (membersQuery.error) {
     const message =
       membersQuery.error instanceof ApiError && membersQuery.error.status === 403
-        ? "You do not have permission to manage company members."
+        ? t("companyAccess.noPermission", { defaultValue: "You do not have permission to manage company members." })
         : membersQuery.error instanceof Error
           ? membersQuery.error.message
-          : "Failed to load company members.";
+          : t("companyAccess.failedToLoadMembers", { defaultValue: "Failed to load company members." });
     return <div className="text-sm text-destructive">{message}</div>;
   }
 
@@ -271,7 +277,7 @@ export function CompanyAccess() {
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">Company Access</h1>
+          <h1 className="text-lg font-semibold">{t("companyAccess.title", { defaultValue: "Company Access" })}</h1>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
           Manage company user memberships, membership status, and explicit permission grants for {selectedCompany?.name}.
@@ -288,7 +294,7 @@ export function CompanyAccess() {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-muted-foreground" />
-            <h2 className="text-base font-semibold">Humans</h2>
+            <h2 className="text-base font-semibold">{t("companyAccess.humans", { defaultValue: "Humans" })}</h2>
           </div>
           <p className="max-w-3xl text-sm text-muted-foreground">
             Manage human company memberships, status, and grants here.
