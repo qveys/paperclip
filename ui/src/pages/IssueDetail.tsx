@@ -59,6 +59,7 @@ import {
 } from "../lib/optimistic-issue-comments";
 import { clearIssueExecutionRun, removeLiveRunById, upsertInterruptedRun } from "../lib/optimistic-issue-runs";
 import { useProjectOrder } from "../hooks/useProjectOrder";
+import { useTranslation } from "react-i18next";
 import { relativeTime, cn, formatTokens, visibleRunCostUsd } from "../lib/utils";
 import { ApprovalCard } from "../components/ApprovalCard";
 import { InlineEditor } from "../components/InlineEditor";
@@ -473,6 +474,7 @@ function InboxMobileToolbar({
 }: InboxMobileToolbarProps) {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div className="flex items-center w-full">
@@ -489,7 +491,7 @@ function InboxMobileToolbar({
             navigate(backHref);
           }
         }}
-        aria-label="Back to inbox"
+        aria-label={t("issueDetail.backToInbox", { defaultValue: "Back to inbox" })}
       >
         <ArrowLeft className="h-5 w-5" />
       </Button>
@@ -501,7 +503,7 @@ function InboxMobileToolbar({
             size="icon-sm"
             onClick={onArchive}
             disabled={archivePending}
-            aria-label="Archive from inbox"
+            aria-label={t("issueDetail.archiveFromInbox", { defaultValue: "Archive from inbox" })}
           >
             <Archive className="h-5 w-5" />
           </Button>
@@ -509,7 +511,11 @@ function InboxMobileToolbar({
 
         <Popover open={menuOpen} onOpenChange={setMenuOpen}>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon-sm" aria-label="More actions">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              aria-label={t("issueDetail.moreActions", { defaultValue: "More actions" })}
+            >
               <MoreVertical className="h-5 w-5" />
             </Button>
           </PopoverTrigger>
@@ -519,14 +525,14 @@ function InboxMobileToolbar({
               onClick={() => { onCopy(); setMenuOpen(false); }}
             >
               <Copy className="h-3 w-3" />
-              Copy as markdown
+              {t("issueDetail.copyAsMarkdown", { defaultValue: "Copy as markdown" })}
             </button>
             <button
               className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50"
               onClick={() => { onProperties(); setMenuOpen(false); }}
             >
               <SlidersHorizontal className="h-3 w-3" />
-              Properties
+              {t("issueDetail.properties", { defaultValue: "Properties" })}
             </button>
             {issueIdProp && (
               <button
@@ -534,7 +540,7 @@ function InboxMobileToolbar({
                 onClick={() => { onHide(); setMenuOpen(false); }}
               >
                 <EyeOff className="h-3 w-3" />
-                Hide this issue
+                {t("issueDetail.hideThisIssue", { defaultValue: "Hide this issue" })}
               </button>
             )}
           </PopoverContent>
@@ -639,6 +645,7 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
   onRejectInteraction,
   onSubmitInteractionAnswers,
 }: IssueDetailChatTabProps) {
+  const { t } = useTranslation();
   const { data: activity } = useQuery({
     queryKey: queryKeys.issues.activity(issueId),
     queryFn: () => activityApi.forIssue(issueId),
@@ -783,7 +790,9 @@ const IssueDetailChatTab = memo(function IssueDetailChatTab({
             disabled={commentsLoadingOlder}
             onClick={onLoadOlderComments}
           >
-            {commentsLoadingOlder ? "Loading earlier comments..." : "Load earlier comments"}
+            {commentsLoadingOlder
+              ? t("issueDetail.loadingEarlierComments", { defaultValue: "Loading earlier comments..." })
+              : t("issueDetail.loadEarlierComments", { defaultValue: "Load earlier comments" })}
           </Button>
         </div>
       ) : null}
@@ -867,6 +876,7 @@ function IssueDetailActivityTab({
   onApprovalAction,
   handoffFocusSignal = 0,
 }: IssueDetailActivityTabProps) {
+  const { t } = useTranslation();
   const { data: activity, isLoading: activityLoading } = useQuery({
     queryKey: queryKeys.issues.activity(issueId),
     queryFn: () => activityApi.forIssue(issueId),
@@ -978,9 +988,13 @@ function IssueDetailActivityTab({
       )}
       {linkedRuns && linkedRuns.length > 0 && (
         <div className="mb-3 px-3 py-2 rounded-lg border border-border">
-          <div className="text-sm font-medium text-muted-foreground mb-1">Cost Summary</div>
+          <div className="text-sm font-medium text-muted-foreground mb-1">
+            {t("issueDetail.costSummary", { defaultValue: "Cost Summary" })}
+          </div>
           {!issueCostSummary.hasCost && !issueCostSummary.hasTokens ? (
-            <div className="text-xs text-muted-foreground">No cost data yet.</div>
+            <div className="text-xs text-muted-foreground">
+              {t("issueDetail.noCostDataYet", { defaultValue: "No cost data yet." })}
+            </div>
           ) : (
             <div className="flex flex-wrap gap-3 text-xs text-muted-foreground tabular-nums">
               {issueCostSummary.hasCost && (
@@ -990,10 +1004,19 @@ function IssueDetailActivityTab({
               )}
               {issueCostSummary.hasTokens && (
                 <span>
-                  Tokens {formatTokens(issueCostSummary.totalTokens)}
+                  {t("issueDetail.tokens", { defaultValue: "Tokens" })} {formatTokens(issueCostSummary.totalTokens)}
                   {issueCostSummary.cached > 0
-                    ? ` (in ${formatTokens(issueCostSummary.input)}, out ${formatTokens(issueCostSummary.output)}, cached ${formatTokens(issueCostSummary.cached)})`
-                    : ` (in ${formatTokens(issueCostSummary.input)}, out ${formatTokens(issueCostSummary.output)})`}
+                    ? t("issueDetail.tokenBreakdownWithCache", {
+                        defaultValue: "(in {{input}}, out {{output}}, cached {{cached}})",
+                        input: formatTokens(issueCostSummary.input),
+                        output: formatTokens(issueCostSummary.output),
+                        cached: formatTokens(issueCostSummary.cached),
+                      })
+                    : t("issueDetail.tokenBreakdown", {
+                        defaultValue: "(in {{input}}, out {{output}})",
+                        input: formatTokens(issueCostSummary.input),
+                        output: formatTokens(issueCostSummary.output),
+                      })}
                 </span>
               )}
             </div>
@@ -1001,7 +1024,9 @@ function IssueDetailActivityTab({
         </div>
       )}
       {!activity || activity.length === 0 ? (
-        <p className="text-xs text-muted-foreground">No activity yet.</p>
+        <p className="text-xs text-muted-foreground">
+          {t("issueDetail.noActivityYet", { defaultValue: "No activity yet." })}
+        </p>
       ) : (
         <div className="space-y-1.5">
           {activity.slice(0, 20).map((evt) => (
