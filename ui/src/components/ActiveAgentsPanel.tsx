@@ -27,7 +27,8 @@ function isRunActive(run: LiveRunForIssue): boolean {
 function relativeTimeForLocale(date: Date | string, locale: string): string {
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto", style: "short" });
   const then = new Date(date).getTime();
-  const diffSec = Math.round((then - Date.now()) / 1000);
+  const rawDiffSec = (then - Date.now()) / 1000;
+  const diffSec = rawDiffSec < 0 ? Math.ceil(rawDiffSec) : Math.floor(rawDiffSec);
   const absSec = Math.abs(diffSec);
   if (absSec < 60) {
     const sec = diffSec === 0 ? 0 : diffSec > 0 ? Math.max(1, diffSec) : Math.min(-1, diffSec);
