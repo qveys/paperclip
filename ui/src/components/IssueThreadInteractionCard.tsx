@@ -232,7 +232,10 @@ function TaskTreeNode({
                 <Checkbox
                   checked={isSelected}
                   onCheckedChange={(checked) => onToggleSelection?.(node, checked === true)}
-                  aria-label={`Include ${node.task.title}`}
+                  aria-label={i18n.t("issues:interactionCard.task.include", {
+                    defaultValue: "Include {{title}}",
+                    title: node.task.title,
+                  })}
                   className="mt-0.5"
                 />
               ) : null}
@@ -863,7 +866,10 @@ function requestConfirmationTargetLabel(target: RequestConfirmationTarget) {
   if (target.label) return target.label;
   const revision = target.revisionNumber ? ` v${target.revisionNumber}` : "";
   if (target.type === "issue_document" && target.key === "plan") {
-    return `Plan${revision}`;
+    return i18n.t("issues:interactionCard.target.plan", {
+      defaultValue: "Plan{{revision}}",
+      revision,
+    });
   }
   return `${target.key}${revision}`;
 }
@@ -1297,7 +1303,7 @@ export function IssueThreadInteractionCard({
         <div className="mt-4 border-t border-border/60 pt-3 text-xs text-muted-foreground">
           {t("interactionCard.resolvedBy", { defaultValue: "Resolved by" })}{" "}
           <span className="font-medium text-foreground">{resolvedByLabel}</span>
-          {interaction.resolvedAt ? ` on ${formatShortDate(interaction.resolvedAt)}` : ""}
+          {interaction.resolvedAt ? ` ${t("interactionCard.onDate", { defaultValue: "on {{date}}", date: formatShortDate(interaction.resolvedAt) })}` : ""}
         </div>
       ) : null}
     </div>
