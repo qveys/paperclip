@@ -115,10 +115,16 @@ export function InstanceGeneralSettings() {
           </div>
           <div className="text-sm text-muted-foreground">
             {healthQuery.data?.deploymentMode === "local_trusted"
-              ? "Local trusted mode is optimized for a local operator. Browser requests run as local board context and no sign-in is required."
+              ? t("instanceGeneral.deployment.localTrusted", {
+                defaultValue: "Local trusted mode is optimized for a local operator. Browser requests run as local board context and no sign-in is required.",
+              })
               : healthQuery.data?.deploymentExposure === "public"
-                ? "Authenticated public mode requires sign-in for board access and is intended for public URLs."
-                : "Authenticated private mode requires sign-in and is intended for LAN, VPN, or other private-network deployments."}
+                ? t("instanceGeneral.deployment.authenticatedPublic", {
+                  defaultValue: "Authenticated public mode requires sign-in for board access and is intended for public URLs.",
+                })
+                : t("instanceGeneral.deployment.authenticatedPrivate", {
+                  defaultValue: "Authenticated private mode requires sign-in and is intended for LAN, VPN, or other private-network deployments.",
+                })}
           </div>
           <div className="grid gap-3 md:grid-cols-3">
             <StatusBox
@@ -148,9 +154,9 @@ export function InstanceGeneralSettings() {
           <div className="space-y-1.5">
             <h2 className="text-sm font-semibold">{t("instanceGeneral.censorUsernameInLogs", { defaultValue: "Censor username in logs" })}</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Hide the username segment in home-directory paths and similar operator-visible log output. Standalone
-              username mentions outside of paths are not yet masked in the live transcript view. This is off by
-              default.
+              {t("instanceGeneral.censorLogsDescription", {
+                defaultValue: "Hide the username segment in home-directory paths and similar operator-visible log output. Standalone username mentions outside of paths are not yet masked in the live transcript view. This is off by default.",
+              })}
             </p>
           </div>
           <ToggleSwitch
@@ -167,8 +173,9 @@ export function InstanceGeneralSettings() {
           <div className="space-y-1.5">
             <h2 className="text-sm font-semibold">{t("instanceGeneral.keyboardShortcuts", { defaultValue: "Keyboard shortcuts" })}</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Enable app keyboard shortcuts, including inbox navigation and global shortcuts like creating issues or
-              toggling panels. This is off by default.
+              {t("instanceGeneral.keyboardShortcutsDescription", {
+                defaultValue: "Enable app keyboard shortcuts, including inbox navigation and global shortcuts like creating issues or toggling panels. This is off by default.",
+              })}
             </p>
           </div>
           <ToggleSwitch
@@ -185,9 +192,9 @@ export function InstanceGeneralSettings() {
           <div className="space-y-1.5">
             <h2 className="text-sm font-semibold">{t("instanceGeneral.backupRetention", { defaultValue: "Backup retention" })}</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Configure how long automatic database backups are retained. Backups run roughly
-              every hour and are compressed with gzip. Within the daily window all backups are
-              kept; beyond that, one backup per week and one per month are preserved.
+              {t("instanceGeneral.backupRetentionDescription", {
+                defaultValue: "Configure how long automatic database backups are retained. Backups run roughly every hour and are compressed with gzip. Within the daily window all backups are kept; beyond that, one backup per week and one per month are preserved.",
+              })}
             </p>
           </div>
 
@@ -291,8 +298,9 @@ export function InstanceGeneralSettings() {
           <div className="space-y-1.5">
             <h2 className="text-sm font-semibold">{t("instanceGeneral.aiFeedbackSharing", { defaultValue: "AI feedback sharing" })}</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Control whether thumbs up and thumbs down votes can send the voted AI output to
-              Paperclip Labs. Votes are always saved locally.
+              {t("instanceGeneral.aiFeedbackSharingDescription", {
+                defaultValue: "Control whether thumbs up and thumbs down votes can send the voted AI output to Paperclip Labs. Votes are always saved locally.",
+              })}
             </p>
             {FEEDBACK_TERMS_URL ? (
               <a
@@ -354,11 +362,9 @@ export function InstanceGeneralSettings() {
             })}
           </div>
           <p className="text-xs text-muted-foreground">
-            To retest the first-use prompt in local dev, remove the{" "}
-            <code>feedbackDataSharingPreference</code> key from the{" "}
-            <code>instance_settings.general</code> JSON row for this instance, or set it back to{" "}
-            <code>"prompt"</code>. Unset and <code>"prompt"</code> both mean no default has been
-            chosen yet.
+            {t("instanceGeneral.feedbackPromptRetest", {
+              defaultValue: "To retest the first-use prompt in local dev, remove the feedbackDataSharingPreference key from the instance_settings.general JSON row for this instance, or set it back to \"prompt\". Unset and \"prompt\" both mean no default has been chosen yet.",
+            })}
           </p>
         </div>
       </section>
@@ -368,7 +374,9 @@ export function InstanceGeneralSettings() {
           <div className="space-y-1.5">
             <h2 className="text-sm font-semibold">{t("instanceGeneral.signOut", { defaultValue: "Sign out" })}</h2>
             <p className="max-w-2xl text-sm text-muted-foreground">
-              Sign out of this Paperclip instance. You will be redirected to the login page.
+              {t("instanceGeneral.signOutDescription", {
+                defaultValue: "Sign out of this Paperclip instance. You will be redirected to the login page.",
+              })}
             </p>
           </div>
           <Button
