@@ -507,25 +507,25 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
             : <div className="px-4 py-2 text-xs font-medium text-muted-foreground">{tx("agentConfig.identity")}</div>
           }
           <div className={cn(cards ? "border border-border rounded-lg p-4 space-y-3" : "px-4 pb-3 space-y-3")}>
-            <Field label="Name" hint={help.name}>
+            <Field label={String(tx("agentConfig.fields.name", { defaultValue: "Name" }))} hint={help.name}>
               <DraftInput
                 value={eff("identity", "name", props.agent.name)}
                 onCommit={(v) => mark("identity", "name", v)}
                 immediate
                 className={inputClass}
-                placeholder="Agent name"
+                placeholder={String(tx("agentConfig.placeholders.agentName", { defaultValue: "Agent name" }))}
               />
             </Field>
-            <Field label="Title" hint={help.title}>
+            <Field label={String(tx("agentConfig.fields.title", { defaultValue: "Title" }))} hint={help.title}>
               <DraftInput
                 value={eff("identity", "title", props.agent.title ?? "")}
                 onCommit={(v) => mark("identity", "title", v || null)}
                 immediate
                 className={inputClass}
-                placeholder="e.g. VP of Engineering"
+                placeholder={String(tx("agentConfig.placeholders.agentTitle", { defaultValue: "e.g. VP of Engineering" }))}
               />
             </Field>
-            <Field label="Reports to" hint={help.reportsTo}>
+            <Field label={String(tx("agentConfig.fields.reportsTo", { defaultValue: "Reports to" }))} hint={help.reportsTo}>
               <ReportsToPicker
                 agents={companyAgents}
                 value={eff("identity", "reportsTo", props.agent.reportsTo ?? null)}
@@ -534,11 +534,11 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                 chooseLabel="Choose manager…"
               />
             </Field>
-            <Field label="Capabilities" hint={help.capabilities}>
+            <Field label={String(tx("agentConfig.fields.capabilities", { defaultValue: "Capabilities" }))} hint={help.capabilities}>
               <MarkdownEditor
                 value={eff("identity", "capabilities", props.agent.capabilities ?? "") ?? ""}
                 onChange={(v) => mark("identity", "capabilities", v || null)}
-                placeholder="Describe what this agent can do..."
+                    placeholder={String(tx("agentConfig.placeholders.capabilities", { defaultValue: "Describe what this agent can do..." }))}
                 contentClassName="min-h-[44px] text-sm font-mono"
                 imageUploadHandler={async (file) => {
                   const asset = await uploadMarkdownImage.mutateAsync({
@@ -551,7 +551,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
             </Field>
             {isLocal && !props.hidePromptTemplate && (
               <>
-                <Field label="Prompt Template" hint={help.promptTemplate}>
+                <Field label={String(tx("agentConfig.fields.promptTemplate", { defaultValue: "Prompt Template" }))} hint={help.promptTemplate}>
                   <MarkdownEditor
                     value={eff(
                       "adapterConfig",
@@ -559,7 +559,7 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                       String(config.promptTemplate ?? ""),
                     )}
                     onChange={(v) => mark("adapterConfig", "promptTemplate", v ?? "")}
-                    placeholder="You are agent {{ agent.name }}. Your role is {{ agent.role }}..."
+                    placeholder={String(tx("agentConfig.placeholders.promptTemplate", { defaultValue: "You are agent {{ agent.name }}. Your role is {{ agent.role }}..." }))}
                     contentClassName="min-h-[88px] text-sm font-mono"
                     imageUploadHandler={async (file) => {
                       const namespace = `agents/${props.agent.id}/prompt-template`;
@@ -874,7 +874,10 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                     />
                   </Field>
                   <div className="rounded-md border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
-                    Bootstrap prompt is legacy and will be removed in a future release. Consider moving this content into the agent&apos;s prompt template or instructions file instead.
+                    {tx("agentConfig.bootstrapPromptLegacyHint", {
+                      defaultValue:
+                        "Bootstrap prompt is legacy and will be removed in a future release. Consider moving this content into the agent's prompt template or instructions file instead.",
+                    })}
                   </div>
                 </>
               )}

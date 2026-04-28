@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "@/lib/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Project } from "@paperclipai/shared";
@@ -222,6 +223,7 @@ function ArchiveDangerZone({
 }
 
 export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSaveState, onArchive, archivePending }: ProjectPropertiesProps) {
+  const { t } = useTranslation("projects");
   const { selectedCompanyId } = useCompany();
   const queryClient = useQueryClient();
   const [goalOpen, setGoalOpen] = useState(false);
@@ -505,21 +507,21 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
   return (
     <div>
       <div className="space-y-1 pb-4">
-        <PropertyRow label={<FieldLabel label="Name" state={fieldState("name")} />}>
+        <PropertyRow label={<FieldLabel label={t("projectProperties.name", { defaultValue: "Name" })} state={fieldState("name")} />}>
           {onUpdate || onFieldUpdate ? (
             <DraftInput
               value={project.name}
               onCommit={(name) => commitField("name", { name })}
               immediate
               className="w-full rounded border border-border bg-transparent px-2 py-1 text-sm outline-none"
-              placeholder="Project name"
+              placeholder={t("projectProperties.placeholders.projectName", { defaultValue: "Project name" })}
             />
           ) : (
             <span className="text-sm">{project.name}</span>
           )}
         </PropertyRow>
         <PropertyRow
-          label={<FieldLabel label="Description" state={fieldState("description")} />}
+          label={<FieldLabel label={t("projectProperties.description", { defaultValue: "Description" })} state={fieldState("description")} />}
           alignStart
           valueClassName="space-y-0.5"
         >
@@ -530,16 +532,16 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
               nullable
               as="p"
               className="text-sm text-muted-foreground"
-              placeholder="Add a description..."
+              placeholder={t("projectProperties.placeholders.description", { defaultValue: "Add a description..." })}
               multiline
             />
           ) : (
             <p className="text-sm text-muted-foreground">
-              {project.description?.trim() || "No description"}
+              {project.description?.trim() || t("projectProperties.noDescription", { defaultValue: "No description" })}
             </p>
           )}
         </PropertyRow>
-        <PropertyRow label={<FieldLabel label="Status" state={fieldState("status")} />}>
+        <PropertyRow label={<FieldLabel label={t("projectProperties.status", { defaultValue: "Status" })} state={fieldState("status")} />}>
           {onUpdate || onFieldUpdate ? (
             <ProjectStatusPicker
               status={project.status}
@@ -555,7 +557,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
           </PropertyRow>
         )}
         <PropertyRow
-          label={<FieldLabel label="Goals" state={fieldState("goals")} />}
+          label={<FieldLabel label={t("projectProperties.goals", { defaultValue: "Goals" })} state={fieldState("goals")} />}
           alignStart
           valueClassName="space-y-2"
         >
@@ -593,13 +595,13 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
                   disabled={availableGoals.length === 0}
                 >
                   <Plus className="h-3 w-3 mr-1" />
-                  Goal
+                  {t("projectProperties.goalAction", { defaultValue: "Goal" })}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-56 p-1" align="start">
                 {availableGoals.length === 0 ? (
                   <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                    All goals linked.
+                    {t("projectProperties.allGoalsLinked", { defaultValue: "All goals linked." })}
                   </div>
                 ) : (
                   availableGoals.map((goal) => (
@@ -617,7 +619,7 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
           )}
         </PropertyRow>
         <PropertyRow
-          label={<FieldLabel label="Env" state={fieldState("env")} />}
+          label={<FieldLabel label={t("projectProperties.env", { defaultValue: "Env" })} state={fieldState("env")} />}
           alignStart
           valueClassName="space-y-2"
         >
@@ -632,7 +634,9 @@ export function ProjectProperties({ project, onUpdate, onFieldUpdate, getFieldSa
               onChange={(env) => commitField("env", { env: env ?? null })}
             />
             <p className="text-[11px] text-muted-foreground">
-              Applied to all runs for issues in this project. Project values override agent env on key conflicts.
+              {t("projectProperties.envHint", {
+                defaultValue: "Applied to all runs for issues in this project. Project values override agent env on key conflicts.",
+              })}
             </p>
           </div>
         </PropertyRow>
