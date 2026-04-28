@@ -1548,8 +1548,10 @@ export function IssueDetail() {
         queryClient.setQueryData(queryKeys.issues.list(context.selectedCompanyId), context.previousList);
       }
       pushToast({
-        title: "Issue update failed",
-        body: err instanceof Error ? err.message : "Unable to save issue changes",
+        title: t("issueDetail.issueUpdateFailed", { defaultValue: "Issue update failed" }),
+        body: err instanceof Error
+          ? err.message
+          : t("issueDetail.unableToSaveIssueChanges", { defaultValue: "Unable to save issue changes" }),
         tone: "error",
       });
     },
@@ -1565,7 +1567,7 @@ export function IssueDetail() {
       if (treeControlMode === "resume") {
         const pauseHoldId = treeControlState?.activePauseHold?.holdId;
         if (!pauseHoldId) {
-          throw new Error("No active subtree pause hold is available to resume.");
+          throw new Error(t("issueDetail.noActiveSubtreePauseHold", { defaultValue: "No active subtree pause hold is available to resume." }));
         }
         const releasedHold = await issuesApi.releaseTreeHold(issueId!, pauseHoldId, {
           reason: treeControlReason.trim() || null,
@@ -1593,17 +1595,25 @@ export function IssueDetail() {
       const cancelCount = result.preview?.totals.activeRuns ?? 0;
       pushToast({
         title: result.kind === "release"
-          ? "Subtree resumed"
+          ? t("issueDetail.subtreeResumed", { defaultValue: "Subtree resumed" })
           : result.hold.mode === "pause"
-            ? "Subtree paused"
-            : `${modeLabel} applied`,
+            ? t("issueDetail.subtreePaused", { defaultValue: "Subtree paused" })
+            : t("issueDetail.modeApplied", {
+              defaultValue: "{{mode}} applied",
+              mode: modeLabel,
+            }),
         body: result.kind === "release"
-          ? (result.hold.releaseReason?.trim() || "Active subtree pause released.")
+          ? (result.hold.releaseReason?.trim()
+            || t("issueDetail.activeSubtreePauseReleased", { defaultValue: "Active subtree pause released." }))
           : result.hold.mode === "pause"
-            ? `Subtree paused. ${cancelCount} run${cancelCount === 1 ? "" : "s"} cancelled.`
+            ? t("issueDetail.subtreePausedRunsCancelled", {
+              defaultValue: "Subtree paused. {{count}} run{{suffix}} cancelled.",
+              count: cancelCount,
+              suffix: cancelCount === 1 ? "" : "s",
+            })
             : result.hold.reason?.trim()
               ? result.hold.reason
-              : "Subtree control applied.",
+              : t("issueDetail.subtreeControlApplied", { defaultValue: "Subtree control applied." }),
       });
       setTreeControlOpen(false);
       setTreeControlReason("");
@@ -1629,8 +1639,10 @@ export function IssueDetail() {
     },
     onError: (err) => {
       pushToast({
-        title: "Unable to apply subtree control",
-        body: err instanceof Error ? err.message : "Please try again.",
+        title: t("issueDetail.unableToApplySubtreeControl", { defaultValue: "Unable to apply subtree control" }),
+        body: err instanceof Error
+          ? err.message
+          : t("issueDetail.pleaseTryAgain", { defaultValue: "Please try again." }),
         tone: "error",
       });
     },
@@ -1649,8 +1661,10 @@ export function IssueDetail() {
     },
     onError: (err) => {
       pushToast({
-        title: "Issue update failed",
-        body: err instanceof Error ? err.message : "Unable to save sub-issue changes",
+        title: t("issueDetail.issueUpdateFailed", { defaultValue: "Issue update failed" }),
+        body: err instanceof Error
+          ? err.message
+          : t("issueDetail.unableToSaveSubIssueChanges", { defaultValue: "Unable to save sub-issue changes" }),
         tone: "error",
       });
     },
