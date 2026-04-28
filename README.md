@@ -14,6 +14,7 @@
   <a href="https://github.com/paperclipai/paperclip/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
   <a href="https://github.com/paperclipai/paperclip/stargazers"><img src="https://img.shields.io/github/stars/paperclipai/paperclip?style=flat" alt="Stars" /></a>
   <a href="https://discord.gg/m4HZY7xNG3"><img src="https://img.shields.io/discord/000000000?label=discord" alt="Discord" /></a>
+  <a href="https://hosted.weblate.org/engage/paperclip/"><img src="https://hosted.weblate.org/widget/paperclip/svg-badge.svg" alt="Translation status" /></a>
 </p>
 
 <br/>
@@ -404,6 +405,22 @@ Telemetry is **enabled by default** and can be disabled with any of the followin
 ## Contributing
 
 We welcome contributions. See the [contributing guide](CONTRIBUTING.md) for details.
+
+<br/>
+
+## Translations
+
+Paperclip's UI is translated by the community via [Weblate](https://hosted.weblate.org/engage/paperclip/) — a free, open-source translation platform.
+
+<a href="https://hosted.weblate.org/engage/paperclip/">
+  <img src="https://hosted.weblate.org/widget/paperclip/multi-auto.svg" alt="Translation status" />
+</a>
+
+Currently shipping: English (source), Français, 中文, 日本語, Español, Deutsch.
+
+**Want to translate Paperclip into your language?** Open the [Weblate project page](https://hosted.weblate.org/engage/paperclip/), pick a language, and start translating in your browser — no git, no PR. Translations are pulled back into the repo via a periodic sync. New languages welcome — open a [Discussion](https://github.com/paperclipai/paperclip/discussions) to request one.
+
+Source strings (`en`) are the canonical reference and live at `ui/src/i18n/locales/en/`. They are pushed to Weblate automatically on each merge to `master` via [`.github/workflows/i18n-push-source.yml`](.github/workflows/i18n-push-source.yml).
 
 <br/>
 
