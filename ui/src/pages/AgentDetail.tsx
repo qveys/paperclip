@@ -1280,6 +1280,8 @@ function AgentOverview({
   agentId: string;
   agentRouteId: string;
 }) {
+  const { t } = useTranslation("core");
+  const { t } = useTranslation("core");
   return (
     <div className="space-y-8">
       {/* Latest Run */}
@@ -1287,16 +1289,16 @@ function AgentOverview({
 
       {/* Charts */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <ChartCard title="Run Activity" subtitle="Last 14 days">
+        <ChartCard title={t("agentDetail.charts.runActivity.title", { defaultValue: "Run Activity" })} subtitle={t("agentDetail.charts.last14Days", { defaultValue: "Last 14 days" })}>
           <RunActivityChart runs={runs} />
         </ChartCard>
-        <ChartCard title="Issues by Priority" subtitle="Last 14 days">
+        <ChartCard title={t("agentDetail.charts.issuesByPriority.title", { defaultValue: "Issues by Priority" })} subtitle={t("agentDetail.charts.last14Days", { defaultValue: "Last 14 days" })}>
           <PriorityChart issues={assignedIssues} />
         </ChartCard>
-        <ChartCard title="Issues by Status" subtitle="Last 14 days">
+        <ChartCard title={t("agentDetail.charts.issuesByStatus.title", { defaultValue: "Issues by Status" })} subtitle={t("agentDetail.charts.last14Days", { defaultValue: "Last 14 days" })}>
           <IssueStatusChart issues={assignedIssues} />
         </ChartCard>
-        <ChartCard title="Success Rate" subtitle="Last 14 days">
+        <ChartCard title={t("agentDetail.charts.successRate.title", { defaultValue: "Success Rate" })} subtitle={t("agentDetail.charts.last14Days", { defaultValue: "Last 14 days" })}>
           <SuccessRateChart runs={runs} />
         </ChartCard>
       </div>
@@ -1304,16 +1306,16 @@ function AgentOverview({
       {/* Recent Issues */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium">Recent Issues</h3>
+          <h3 className="text-sm font-medium">{t("agentDetail.recentIssues.title", { defaultValue: "Recent Issues" })}</h3>
           <Link
             to={`/issues?participantAgentId=${agentId}`}
             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
-            See All &rarr;
+            {t("agentDetail.recentIssues.seeAll", { defaultValue: "See All" })} &rarr;
           </Link>
         </div>
         {assignedIssues.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No recent issues.</p>
+          <p className="text-sm text-muted-foreground">{t("agentDetail.recentIssues.empty", { defaultValue: "No recent issues." })}</p>
         ) : (
           <div className="border border-border rounded-lg">
             {assignedIssues.slice(0, 10).map((issue) => (
@@ -1327,7 +1329,7 @@ function AgentOverview({
             ))}
             {assignedIssues.length > 10 && (
               <div className="px-3 py-2 text-xs text-muted-foreground text-center border-t border-border">
-                +{assignedIssues.length - 10} more issues
+                +{assignedIssues.length - 10} {t("agentDetail.recentIssues.moreIssues", { defaultValue: "more issues" })}
               </div>
             )}
           </div>
@@ -1336,7 +1338,7 @@ function AgentOverview({
 
       {/* Costs */}
       <div className="space-y-3">
-        <h3 className="text-sm font-medium">Costs</h3>
+        <h3 className="text-sm font-medium">{t("agentDetail.costs.title", { defaultValue: "Costs" })}</h3>
         <CostsSection runtimeState={runtimeState} runs={runs} />
       </div>
     </div>

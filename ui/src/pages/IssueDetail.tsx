@@ -2800,10 +2800,10 @@ export function IssueDetail() {
         )}
       >
         <Paperclip className="h-3.5 w-3.5 mr-1.5" />
-        {uploadAttachment.isPending || importMarkdownDocument.isPending ? "Uploading..." : (
+        {uploadAttachment.isPending || importMarkdownDocument.isPending ? t("issueDetail.uploading", { defaultValue: "Uploading..." }) : (
           <>
-            <span className="hidden sm:inline">Upload attachment</span>
-            <span className="sm:hidden">Upload</span>
+            <span className="hidden sm:inline">{t("issueDetail.uploadAttachment", { defaultValue: "Upload attachment" })}</span>
+            <span className="sm:hidden">{t("issueDetail.upload", { defaultValue: "Upload" })}</span>
           </>
         )}
       </Button>
@@ -2842,7 +2842,7 @@ export function IssueDetail() {
       {issue.hiddenAt && (
         <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
           <EyeOff className="h-4 w-4 shrink-0" />
-          This issue is hidden
+          {t("issueDetail.hiddenIssueBanner", { defaultValue: "This issue is hidden" })}
         </div>
       )}
       {activePauseHold && (
@@ -2850,7 +2850,7 @@ export function IssueDetail() {
           {activePauseHold.isRoot ? (
             <div className="space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="font-medium">Subtree pause is active.</span>
+                <span className="font-medium">{t("issueDetail.subtreePauseActive", { defaultValue: "Subtree pause is active." })}</span>
                 <span className="text-xs text-amber-900/80 dark:text-amber-100/80">
                   Root and descendant execution is held until resume. Human comments can still wake assignees for triage.
                 </span>
@@ -3145,7 +3145,7 @@ export function IssueDetail() {
           onSave={(description) => updateIssue.mutateAsync({ description })}
           as="p"
           className="text-[15px] leading-7 text-foreground"
-          placeholder="Add a description..."
+          placeholder={t("issueDetail.addDescription", { defaultValue: "Add a description..." })}
           multiline
           foldable
           mentions={mentionOptions}
@@ -3203,7 +3203,7 @@ export function IssueDetail() {
       {showRichSubIssuesSection ? (
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Sub-issues</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">{t("issueDetail.subIssues", { defaultValue: "Sub-issues" })}</h3>
           </div>
           <IssuesList
             issues={childIssues}
@@ -3229,7 +3229,7 @@ export function IssueDetail() {
         <div className="flex flex-wrap items-center justify-end gap-2 min-w-0">
           <Button variant="outline" size="sm" onClick={openNewSubIssue} className="shrink-0 shadow-none">
             <Plus className="mr-1.5 h-3.5 w-3.5" />
-            New Sub-issue
+            {t("issueDetail.newSubIssue", { defaultValue: "New Sub-issue" })}
           </Button>
         </div>
       )}
@@ -3280,7 +3280,7 @@ export function IssueDetail() {
         onDrop={(evt) => void handleAttachmentDrop(evt)}
       >
         <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-medium text-muted-foreground">Attachments</h3>
+          <h3 className="text-sm font-medium text-muted-foreground">{t("issueDetail.attachments", { defaultValue: "Attachments" })}</h3>
           {attachmentUploadButton}
         </div>
 
@@ -3312,7 +3312,7 @@ export function IssueDetail() {
                     className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-black/60"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <p className="text-xs text-white font-medium">Delete?</p>
+                    <p className="text-xs text-white font-medium">{t("issueDetail.deleteAttachmentConfirm", { defaultValue: "Delete?" })}</p>
                     <div className="flex gap-1.5">
                       <button
                         type="button"
@@ -3324,7 +3324,7 @@ export function IssueDetail() {
                         }}
                         disabled={deleteAttachment.isPending}
                       >
-                        Yes
+                        {t("common.yes", { defaultValue: "Yes" })}
                       </button>
                       <button
                         type="button"
@@ -3334,7 +3334,7 @@ export function IssueDetail() {
                           setConfirmDeleteId(null);
                         }}
                       >
-                        No
+                        {t("common.no", { defaultValue: "No" })}
                       </button>
                     </div>
                   </div>
@@ -3346,7 +3346,7 @@ export function IssueDetail() {
                       e.stopPropagation();
                       setConfirmDeleteId(attachment.id);
                     }}
-                    title="Delete attachment"
+                    title={t("issueDetail.deleteAttachment", { defaultValue: "Delete attachment" })}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -3375,7 +3375,7 @@ export function IssueDetail() {
                     className="text-muted-foreground hover:text-destructive"
                     onClick={() => deleteAttachment.mutate(attachment.id)}
                     disabled={deleteAttachment.isPending}
-                    title="Delete attachment"
+                    title={t("issueDetail.deleteAttachment", { defaultValue: "Delete attachment" })}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -3409,15 +3409,15 @@ export function IssueDetail() {
         <TabsList variant="line" className="w-full justify-start gap-1">
           <TabsTrigger value="chat" className="gap-1.5">
             <MessageSquare className="h-3.5 w-3.5" />
-            Chat
+            {t("issueDetail.tabs.chat", { defaultValue: "Chat" })}
           </TabsTrigger>
           <TabsTrigger value="activity" className="gap-1.5">
             <ActivityIcon className="h-3.5 w-3.5" />
-            Activity
+            {t("issueDetail.tabs.activity", { defaultValue: "Activity" })}
           </TabsTrigger>
           <TabsTrigger value="related-work" className="gap-1.5">
             <ListTree className="h-3.5 w-3.5" />
-            Related work
+            {t("issueDetail.tabs.relatedWork", { defaultValue: "Related work" })}
           </TabsTrigger>
           {issuePluginTabItems.map((item) => (
             <TabsTrigger key={item.value} value={item.value}>
@@ -3535,7 +3535,7 @@ export function IssueDetail() {
               <Textarea
                 value={treeControlReason}
                 onChange={(event) => setTreeControlReason(event.target.value)}
-                placeholder="Explain why this subtree control is being applied..."
+                placeholder={t("issueDetail.subtreeReasonPlaceholder", { defaultValue: "Explain why this subtree control is being applied..." })}
                 className="min-h-[88px]"
               />
             </div>
@@ -3636,7 +3636,7 @@ export function IssueDetail() {
                             </span>
                             <span className="min-w-0 flex-1 truncate">{candidate.title}</span>
                             {candidate.skipped && candidate.skipReason === "terminal_status" ? (
-                              <span className="shrink-0 text-xs text-muted-foreground">Complete</span>
+                              <span className="shrink-0 text-xs text-muted-foreground">{t("common.complete", { defaultValue: "Complete" })}</span>
                             ) : null}
                           </Link>
                         </div>
@@ -3645,7 +3645,7 @@ export function IssueDetail() {
                   ) : null}
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground">Preview unavailable.</p>
+                <p className="text-xs text-muted-foreground">{t("issueDetail.previewUnavailable", { defaultValue: "Preview unavailable." })}</p>
               )}
             </div>
           </div>
@@ -3668,7 +3668,7 @@ export function IssueDetail() {
       <Sheet open={mobilePropsOpen} onOpenChange={setMobilePropsOpen}>
         <SheetContent side="bottom" className="max-h-[85dvh] pb-[env(safe-area-inset-bottom)]">
           <SheetHeader>
-            <SheetTitle className="text-sm">Properties</SheetTitle>
+            <SheetTitle className="text-sm">{t("issueDetail.properties", { defaultValue: "Properties" })}</SheetTitle>
           </SheetHeader>
           <ScrollArea className="flex-1 overflow-y-auto">
             <div className="px-4 pb-4">

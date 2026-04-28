@@ -1884,7 +1884,7 @@ export function Inbox() {
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search inbox…"
+            placeholder={t("inbox.searchPlaceholder", { defaultValue: "Search inbox…" })}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
@@ -1914,14 +1914,14 @@ export function Inbox() {
             items={[
               {
                 value: "mine",
-                label: "Mine",
+                label: t("inbox.tabs.mine", { defaultValue: "Mine" }),
               },
               {
                 value: "recent",
-                label: "Recent",
+                label: t("inbox.tabs.recent", { defaultValue: "Recent" }),
               },
-              { value: "unread", label: "Unread" },
-              { value: "all", label: "All" },
+              { value: "unread", label: t("inbox.tabs.unread", { defaultValue: "Unread" }) },
+              { value: "all", label: t("inbox.tabs.all", { defaultValue: "All" }) },
             ]}
           />
         </Tabs>
@@ -1931,7 +1931,7 @@ export function Inbox() {
             <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search inbox…"
+              placeholder={t("inbox.searchPlaceholder", { defaultValue: "Search inbox…" })}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
@@ -1961,7 +1961,9 @@ export function Inbox() {
             size="icon"
             className={cn("hidden h-8 w-8 shrink-0 sm:inline-flex", nestingEnabled && "bg-accent")}
             onClick={toggleNesting}
-            title={nestingEnabled ? "Disable parent-child nesting" : "Enable parent-child nesting"}
+                title={nestingEnabled
+                  ? t("inbox.nesting.disable", { defaultValue: "Disable parent-child nesting" })
+                  : t("inbox.nesting.enable", { defaultValue: "Enable parent-child nesting" })}
           >
             <ListTree className="h-3.5 w-3.5" />
           </Button>
@@ -1986,7 +1988,7 @@ export function Inbox() {
                 variant="outline"
                 size="icon"
                 className={cn("h-8 w-8 shrink-0", groupBy !== "none" && "bg-accent")}
-                title="Group"
+                title={t("inbox.grouping.title", { defaultValue: "Group" })}
               >
                 <Layers className="h-3.5 w-3.5" />
               </Button>
@@ -1994,9 +1996,11 @@ export function Inbox() {
             <PopoverContent align="end" className="w-40 p-2">
               <div className="space-y-0.5">
                 {([
-                  ["none", "None"],
-                  ["type", "Type"],
-                  ...(isolatedWorkspacesEnabled ? ([["workspace", "Workspace"]] as const) : []),
+                  ["none", t("inbox.grouping.none", { defaultValue: "None" })],
+                  ["type", t("inbox.grouping.type", { defaultValue: "Type" })],
+                  ...(isolatedWorkspacesEnabled
+                    ? ([["workspace", t("inbox.grouping.workspace", { defaultValue: "Workspace" })]] as const)
+                    : []),
                 ] as const).map(([value, label]) => (
                   <button
                     key={value}
@@ -2019,7 +2023,7 @@ export function Inbox() {
             visibleColumnSet={visibleIssueColumnSet}
             onToggleColumn={toggleIssueColumn}
             onResetColumns={() => setIssueColumns(DEFAULT_INBOX_ISSUE_COLUMNS)}
-            title="Choose which inbox columns stay visible"
+            title={t("inbox.columns.title", { defaultValue: "Choose which inbox columns stay visible" })}
             iconOnly
           />
           {canMarkAllRead && (
@@ -2032,19 +2036,27 @@ export function Inbox() {
                 onClick={() => setShowMarkAllReadConfirm(true)}
                 disabled={markAllReadMutation.isPending}
               >
-                {markAllReadMutation.isPending ? "Marking…" : "Mark all as read"}
+                {markAllReadMutation.isPending
+                  ? t("inbox.markAllRead.marking", { defaultValue: "Marking…" })
+                  : t("inbox.markAllRead.button", { defaultValue: "Mark all as read" })}
               </Button>
               <Dialog open={showMarkAllReadConfirm} onOpenChange={setShowMarkAllReadConfirm}>
                 <DialogContent className="sm:max-w-md">
                   <DialogHeader>
-                    <DialogTitle>Mark all as read?</DialogTitle>
+                    <DialogTitle>{t("inbox.markAllRead.title", { defaultValue: "Mark all as read?" })}</DialogTitle>
                     <DialogDescription>
-                      This will mark {unreadIssueIds.length} unread {unreadIssueIds.length === 1 ? "item" : "items"} as read.
+                      {t("inbox.markAllRead.description", {
+                        defaultValue: "This will mark {{count}} unread {{itemLabel}} as read.",
+                        count: unreadIssueIds.length,
+                        itemLabel: unreadIssueIds.length === 1
+                          ? t("inbox.markAllRead.item", { defaultValue: "item" })
+                          : t("inbox.markAllRead.items", { defaultValue: "items" }),
+                      })}
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>
                     <Button variant="outline" onClick={() => setShowMarkAllReadConfirm(false)}>
-                      Cancel
+                      {t("common.cancel", { defaultValue: "Cancel" })}
                     </Button>
                     <Button
                       onClick={() => {
@@ -2052,7 +2064,7 @@ export function Inbox() {
                         markAllReadMutation.mutate(unreadIssueIds);
                       }}
                     >
-                      Mark all as read
+                      {t("inbox.markAllRead.button", { defaultValue: "Mark all as read" })}
                     </Button>
                   </DialogFooter>
                 </DialogContent>
@@ -2070,15 +2082,15 @@ export function Inbox() {
             onValueChange={(value) => updateAllCategoryFilter(value as InboxCategoryFilter)}
           >
             <SelectTrigger className="h-8 w-[170px] text-xs">
-              <SelectValue placeholder="Category" />
+              <SelectValue placeholder={t("inbox.filters.category.placeholder", { defaultValue: "Category" })} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="everything">All categories</SelectItem>
-              <SelectItem value="issues_i_touched">My recent issues</SelectItem>
-              <SelectItem value="join_requests">Join requests</SelectItem>
-              <SelectItem value="approvals">Approvals</SelectItem>
-              <SelectItem value="failed_runs">Failed runs</SelectItem>
-              <SelectItem value="alerts">Alerts</SelectItem>
+              <SelectItem value="everything">{t("inbox.filters.category.everything", { defaultValue: "All categories" })}</SelectItem>
+              <SelectItem value="issues_i_touched">{t("inbox.filters.category.recentIssues", { defaultValue: "My recent issues" })}</SelectItem>
+              <SelectItem value="join_requests">{t("inbox.filters.category.joinRequests", { defaultValue: "Join requests" })}</SelectItem>
+              <SelectItem value="approvals">{t("inbox.filters.category.approvals", { defaultValue: "Approvals" })}</SelectItem>
+              <SelectItem value="failed_runs">{t("inbox.filters.category.failedRuns", { defaultValue: "Failed runs" })}</SelectItem>
+              <SelectItem value="alerts">{t("inbox.filters.category.alerts", { defaultValue: "Alerts" })}</SelectItem>
             </SelectContent>
           </Select>
 
@@ -2088,12 +2100,12 @@ export function Inbox() {
               onValueChange={(value) => updateAllApprovalFilter(value as InboxApprovalFilter)}
             >
               <SelectTrigger className="h-8 w-[170px] text-xs">
-                <SelectValue placeholder="Approval status" />
+                <SelectValue placeholder={t("inbox.filters.approval.placeholder", { defaultValue: "Approval status" })} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All approval statuses</SelectItem>
-                <SelectItem value="actionable">Needs action</SelectItem>
-                <SelectItem value="resolved">Resolved</SelectItem>
+                <SelectItem value="all">{t("inbox.filters.approval.all", { defaultValue: "All approval statuses" })}</SelectItem>
+                <SelectItem value="actionable">{t("inbox.filters.approval.actionable", { defaultValue: "Needs action" })}</SelectItem>
+                <SelectItem value="resolved">{t("inbox.filters.approval.resolved", { defaultValue: "Resolved" })}</SelectItem>
               </SelectContent>
             </Select>
           )}
