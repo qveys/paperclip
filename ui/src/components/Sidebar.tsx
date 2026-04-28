@@ -122,7 +122,7 @@ export function Sidebar() {
           <SidebarNavItem to="/skills" label={t("sidebar.skills", { defaultValue: "Skills" })} icon={Boxes} />
           <SidebarNavItem to="/costs" label={t("sidebar.costs", { defaultValue: "Costs" })} icon={DollarSign} />
           <SidebarNavItem to="/activity" label={t("sidebar.activity", { defaultValue: "Activity" })} icon={History} />
-          <SidebarNavItem to="/company/settings" label={t("common.settings", { defaultValue: "Settings" })} icon={Settings} />
+          <SidebarNavItem to="/company/settings" label={t("sidebar.settings", { defaultValue: "Settings" })} icon={Settings} />
         </SidebarSection>
 
         <PluginSlotOutlet
