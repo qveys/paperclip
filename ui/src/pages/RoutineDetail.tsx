@@ -152,6 +152,7 @@ function TriggerEditor({
   onRotate: (id: string) => void;
   onDelete: (id: string) => void;
 }) {
+  const { t } = useTranslation("core");
   const [draft, setDraft] = useState({
     label: trigger.label ?? "",
     cronExpression: trigger.cronExpression ?? "",
@@ -177,16 +178,18 @@ function TriggerEditor({
         </div>
         <span className="text-xs text-muted-foreground">
           {trigger.kind === "schedule" && trigger.nextRunAt
-            ? `Next: ${new Date(trigger.nextRunAt).toLocaleString()}`
+            ? `${t("routineDetail.triggers.next", { defaultValue: "Next" })}: ${new Date(trigger.nextRunAt).toLocaleString()}`
             : trigger.kind === "webhook"
-              ? "Webhook"
-              : "API"}
+              ? t("routineDetail.triggers.webhook", { defaultValue: "Webhook" })
+              : t("routineDetail.triggers.api", { defaultValue: "API" })}
         </span>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
         <div className="space-y-1.5">
-          <Label className="text-xs">Label</Label>
+          <Label className="text-xs">
+            {t("routineDetail.triggers.label", { defaultValue: "Label" })}
+          </Label>
           <Input
             value={draft.label}
             onChange={(event) => setDraft((current) => ({ ...current, label: event.target.value }))}
@@ -194,7 +197,9 @@ function TriggerEditor({
         </div>
         {trigger.kind === "schedule" && (
           <div className="md:col-span-2 space-y-1.5">
-            <Label className="text-xs">Schedule</Label>
+            <Label className="text-xs">
+              {t("routineDetail.triggers.schedule", { defaultValue: "Schedule" })}
+            </Label>
             <ScheduleEditor
               value={draft.cronExpression}
               onChange={(cronExpression) => setDraft((current) => ({ ...current, cronExpression }))}
@@ -204,7 +209,11 @@ function TriggerEditor({
         {trigger.kind === "webhook" && (
           <>
             <div className="space-y-1.5">
-              <Label className="text-xs">Signing mode</Label>
+              <Label className="text-xs">
+                {t("routineDetail.triggers.signingMode", {
+                  defaultValue: "Signing mode",
+                })}
+              </Label>
               <Select
                 value={draft.signingMode}
                 onValueChange={(signingMode) => setDraft((current) => ({ ...current, signingMode }))}
@@ -221,7 +230,11 @@ function TriggerEditor({
             </div>
             {!SIGNING_MODES_WITHOUT_REPLAY_WINDOW.has(draft.signingMode) && (
               <div className="space-y-1.5">
-                <Label className="text-xs">Replay window (seconds)</Label>
+                <Label className="text-xs">
+                  {t("routineDetail.triggers.replayWindow", {
+                    defaultValue: "Replay window (seconds)",
+                  })}
+                </Label>
                 <Input
                   value={draft.replayWindowSec}
                   onChange={(event) => setDraft((current) => ({ ...current, replayWindowSec: event.target.value }))}
@@ -233,12 +246,19 @@ function TriggerEditor({
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        {trigger.lastResult && <span className="text-xs text-muted-foreground">Last: {trigger.lastResult}</span>}
+        {trigger.lastResult && (
+          <span className="text-xs text-muted-foreground">
+            {t("routineDetail.triggers.last", { defaultValue: "Last" })}:{" "}
+            {trigger.lastResult}
+          </span>
+        )}
         <div className="ml-auto flex items-center gap-2">
           {trigger.kind === "webhook" && (
             <Button variant="outline" size="sm" onClick={() => onRotate(trigger.id)}>
               <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
-              Rotate secret
+              {t("routineDetail.triggers.rotateSecret", {
+                defaultValue: "Rotate secret",
+              })}
             </Button>
           )}
           <Button
@@ -247,7 +267,9 @@ function TriggerEditor({
             onClick={() => onSave(trigger.id, buildRoutineTriggerPatch(trigger, draft, getLocalTimezone()))}
           >
             <Save className="mr-1.5 h-3.5 w-3.5" />
-            Save trigger
+            {t("routineDetail.triggers.saveTrigger", {
+              defaultValue: "Save trigger",
+            })}
           </Button>
           <Button
             variant="ghost"
@@ -529,7 +551,9 @@ export function RoutineDetail() {
     onSuccess: async (result) => {
       if (result.secretMaterial) {
         setSecretMessage({
-          title: "Webhook trigger created",
+          title: t("routineDetail.secret.webhookTriggerCreated", {
+            defaultValue: "Webhook trigger created",
+          }),
           webhookUrl: result.secretMaterial.webhookUrl,
           webhookSecret: result.secretMaterial.webhookSecret,
         });
@@ -604,7 +628,9 @@ export function RoutineDetail() {
     mutationFn: (id: string): Promise<RotateRoutineTriggerResponse> => routinesApi.rotateTriggerSecret(id),
     onSuccess: async (result) => {
       setSecretMessage({
-        title: "Webhook secret rotated",
+        title: t("routineDetail.secret.webhookSecretRotated", {
+          defaultValue: "Webhook secret rotated",
+        }),
         webhookUrl: result.secretMaterial.webhookUrl,
         webhookSecret: result.secretMaterial.webhookSecret,
       });
@@ -667,7 +693,9 @@ export function RoutineDetail() {
   if (error || !routine) {
     return (
       <p className="pt-6 text-sm text-destructive">
-        {error instanceof Error ? error.message : "Routine not found"}
+        {error instanceof Error
+          ? error.message
+          : t("routineDetail.errors.notFound", { defaultValue: "Routine not found" })}
         
       </p>
     );
@@ -736,7 +764,9 @@ export function RoutineDetail() {
             onCheckedChange={() => {
               if (!automationEnabled && !routine.assigneeAgentId) {
                 pushToast({
-                  title: "Default agent required",
+                  title: t("routineDetail.toast.defaultAgentRequired", {
+                    defaultValue: "Default agent required",
+                  }),
                   body: t("routineDetail.toast.defaultAgentRequiredBody", { defaultValue: "Set a default agent before enabling routine automation." }),
                   tone: "warn",
                 });
@@ -785,8 +815,10 @@ export function RoutineDetail() {
 
       {!routine.assigneeAgentId ? (
         <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4 text-sm text-amber-900 dark:text-amber-200">
-          Default agent required. This routine can stay as a draft and still run manually, but automation stays paused until you assign a default agent.
-          
+          {t("routineDetail.defaultAgentRequiredBanner", {
+            defaultValue:
+              "Default agent required. This routine can stay as a draft and still run manually, but automation stays paused until you assign a default agent.",
+          })}
         </div>
       ) : null}
 
@@ -929,7 +961,15 @@ export function RoutineDetail() {
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-muted-foreground">{concurrencyPolicyDescriptions[editDraft.concurrencyPolicy]}</p>
+              <p className="text-xs text-muted-foreground">
+                {t(
+                  `routineDetail.advanced.concurrencyPolicyDescriptions.${editDraft.concurrencyPolicy}`,
+                  {
+                    defaultValue:
+                      concurrencyPolicyDescriptions[editDraft.concurrencyPolicy],
+                  },
+                )}
+              </p>
             </div>
             <div className="space-y-2">
               <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">{t("routineDetail.advanced.catchup", { defaultValue: "Catch-up" })}</p>
@@ -946,7 +986,14 @@ export function RoutineDetail() {
                   ))}
                 </SelectContent>
               </Select>
-              <p className="text-xs text-muted-foreground">{catchUpPolicyDescriptions[editDraft.catchUpPolicy]}</p>
+              <p className="text-xs text-muted-foreground">
+                {t(
+                  `routineDetail.advanced.catchUpPolicyDescriptions.${editDraft.catchUpPolicy}`,
+                  {
+                    defaultValue: catchUpPolicyDescriptions[editDraft.catchUpPolicy],
+                  },
+                )}
+              </p>
             </div>
           </div>
         </CollapsibleContent>
@@ -1002,7 +1049,12 @@ export function RoutineDetail() {
                   <SelectContent>
                     {triggerKinds.map((kind) => (
                       <SelectItem key={kind} value={kind} disabled={kind === "webhook"}>
-                        {kind}{kind === "webhook" ? " — COMING SOON" : ""}
+                        {kind}
+                        {kind === "webhook"
+                          ? t("routineDetail.triggers.comingSoonSuffix", {
+                              defaultValue: " — COMING SOON",
+                            })
+                          : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -1031,7 +1083,12 @@ export function RoutineDetail() {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-muted-foreground">{signingModeDescriptions[newTrigger.signingMode]}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {t(
+                        `routineDetail.triggers.signingModeDescriptions.${newTrigger.signingMode}`,
+                        { defaultValue: signingModeDescriptions[newTrigger.signingMode] },
+                      )}
+                    </p>
                   </div>
                   {!SIGNING_MODES_WITHOUT_REPLAY_WINDOW.has(newTrigger.signingMode) && (
                     <div className="space-y-1.5">
