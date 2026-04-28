@@ -38,6 +38,7 @@ import { User, Hexagon, ArrowUpRight, Tag, Plus, GitBranch, FolderOpen, Check, E
 import { AgentIcon } from "./AgentIconPicker";
 
 function TruncatedCopyable({ value, icon: Icon }: { value: string; icon: React.ComponentType<{ className?: string }> }) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timerRef.current), []);
@@ -57,7 +58,9 @@ function TruncatedCopyable({ value, icon: Icon }: { value: string; icon: React.C
         type="button"
         className="text-sm font-mono min-w-0 break-all text-left cursor-pointer hover:text-foreground transition-colors"
         onClick={handleCopy}
-        title={copied ? "Copied!" : "Click to copy"}
+        title={copied
+          ? t("issueProperties.copied", { defaultValue: "Copied!" })
+          : t("issueProperties.clickToCopy", { defaultValue: "Click to copy" })}
       >
         {value}
       </button>
@@ -417,7 +420,7 @@ export function IssueProperties({
       return agentName(value.slice("agent:".length)) ?? value.slice("agent:".length, "agent:".length + 8);
     }
     if (value.startsWith("user:")) {
-      return userLabel(value.slice("user:".length)) ?? "User";
+      return userLabel(value.slice("user:".length)) ?? t("issueProperties.user", { defaultValue: "User" });
     }
     return value;
   };
@@ -443,13 +446,17 @@ export function IssueProperties({
         className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
         onClick={() => onUpdate({ status: "in_review" })}
       >
-        {stageType === "review" ? "Run review now" : "Run approval now"}
+        {stageType === "review"
+          ? t("issueProperties.runReviewNow", { defaultValue: "Run review now" })
+          : t("issueProperties.runApprovalNow", { defaultValue: "Run approval now" })}
       </button>
     </PropertyRow>
   );
   const currentExecutionLabel = (() => {
     if (!issue.executionState?.currentStageType) return null;
-    const stageLabel = issue.executionState.currentStageType === "review" ? "Review" : "Approval";
+    const stageLabel = issue.executionState.currentStageType === "review"
+      ? t("issueProperties.review", { defaultValue: "Review" })
+      : t("issueProperties.approval", { defaultValue: "Approval" });
     const participant = issue.executionState.currentParticipant;
     const participantLabel = participant
       ? (participant.type === "agent"
@@ -457,9 +464,17 @@ export function IssueProperties({
         : userLabel(participant.userId ?? null))
       : null;
     if (issue.executionState.status === "changes_requested") {
-      return `${stageLabel} requested changes${participantLabel ? ` by ${participantLabel}` : ""}`;
+      return t("issueProperties.executionRequestedChanges", {
+        defaultValue: "{{stageLabel}} requested changes{{participantSuffix}}",
+        stageLabel,
+        participantSuffix: participantLabel ? ` ${t("issueProperties.by", { defaultValue: "by" })} ${participantLabel}` : "",
+      });
     }
-    return `${stageLabel} pending${participantLabel ? ` with ${participantLabel}` : ""}`;
+    return t("issueProperties.executionPending", {
+      defaultValue: "{{stageLabel}} pending{{participantSuffix}}",
+      stageLabel,
+      participantSuffix: participantLabel ? ` ${t("issueProperties.with", { defaultValue: "with" })} ${participantLabel}` : "",
+    });
   })();
   const selectedIssueLabels = useMemo(() => {
     const selectedIds = issue.labelIds ?? [];
@@ -697,7 +712,12 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder={`Search ${stageType === "review" ? "reviewers" : "approvers"}...`}
+        placeholder={t("issueProperties.searchParticipants", {
+          defaultValue: "Search {{role}}...",
+          role: stageType === "review"
+            ? t("issueProperties.reviewers", { defaultValue: "reviewers" })
+            : t("issueProperties.approvers", { defaultValue: "approvers" }),
+        })}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         autoFocus={!inline}
@@ -710,7 +730,12 @@ export function IssueProperties({
           )}
           onClick={onClear}
         >
-          No {stageType === "review" ? "reviewers" : "approvers"}
+          {t("issueProperties.noParticipants", {
+            defaultValue: "No {{role}}",
+            role: stageType === "review"
+              ? t("issueProperties.reviewers", { defaultValue: "reviewers" })
+              : t("issueProperties.approvers", { defaultValue: "approvers" }),
+          })}
         </button>
         {currentUserId && (
           <button
@@ -733,7 +758,7 @@ export function IssueProperties({
             onClick={() => toggleExecutionParticipant(stageType, `user:${issue.createdByUserId}`)}
           >
             <User className="h-3 w-3 shrink-0 text-muted-foreground" />
-            {creatorUserLabel ? creatorUserLabel : "Requester"}
+            {creatorUserLabel ? creatorUserLabel : t("issueProperties.requester", { defaultValue: "Requester" })}
           </button>
         )}
         {otherUserOptions
@@ -817,7 +842,7 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder="Search projects..."
+        placeholder={t("issueProperties.searchProjects", { defaultValue: "Search projects..." })}
         value={projectSearch}
         onChange={(e) => setProjectSearch(e.target.value)}
         autoFocus={!inline}
@@ -938,7 +963,7 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder="Search issues..."
+        placeholder={t("issueProperties.searchIssues", { defaultValue: "Search issues..." })}
         value={parentSearch}
         onChange={(e) => setParentSearch(e.target.value)}
         autoFocus={!inline}
@@ -1006,7 +1031,7 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder="Search issues..."
+        placeholder={t("issueProperties.searchIssues", { defaultValue: "Search issues..." })}
         value={blockedBySearch}
         onChange={(e) => setBlockedBySearch(e.target.value)}
         autoFocus={!inline}
