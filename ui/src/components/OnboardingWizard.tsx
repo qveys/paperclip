@@ -1108,7 +1108,7 @@ export function OnboardingWizard() {
                       <ListTodo className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <h3 className="font-medium">Give it something to do</h3>
+                      <h3 className="font-medium">{t("onboarding.giveItSomethingToDo", { defaultValue: "Give it something to do" })}</h3>
                       <p className="text-xs text-muted-foreground">
                         Give your agent a small task to start with — a bug fix,
                         a research question, writing a script.
@@ -1121,7 +1121,7 @@ export function OnboardingWizard() {
                     </label>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50"
-                      placeholder="e.g. Research competitor pricing"
+                      placeholder={t("onboarding.taskTitlePlaceholder", { defaultValue: "e.g. Research competitor pricing" })}
                       value={taskTitle}
                       onChange={(e) => setTaskTitle(e.target.value)}
                       autoFocus
@@ -1134,7 +1134,7 @@ export function OnboardingWizard() {
                     <textarea
                       ref={textareaRef}
                       className="w-full rounded-md border border-border bg-transparent px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground/50 resize-none min-h-[120px] max-h-[300px] overflow-y-auto"
-                      placeholder="Add more detail about what the agent should do..."
+                      placeholder={t("onboarding.taskDescriptionPlaceholder", { defaultValue: "Add more detail about what the agent should do..." })}
                       value={taskDescription}
                       onChange={(e) => setTaskDescription(e.target.value)}
                     />
@@ -1149,7 +1149,7 @@ export function OnboardingWizard() {
                       <Rocket className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <div>
-                      <h3 className="font-medium">Ready to launch</h3>
+                      <h3 className="font-medium">{t("onboarding.readyToLaunch", { defaultValue: "Ready to launch" })}</h3>
                       <p className="text-xs text-muted-foreground">
                         Everything is set up. Launching now will create the
                         starter task, wake the agent, and open the issue.
@@ -1163,7 +1163,7 @@ export function OnboardingWizard() {
                         <p className="text-sm font-medium truncate">
                           {companyName}
                         </p>
-                        <p className="text-xs text-muted-foreground">Company</p>
+                        <p className="text-xs text-muted-foreground">{t("onboarding.tabs.company", { defaultValue: "Company" })}</p>
                       </div>
                       <Check className="h-4 w-4 text-green-500 shrink-0" />
                     </div>
@@ -1185,7 +1185,7 @@ export function OnboardingWizard() {
                         <p className="text-sm font-medium truncate">
                           {taskTitle}
                         </p>
-                        <p className="text-xs text-muted-foreground">Task</p>
+                        <p className="text-xs text-muted-foreground">{t("onboarding.tabs.task", { defaultValue: "Task" })}</p>
                       </div>
                       <Check className="h-4 w-4 text-green-500 shrink-0" />
                     </div>
@@ -1227,7 +1227,9 @@ export function OnboardingWizard() {
                       ) : (
                         <ArrowRight className="h-3.5 w-3.5 mr-1" />
                       )}
-                      {loading ? "Creating..." : "Next"}
+                      {loading
+                        ? t("onboarding.creating", { defaultValue: "Creating..." })
+                        : t("onboarding.next", { defaultValue: "Next" })}
                     </Button>
                   )}
                   {step === 2 && (
@@ -1243,7 +1245,9 @@ export function OnboardingWizard() {
                       ) : (
                         <ArrowRight className="h-3.5 w-3.5 mr-1" />
                       )}
-                      {loading ? "Creating..." : "Next"}
+                      {loading
+                        ? t("onboarding.creating", { defaultValue: "Creating..." })
+                        : t("onboarding.next", { defaultValue: "Next" })}
                     </Button>
                   )}
                   {step === 3 && (
@@ -1257,7 +1261,9 @@ export function OnboardingWizard() {
                       ) : (
                         <ArrowRight className="h-3.5 w-3.5 mr-1" />
                       )}
-                      {loading ? "Creating..." : "Next"}
+                      {loading
+                        ? t("onboarding.creating", { defaultValue: "Creating..." })
+                        : t("onboarding.next", { defaultValue: "Next" })}
                     </Button>
                   )}
                   {step === 4 && (
@@ -1267,7 +1273,9 @@ export function OnboardingWizard() {
                       ) : (
                         <ArrowRight className="h-3.5 w-3.5 mr-1" />
                       )}
-                      {loading ? "Creating..." : "Create & Open Issue"}
+                      {loading
+                        ? t("onboarding.creating", { defaultValue: "Creating..." })
+                        : t("onboarding.createAndOpenIssue", { defaultValue: "Create & Open Issue" })}
                     </Button>
                   )}
                 </div>
