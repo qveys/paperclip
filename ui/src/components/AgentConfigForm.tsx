@@ -562,9 +562,8 @@ export function AgentConfigForm(props: AgentConfigFormProps) {
                     onChange={(v) => mark("adapterConfig", "promptTemplate", v ?? "")}
                     placeholder={String(
                       tx("agentConfig.placeholders.promptTemplate", {
-                        defaultValue: "You are agent {{agentName}}. Your role is {{agentRole}}...",
-                        agentName: "{{ agent.name }}",
-                        agentRole: "{{ agent.role }}",
+                        defaultValue: "You are agent {{ agent.name }}. Your role is {{ agent.role }}...",
+                        agent: { name: "{{ agent.name }}", role: "{{ agent.role }}" },
                       }),
                     )}
                     contentClassName="min-h-[88px] text-sm font-mono"

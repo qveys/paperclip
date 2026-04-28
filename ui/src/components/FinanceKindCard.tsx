@@ -37,12 +37,17 @@ export function FinanceKindCard({ rows }: FinanceKindCardProps) {
                 <div className="truncate text-sm font-medium">{financeEventKindDisplayName(row.eventKind)}</div>
                 <div className="text-xs text-muted-foreground">
                   {t("costs.financeByKind.eventBillerCounts", {
-                    defaultValue:
-                      "{{eventCount}} event{{eventSuffix}} · {{billerCount}} biller{{billerSuffix}}",
-                    eventCount: row.eventCount,
-                    eventSuffix: row.eventCount === 1 ? "" : "s",
-                    billerCount: row.billerCount,
-                    billerSuffix: row.billerCount === 1 ? "" : "s",
+                    defaultValue: "{{events}} · {{billers}}",
+                    events: t("costs.financeByKind.eventCount", {
+                      count: row.eventCount,
+                      defaultValue_one: "{{count}} event",
+                      defaultValue_other: "{{count}} events",
+                    }),
+                    billers: t("costs.financeByKind.billerCount", {
+                      count: row.billerCount,
+                      defaultValue_one: "{{count}} biller",
+                      defaultValue_other: "{{count}} billers",
+                    }),
                   })}
                 </div>
               </div>

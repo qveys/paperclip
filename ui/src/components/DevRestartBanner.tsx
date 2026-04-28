@@ -95,8 +95,9 @@ export function DevRestartBanner({ devServer }: { devServer?: DevServerHealthSta
               <TimerReset className="h-3.5 w-3.5" />
               <span>
                 {t("devRestartBanner.waitingForIdle", {
-                  defaultValue: "Waiting for {{count}} live run to finish",
                   count: devServer.activeRunCount,
+                  defaultValue_one: "Waiting for {{count}} live run to finish",
+                  defaultValue_other: "Waiting for {{count}} live runs to finish",
                 })}
               </span>
             </div>

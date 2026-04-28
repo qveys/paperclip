@@ -136,10 +136,10 @@
       "skills": ""
     },
     "types": {
-      "approveCeoStrategy": "",
-      "budgetOverrideRequired": "",
-      "hireAgent": "",
-      "requestBoardApproval": ""
+      "approveCeoStrategy": "CEO Strategy",
+      "budgetOverrideRequired": "Budget Override",
+      "hireAgent": "Hire Agent",
+      "requestBoardApproval": "Board Approval"
     }
   },
   "approvalStatus": "Approval status",
@@ -1032,7 +1032,7 @@
     "restartRequired": "Restart Required",
     "updated": "updated {{time}}",
     "waitingForIdle_one": "Waiting for {{count}} live run to finish",
-    "waitingForIdle_other": "Waiting for {{count}} live run to finish"
+    "waitingForIdle_other": "Waiting for {{count}} live runs to finish"
   },
   "diagnosticsTitle": "Connectivity diagnostics",
   "diff": "diff",

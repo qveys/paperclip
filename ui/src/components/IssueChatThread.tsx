@@ -101,6 +101,7 @@ import {
 } from "../lib/transcriptPresentation";
 import { cn, formatDateTime, formatShortDate } from "../lib/utils";
 import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
@@ -2515,6 +2516,7 @@ export function IssueChatThread({
   onSubmitInteractionAnswers,
   composerRef,
 }: IssueChatThreadProps) {
+  useTranslation("issues");
   const location = useLocation();
   const hasScrolledRef = useRef(false);
   const bottomAnchorRef = useRef<HTMLDivElement | null>(null);

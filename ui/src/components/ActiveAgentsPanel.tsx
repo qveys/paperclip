@@ -3,6 +3,7 @@ import { Link } from "@/lib/router";
 import { useQuery } from "@tanstack/react-query";
 import type { Issue } from "@paperclipai/shared";
 import { useT } from "@/i18n/hooks/useT";
+import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "@/i18n/resources";
 import { heartbeatsApi, type LiveRunForIssue } from "../api/heartbeats";
 import type { TranscriptEntry } from "../adapters";
 import { issuesApi } from "../api/issues";
@@ -24,8 +25,23 @@ function isRunActive(run: LiveRunForIssue): boolean {
   return run.status === "queued" || run.status === "running";
 }
 
+function resolveSafeLocale(locale: string): SupportedLanguage {
+  if ((SUPPORTED_LANGUAGES as readonly string[]).includes(locale)) {
+    return locale as SupportedLanguage;
+  }
+  const base = locale.split("-")[0];
+  const match = SUPPORTED_LANGUAGES.find((lng) => lng.split("-")[0] === base);
+  return match ?? "en";
+}
+
 function relativeTimeForLocale(date: Date | string, locale: string): string {
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto", style: "short" });
+  const safeLocale = resolveSafeLocale(locale);
+  let rtf: Intl.RelativeTimeFormat;
+  try {
+    rtf = new Intl.RelativeTimeFormat(safeLocale, { numeric: "auto", style: "short" });
+  } catch {
+    rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto", style: "short" });
+  }
   const then = new Date(date).getTime();
   const rawDiffSec = (then - Date.now()) / 1000;
   const diffSec = rawDiffSec < 0 ? Math.ceil(rawDiffSec) : Math.floor(rawDiffSec);
@@ -40,7 +56,11 @@ function relativeTimeForLocale(date: Date | string, locale: string): string {
   if (Math.abs(diffHr) < 24) return rtf.format(diffHr, "hour");
   const diffDay = Math.round(diffHr / 24);
   if (Math.abs(diffDay) < 30) return rtf.format(diffDay, "day");
-  return new Date(date).toLocaleString(locale, { month: "short", day: "numeric" });
+  try {
+    return new Date(date).toLocaleString(safeLocale, { month: "short", day: "numeric" });
+  } catch {
+    return new Date(date).toLocaleString("en", { month: "short", day: "numeric" });
+  }
 }
 
 interface ActiveAgentsPanelProps {

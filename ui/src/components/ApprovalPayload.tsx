@@ -11,13 +11,6 @@ export const typeLabelKey: Record<string, string> = {
   request_board_approval: "approvals.types.requestBoardApproval",
 };
 
-const typeLabelFallback: Record<string, string> = {
-  hire_agent: "Hire Agent",
-  approve_ceo_strategy: "CEO Strategy",
-  budget_override_required: "Budget Override",
-  request_board_approval: "Board Approval",
-};
-
 function firstNonEmptyString(...values: unknown[]): string | null {
   for (const value of values) {
     if (typeof value === "string" && value.trim().length > 0) {
@@ -37,33 +30,15 @@ export function approvalSubject(payload?: Record<string, unknown> | null): strin
 }
 
 /** Build a contextual label for an approval, e.g. "Hire Agent: Designer" */
-export function approvalLabel(t: TFunction, type: string, payload?: Record<string, unknown> | null): string;
-export function approvalLabel(type: string, payload?: Record<string, unknown> | null): string;
 export function approvalLabel(
-  tOrType: TFunction | string,
-  typeOrPayload?: string | Record<string, unknown> | null,
-  payloadArg?: Record<string, unknown> | null,
+  t: TFunction,
+  type: string,
+  payload?: Record<string, unknown> | null,
 ): string {
-  const hasTranslator = typeof tOrType === "function";
-  const t = hasTranslator ? tOrType : null;
-  const type = hasTranslator ? String(typeOrPayload) : tOrType;
-  const payload = hasTranslator ? payloadArg : (typeOrPayload as Record<string, unknown> | null | undefined);
-  const base = t
-    ? type === "hire_agent"
-      ? (t("approvals.types.hireAgent") as string)
-      : type === "approve_ceo_strategy"
-        ? (t("approvals.types.approveCeoStrategy") as string)
-        : type === "budget_override_required"
-          ? (t("approvals.types.budgetOverrideRequired") as string)
-          : type === "request_board_approval"
-            ? (t("approvals.types.requestBoardApproval") as string)
-            : (typeLabelFallback[type] ?? type)
-    : (typeLabelFallback[type] ?? type);
+  const key = typeLabelKey[type];
+  const base = key ? (t(key) as string) : type;
   const subject = approvalSubject(payload);
-  if (subject) {
-    return `${base}: ${subject}`;
-  }
-  return base;
+  return subject ? `${base}: ${subject}` : base;
 }
 
 export const typeIcon: Record<string, typeof UserPlus> = {

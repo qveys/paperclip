@@ -34,15 +34,13 @@ function PickerButton({
   options,
   onChange,
   children,
-  tx,
-  keyPrefix,
+  optionLabel,
 }: {
   current: string;
   options: readonly string[];
   onChange: (value: string) => void;
   children: React.ReactNode;
-  tx: ReturnType<typeof useT>["t"];
-  keyPrefix: string;
+  optionLabel: (value: string) => React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   return (
@@ -64,12 +62,42 @@ function PickerButton({
               setOpen(false);
             }}
           >
-            {tx(`${keyPrefix}.${opt}`)}
+            {optionLabel(opt)}
           </Button>
         ))}
       </PopoverContent>
     </Popover>
   );
+}
+
+function goalStatusLabel(tx: ReturnType<typeof useT>["t"], value: string): React.ReactNode {
+  switch (value) {
+    case "planned":
+      return tx("goals.properties.statusValues.planned");
+    case "active":
+      return tx("goals.properties.statusValues.active");
+    case "achieved":
+      return tx("goals.properties.statusValues.achieved");
+    case "cancelled":
+      return tx("goals.properties.statusValues.cancelled");
+    default:
+      return value;
+  }
+}
+
+function goalLevelLabel(tx: ReturnType<typeof useT>["t"], value: string): React.ReactNode {
+  switch (value) {
+    case "company":
+      return tx("goals.properties.levelValues.company");
+    case "team":
+      return tx("goals.properties.levelValues.team");
+    case "agent":
+      return tx("goals.properties.levelValues.agent");
+    case "task":
+      return tx("goals.properties.levelValues.task");
+    default:
+      return value;
+  }
 }
 
 export function GoalProperties({ goal, onUpdate }: GoalPropertiesProps) {
@@ -106,8 +134,7 @@ export function GoalProperties({ goal, onUpdate }: GoalPropertiesProps) {
               current={goal.status}
               options={GOAL_STATUSES}
               onChange={(status) => onUpdate({ status })}
-              tx={tx}
-              keyPrefix="goals.properties.statusValues"
+              optionLabel={(value) => goalStatusLabel(tx, value)}
             >
               <StatusBadge status={goal.status} />
             </PickerButton>
@@ -122,13 +149,12 @@ export function GoalProperties({ goal, onUpdate }: GoalPropertiesProps) {
               current={goal.level}
               options={GOAL_LEVELS}
               onChange={(level) => onUpdate({ level })}
-              tx={tx}
-              keyPrefix="goals.properties.levelValues"
+              optionLabel={(value) => goalLevelLabel(tx, value)}
             >
-              <span className="text-sm">{tx(`goals.properties.levelValues.${goal.level}`)}</span>
+              <span className="text-sm">{goalLevelLabel(tx, goal.level)}</span>
             </PickerButton>
           ) : (
-            <span className="text-sm">{tx(`goals.properties.levelValues.${goal.level}`)}</span>
+            <span className="text-sm">{goalLevelLabel(tx, goal.level)}</span>
           )}
         </PropertyRow>
 

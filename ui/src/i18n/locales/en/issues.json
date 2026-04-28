@@ -1,17 +1,17 @@
 {
   "approvals": {
     "addCommentPlaceholder": "",
-    "approve": "",
-    "approving": "",
+    "approve": "Approve",
+    "approving": "Approving…",
     "backToApprovals": "",
     "boardCommenter": "",
     "breadcrumb": "",
     "budgetLine": "",
     "budgetOverrideHint": "",
     "card": {
-      "createdTime": "",
-      "decisionNoteLabel": "",
-      "requestedBy": ""
+      "createdTime": "Created {{time}}",
+      "decisionNoteLabel": "Decision note:",
+      "requestedBy": "Requested by"
     },
     "comments_one": "",
     "comments_other": "",
@@ -29,7 +29,7 @@
       "resubmitFailed": "",
       "revisionRequestFailed": ""
     },
-    "fallbackLabel": "",
+    "fallbackLabel": "Approval",
     "fields": {
       "adapter": "",
       "capabilities": "",
@@ -55,8 +55,8 @@
     "openHiredAgent": "",
     "postComment": "",
     "posting": "",
-    "reject": "",
-    "rejecting": "",
+    "reject": "Reject",
+    "rejecting": "Rejecting…",
     "requestedBy": "",
     "requestingAgentNotified": "",
     "requestRevision": "",
@@ -65,10 +65,19 @@
     "seeFullRequest": "",
     "selectCompanyFirst": "",
     "status": {
-      "revisionRequested": ""
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "revisionRequested": "Revision requested"
     },
     "tabAll": "",
     "tabPending": "",
+    "types": {
+      "approveCeoStrategy": "CEO Strategy",
+      "budgetOverrideRequired": "Budget Override",
+      "hireAgent": "Hire Agent",
+      "requestBoardApproval": "Board Approval"
+    },
     "viewDetails": ""
   },
   "goals": {
@@ -94,13 +103,25 @@
     },
     "newGoal": "",
     "properties": {
-      "created": "",
-      "level": "",
-      "none": "",
-      "owner": "",
-      "parentGoal": "",
-      "status": "",
-      "updated": ""
+      "created": "Created",
+      "level": "Level",
+      "levelValues": {
+        "agent": "Agent",
+        "company": "Company",
+        "task": "Task",
+        "team": "Team"
+      },
+      "none": "None",
+      "owner": "Owner",
+      "parentGoal": "Parent goal",
+      "status": "Status",
+      "statusValues": {
+        "achieved": "Achieved",
+        "active": "Active",
+        "cancelled": "Cancelled",
+        "planned": "Planned"
+      },
+      "updated": "Updated"
     },
     "selectCompany": "",
     "tree": {

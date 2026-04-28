@@ -18,12 +18,17 @@ export function FinanceBillerCard({ row }: FinanceBillerCardProps) {
             <CardTitle className="text-base">{providerDisplayName(row.biller)}</CardTitle>
             <CardDescription className="mt-1 text-xs">
               {t("costs.financeByBiller.eventKindCounts", {
-                defaultValue:
-                  "{{eventCount}} event{{eventSuffix}} across {{kindCount}} kind{{kindSuffix}}",
-                eventCount: row.eventCount,
-                eventSuffix: row.eventCount === 1 ? "" : "s",
-                kindCount: row.kindCount,
-                kindSuffix: row.kindCount === 1 ? "" : "s",
+                defaultValue: "{{events}} across {{kinds}}",
+                events: t("costs.financeByBiller.eventCount", {
+                  count: row.eventCount,
+                  defaultValue_one: "{{count}} event",
+                  defaultValue_other: "{{count}} events",
+                }),
+                kinds: t("costs.financeByBiller.kindCount", {
+                  count: row.kindCount,
+                  defaultValue_one: "{{count}} kind",
+                  defaultValue_other: "{{count}} kinds",
+                }),
               })}
             </CardDescription>
           </div>

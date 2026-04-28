@@ -91,15 +91,23 @@
       "description": "Account-level financial events grouped by who charged or credited them.",
       "empty": "No finance events yet.",
       "estimated": "estimated",
-      "eventKindCounts": "{{eventCount}} event{{eventSuffix}} across {{kindCount}} kind{{kindSuffix}}",
+      "eventCount_one": "{{count}} event",
+      "eventCount_other": "{{count}} events",
+      "eventKindCounts": "{{events}} across {{kinds}}",
+      "kindCount_one": "{{count}} kind",
+      "kindCount_other": "{{count}} kinds",
       "net": "net",
       "title": "By biller"
     },
     "financeByKind": {
+      "billerCount_one": "{{count}} biller",
+      "billerCount_other": "{{count}} billers",
       "debitsValue": "{{amount}} debits",
       "description": "Account-level charges grouped by event kind.",
       "empty": "No finance events in this period.",
-      "eventBillerCounts": "{{eventCount}} event{{eventSuffix}} · {{billerCount}} biller{{billerSuffix}}",
+      "eventBillerCounts": "{{events}} · {{billers}}",
+      "eventCount_one": "{{count}} event",
+      "eventCount_other": "{{count}} events",
       "title": "Financial event mix"
     },
     "financeTimeline": {

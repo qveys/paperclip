@@ -10,8 +10,18 @@ import { ApprovalPayloadRenderer, approvalLabel } from "./ApprovalPayload";
 
 describe("approvalLabel", () => {
   it("uses payload titles for generic board approvals", () => {
+    const fakeT = ((key: string) => {
+      const map: Record<string, string> = {
+        "approvals.types.hireAgent": "Hire Agent",
+        "approvals.types.approveCeoStrategy": "CEO Strategy",
+        "approvals.types.budgetOverrideRequired": "Budget Override",
+        "approvals.types.requestBoardApproval": "Board Approval",
+      };
+      return map[key] ?? key;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }) as any;
     expect(
-      approvalLabel("request_board_approval", {
+      approvalLabel(fakeT, "request_board_approval", {
         title: "Reply with an ASCII frog",
       }),
     ).toBe("Board Approval: Reply with an ASCII frog");
