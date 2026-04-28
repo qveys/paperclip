@@ -452,7 +452,9 @@ function SuggestTasksCard({
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-        <span>{totalTasks === 1 ? t("interactionCard.oneDraftIssue", { defaultValue: "1 draft issue" }) : t("interactionCard.manyDraftIssues", { defaultValue: `${totalTasks} draft issues` })}</span>
+        <span>{totalTasks === 1
+          ? t("interactionCard.oneDraftIssue", { defaultValue: "1 draft issue" })
+          : t("interactionCard.manyDraftIssues", { defaultValue: "{{count}} draft issues", count: totalTasks })}</span>
         {interaction.payload.defaultParentId ? (
           <TaskField label={t("interactionCard.defaultParent", { defaultValue: "Default parent" })} value={interaction.payload.defaultParentId} tone="subtle" />
         ) : null}
@@ -754,7 +756,7 @@ function AskUserQuestionsCard({
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                    {t("interactionCard.questionN", { defaultValue: `Question ${index + 1}` })}
+                    {t("interactionCard.questionN", { defaultValue: "Question {{number}}", number: index + 1 })}
                   </div>
                   <div
                     id={`${interaction.id}-${question.id}-prompt`}
@@ -1266,11 +1268,14 @@ export function IssueThreadInteractionCard({
           <TooltipTrigger asChild>
             <div className="rounded-sm border border-border/70 bg-transparent px-3 py-2 text-right text-xs text-muted-foreground">
               <div className="font-medium text-foreground">{formatShortDate(interaction.createdAt)}</div>
-              <div>{t("interactionCard.proposedBy", { defaultValue: `proposed by ${createdByLabel}` })}</div>
+              <div>{t("interactionCard.proposedBy", { defaultValue: "proposed by {{name}}", name: createdByLabel })}</div>
             </div>
           </TooltipTrigger>
           <TooltipContent side="bottom" className="text-xs">
-            {t("interactionCard.createdAt", { defaultValue: `Created ${formatDateTime(interaction.createdAt)}` })}
+            {t("interactionCard.createdAt", {
+              defaultValue: "Created {{date}}",
+              date: formatDateTime(interaction.createdAt),
+            })}
           </TooltipContent>
         </Tooltip>
       </div>

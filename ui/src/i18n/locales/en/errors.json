@@ -3,7 +3,7 @@
     "breadcrumb": "Not Found",
     "companyNotFound": "Company not found",
     "goHome": "Go home",
-    "noCompanyPrefixMatch": "notFound.noCompanyPrefixMatch",
+    "noCompanyPrefixMatch": "No company matches prefix \"{{prefix}}\".",
     "openDashboard": "Open dashboard",
     "pageNotFound": "Page not found",
     "requestedPath": "Requested path:",

@@ -424,10 +424,10 @@ export function RoutineDetail() {
   const copySecretValue = async (label: string, value: string) => {
     try {
       await navigator.clipboard.writeText(value);
-      pushToast({ title: t("routineDetail.toast.copied", { defaultValue: `${label} copied` }), tone: "success" });
+      pushToast({ title: t("routineDetail.toast.copied", { defaultValue: "{{label}} copied", label }), tone: "success" });
     } catch (error) {
       pushToast({
-        title: t("routineDetail.toast.copyFailed", { defaultValue: `Failed to copy ${label.toLowerCase()}` }),
+        title: t("routineDetail.toast.copyFailed", { defaultValue: "Failed to copy {{label}}", label: label.toLowerCase() }),
         body: error instanceof Error ? error.message : t("routineDetail.toast.clipboardDenied", { defaultValue: "Clipboard access was denied." }),
         tone: "error",
       });

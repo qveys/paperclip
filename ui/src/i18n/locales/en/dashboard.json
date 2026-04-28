@@ -113,8 +113,8 @@
       "title": "Recent financial events"
     },
     "inferenceLedger": {
-      "budgetConsumed": "costs.inferenceLedger.budgetConsumed",
-      "budgetValue": "costs.inferenceLedger.budgetValue",
+      "budgetConsumed": "{{percent}}% of monthly budget consumed in this range.",
+      "budgetValue": "Budget {{budget}}",
       "description": "Request-scoped inference spend for the selected period.",
       "title": "Inference ledger",
       "unlimitedBudget": "Unlimited budget",
@@ -123,13 +123,13 @@
     "metrics": {
       "budget": "Budget",
       "budgetOpen": "Open",
-      "budgetPausedSubtitle": "costs.metrics.budgetPausedSubtitle",
+      "budgetPausedSubtitle": "{{agentCount}} agents paused · {{projectCount}} projects paused",
       "financeEvents": "Finance events",
-      "financeEventsSubtitle": "costs.metrics.financeEventsSubtitle",
+      "financeEventsSubtitle": "{{estimated}} estimated in range",
       "financeNet": "Finance net",
-      "financeNetSubtitle": "costs.metrics.financeNetSubtitle",
+      "financeNetSubtitle": "{{debits}} debits · {{credits}} credits",
       "inferenceSpend": "Inference spend",
-      "inferenceSpendSubtitle": "costs.metrics.inferenceSpendSubtitle",
+      "inferenceSpendSubtitle": "{{tokens}} tokens across request-scoped events",
       "noMonthlyCap": "No monthly cap configured"
     },
     "providers": {

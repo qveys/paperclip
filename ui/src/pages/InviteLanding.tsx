@@ -189,14 +189,16 @@ function AwaitingJoinApprovalPanel({
           />
           <h1 className="text-lg font-semibold">
             {t("invite.pending.title", {
-              defaultValue: `Request to join ${companyDisplayName}`,
+              defaultValue: "Request to join {{company}}",
+              company: companyDisplayName,
             })}
           </h1>
         </div>
         <div className="mt-4 space-y-3">
           <p className="text-sm text-zinc-400">
             {t("invite.pending.description", {
-              defaultValue: `Your request is still awaiting approval. ${approverLabel} must approve your request to join.`,
+              defaultValue: "Your request is still awaiting approval. {{approver}} must approve your request to join.",
+              approver: approverLabel,
             })}
           </p>
           <div className="border border-zinc-800 p-3">
