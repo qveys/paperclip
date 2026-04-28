@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useT } from "@/i18n/hooks/useT";
 import type {
   BudgetPolicySummary,
   CostByAgentModel,
@@ -147,6 +149,8 @@ function FinanceSummaryCard({
 }
 
 export function Costs() {
+  const { t } = useTranslation("dashboard");
+  const { t: tx } = useT("dashboard");
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const queryClient = useQueryClient();
@@ -168,8 +172,8 @@ export function Costs() {
   } = useDateRange();
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Costs" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("nav.costs") }]);
+  }, [setBreadcrumbs, t]);
 
   const [today, setToday] = useState(() => new Date().toDateString());
   const todayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -464,7 +468,7 @@ export function Costs() {
         value: "all",
         label: (
           <span className="flex items-center gap-1.5">
-            <span>All providers</span>
+            <span>{tx("costs.allProviders")}</span>
             {providerKeys.length > 0 ? (
               <>
                 <span className="font-mono text-xs text-muted-foreground">{formatTokens(allTokens)}</span>
@@ -479,7 +483,7 @@ export function Costs() {
         label: <ProviderTabLabel provider={provider} rows={byProvider.get(provider) ?? []} />,
       })),
     ];
-  }, [byProvider]);
+  }, [byProvider, tx]);
 
   const billerTabItems = useMemo(() => {
     const billerKeys = Array.from(byBiller.keys());

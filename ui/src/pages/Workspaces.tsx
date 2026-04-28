@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { Link, Navigate } from "@/lib/router";
 import { useQuery } from "@tanstack/react-query";
 import type { ExecutionWorkspace, Issue, Project } from "@paperclipai/shared";
+import { useTranslation } from "react-i18next";
 import { executionWorkspacesApi } from "../api/execution-workspaces";
 import { instanceSettingsApi } from "../api/instanceSettings";
 import { issuesApi } from "../api/issues";
@@ -10,6 +11,7 @@ import { ProjectWorkspacesContent } from "../components/ProjectWorkspacesContent
 import { PageSkeleton } from "../components/PageSkeleton";
 import { useBreadcrumbs } from "../context/BreadcrumbContext";
 import { useCompany } from "../context/CompanyContext";
+import { useT } from "../i18n/hooks/useT";
 import { buildProjectWorkspaceSummaries, type ProjectWorkspaceSummary } from "../lib/project-workspaces-tab";
 import { queryKeys } from "../lib/queryKeys";
 import { projectRouteRef } from "../lib/utils";
@@ -72,6 +74,8 @@ function buildProjectWorkspaceGroups(input: {
 }
 
 export function Workspaces() {
+  const { t } = useTranslation("core");
+  const { t: tx } = useT("core");
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const experimentalSettingsQuery = useQuery({
@@ -103,8 +107,8 @@ export function Workspaces() {
   });
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Workspaces" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("workspaces.title") }]);
+  }, [setBreadcrumbs, t]);
 
   const groups = useMemo(
     () => buildProjectWorkspaceGroups({ projects, issues, executionWorkspaces }),
@@ -121,11 +125,11 @@ export function Workspaces() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold">Workspaces</h2>
+        <h2 className="text-xl font-bold">{tx("workspaces.title")}</h2>
       </div>
 
       {groups.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No workspace activity yet.</p>
+        <p className="text-sm text-muted-foreground">{tx("workspaces.empty")}</p>
       ) : (
         <div className="space-y-8">
           {groups.map((group) => (
@@ -145,7 +149,10 @@ export function Workspaces() {
                   ) : null}
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  {group.summaries.length} workspace{group.summaries.length === 1 ? "" : "s"}
+                  {tx("workspaces.workspaceCount", {
+                    count: group.summaries.length,
+                    suffix: group.summaries.length === 1 ? "" : "s",
+                  })}
                 </span>
               </div>
               <ProjectWorkspacesContent
