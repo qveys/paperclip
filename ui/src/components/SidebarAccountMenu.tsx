@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   BookOpen,
+  Globe,
   LogOut,
   type LucideIcon,
   Moon,
@@ -16,6 +17,7 @@ import { authApi } from "@/api/auth";
 import { queryKeys } from "@/lib/queryKeys";
 import { useSidebar } from "../context/SidebarContext";
 import { useTheme } from "../context/ThemeContext";
+import { LanguageSwitcher } from "@/i18n/components/LanguageSwitcher";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "../lib/utils";
@@ -224,6 +226,16 @@ export function SidebarAccountMenu({
                   setOpen(false);
                 }}
               />
+              <div className="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left">
+                <span className="mt-0.5 rounded-lg border border-border bg-background/70 p-2 text-muted-foreground">
+                  <Globe className="size-4" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-medium text-foreground">Language</span>
+                  <span className="block text-xs text-muted-foreground">Affects only your account.</span>
+                </span>
+                <LanguageSwitcher />
+              </div>
               {deploymentMode === "authenticated" ? (
                 <button
                   type="button"

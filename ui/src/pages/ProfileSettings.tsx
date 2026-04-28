@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LanguageSwitcher } from "@/i18n/components/LanguageSwitcher";
 
 function deriveInitials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -257,6 +258,14 @@ export function ProfileSettings() {
             />
             <p className="text-xs text-muted-foreground">
               Email is managed by your auth session and is read-only here.
+            </p>
+          </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <Label>Language</Label>
+            <LanguageSwitcher />
+            <p className="text-xs text-muted-foreground">
+              Affects only your account.
             </p>
           </div>
 
