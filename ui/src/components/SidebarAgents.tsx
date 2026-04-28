@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link, NavLink, useLocation } from "@/lib/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import {
   ChevronRight,
   MoreHorizontal,
@@ -46,6 +47,7 @@ function SidebarAgentItem({
   onPauseResume,
   runCount,
   setSidebarOpen,
+  t,
 }: {
   activeAgentId: string | null;
   activeTab: string | null;
@@ -55,6 +57,7 @@ function SidebarAgentItem({
   onPauseResume: (agent: Agent, action: "pause" | "resume") => void;
   runCount: number;
   setSidebarOpen: (open: boolean) => void;
+  t: (key: string, options?: Record<string, unknown>) => string;
 }) {
   const routeRef = agentRouteRef(agent);
   const href = activeTab ? `${agentUrl(agent)}/${activeTab}` : agentUrl(agent);
@@ -62,12 +65,14 @@ function SidebarAgentItem({
   const isActive = activeAgentId === routeRef;
   const isPaused = agent.status === "paused";
   const isBudgetPaused = isPaused && agent.pauseReason === "budget";
-  const pauseResumeLabel = isPaused ? "Resume agent" : "Pause agent";
+  const pauseResumeLabel = isPaused
+    ? t("sidebarAgents.resumeAgent", { defaultValue: "Resume agent" })
+    : t("sidebarAgents.pauseAgent", { defaultValue: "Pause agent" });
   const pauseResumeDisabled = disabled || agent.status === "pending_approval" || isBudgetPaused;
   const pauseResumeDisabledLabel = disabled
-    ? "Updating..."
+    ? t("common.updating", { defaultValue: "Updating..." })
     : isBudgetPaused
-      ? "Budget paused"
+      ? t("sidebarAgents.budgetPaused", { defaultValue: "Budget paused" })
       : pauseResumeLabel;
 
   return (
@@ -90,7 +95,7 @@ function SidebarAgentItem({
         {(agent.pauseReason === "budget" || runCount > 0) && (
           <span className="ml-auto flex items-center gap-1.5 shrink-0">
             {agent.pauseReason === "budget" ? (
-              <BudgetSidebarMarker title="Agent paused by budget" />
+              <BudgetSidebarMarker title={t("sidebarAgents.pausedByBudget", { defaultValue: "Agent paused by budget" })} />
             ) : null}
             {runCount > 0 ? (
               <span className="relative flex h-2 w-2">
@@ -100,7 +105,7 @@ function SidebarAgentItem({
             ) : null}
             {runCount > 0 ? (
               <span className="text-[11px] font-medium text-blue-600 dark:text-blue-400">
-                {runCount} live
+                {t("sidebarAgents.liveRuns", { defaultValue: `${runCount} live`, count: runCount })}
               </span>
             ) : null}
           </span>
@@ -132,7 +137,7 @@ function SidebarAgentItem({
               }}
             >
               <Pencil className="size-4" />
-              <span>Edit agent</span>
+              <span>{t("sidebarAgents.editAgent", { defaultValue: "Edit agent" })}</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -142,7 +147,7 @@ function SidebarAgentItem({
               onPauseResume(agent, isPaused ? "resume" : "pause");
             }}
             disabled={pauseResumeDisabled}
-            title={isBudgetPaused ? "Agent was paused by budget limits" : undefined}
+            title={isBudgetPaused ? t("sidebarAgents.pausedByBudgetLimits", { defaultValue: "Agent was paused by budget limits" }) : undefined}
           >
             {isPaused ? <PlayCircle className="size-4" /> : <PauseCircle className="size-4" />}
             <span>{pauseResumeDisabledLabel}</span>
@@ -154,6 +159,7 @@ function SidebarAgentItem({
 }
 
 export function SidebarAgents() {
+  const { t } = useTranslation("core");
   const [open, setOpen] = useState(true);
   const [pendingAgentIds, setPendingAgentIds] = useState<Set<string>>(() => new Set());
   const queryClient = useQueryClient();
@@ -230,14 +236,18 @@ export function SidebarAgents() {
         queryClient.invalidateQueries({ queryKey: queryKeys.agents.detail(agentRouteRef(agent)) }),
       ]);
       pushToast({
-        title: action === "pause" ? "Agent paused" : "Agent resumed",
+        title: action === "pause"
+          ? t("sidebarAgents.agentPaused", { defaultValue: "Agent paused" })
+          : t("sidebarAgents.agentResumed", { defaultValue: "Agent resumed" }),
         body: agent.name,
         tone: "success",
       });
     },
     onError: (error, { agent, action }) => {
       pushToast({
-        title: action === "pause" ? "Could not pause agent" : "Could not resume agent",
+        title: action === "pause"
+          ? t("sidebarAgents.pauseFailed", { defaultValue: "Could not pause agent" })
+          : t("sidebarAgents.resumeFailed", { defaultValue: "Could not resume agent" }),
         body: error instanceof Error ? error.message : agent.name,
         tone: "error",
       });
@@ -263,7 +273,7 @@ export function SidebarAgents() {
               )}
             />
             <span className="text-[10px] font-medium uppercase tracking-widest font-mono text-muted-foreground/60">
-              Agents
+              {t("sidebarAgents.sectionTitle", { defaultValue: "Agents" })}
             </span>
           </CollapsibleTrigger>
           <button
@@ -272,7 +282,7 @@ export function SidebarAgents() {
               openNewAgent();
             }}
             className="flex items-center justify-center h-4 w-4 rounded text-muted-foreground/60 hover:text-foreground hover:bg-accent/50 transition-colors"
-            aria-label="New agent"
+            aria-label={t("sidebarAgents.newAgent", { defaultValue: "New agent" })}
           >
             <Plus className="h-3 w-3" />
           </button>
@@ -294,6 +304,7 @@ export function SidebarAgents() {
                 onPauseResume={(targetAgent, action) => pauseResumeAgent.mutate({ agent: targetAgent, action })}
                 runCount={runCount}
                 setSidebarOpen={setSidebarOpen}
+              t={t}
               />
             );
           })}
