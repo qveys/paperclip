@@ -123,7 +123,8 @@ function FinanceSummaryCard({
           label={t("costs.financeLedger.debits", { defaultValue: "Debits" })}
           value={formatCents(debitCents)}
           subtitle={t("costs.financeLedger.debitsSubtitle", {
-            defaultValue: `${eventCount} total event${eventCount === 1 ? "" : "s"} in range`,
+            defaultValue: "{{count}} total event in range",
+            count: eventCount,
           })}
           icon={ArrowUpRight}
         />
@@ -592,7 +593,8 @@ export function Costs() {
               label={t("costs.metrics.inferenceSpend", { defaultValue: "Inference spend" })}
               value={formatCents(spendData?.summary.spendCents ?? 0)}
               subtitle={t("costs.metrics.inferenceSpendSubtitle", {
-                defaultValue: `${formatTokens(inferenceTokenTotal)} tokens across request-scoped events`,
+                defaultValue: "{{tokens}} tokens across request-scoped events",
+                tokens: formatTokens(inferenceTokenTotal),
               })}
               icon={DollarSign}
             />
@@ -606,7 +608,9 @@ export function Costs() {
               subtitle={
                 activeBudgetIncidents.length > 0
                   ? t("costs.metrics.budgetPausedSubtitle", {
-                      defaultValue: `${budgetData?.pausedAgentCount ?? 0} agents paused · ${budgetData?.pausedProjectCount ?? 0} projects paused`,
+                      defaultValue: "{{agentCount}} agents paused · {{projectCount}} projects paused",
+                      agentCount: budgetData?.pausedAgentCount ?? 0,
+                      projectCount: budgetData?.pausedProjectCount ?? 0,
                     })
                   : spendData?.summary.budgetCents && spendData.summary.budgetCents > 0
                     ? `${formatCents(spendData.summary.spendCents)} of ${formatCents(spendData.summary.budgetCents)}`
@@ -618,7 +622,9 @@ export function Costs() {
               label={t("costs.metrics.financeNet", { defaultValue: "Finance net" })}
               value={formatCents(financeData?.summary.netCents ?? 0)}
               subtitle={t("costs.metrics.financeNetSubtitle", {
-                defaultValue: `${formatCents(financeData?.summary.debitCents ?? 0)} debits · ${formatCents(financeData?.summary.creditCents ?? 0)} credits`,
+                defaultValue: "{{debits}} debits · {{credits}} credits",
+                debits: formatCents(financeData?.summary.debitCents ?? 0),
+                credits: formatCents(financeData?.summary.creditCents ?? 0),
               })}
               icon={ReceiptText}
             />
@@ -626,7 +632,8 @@ export function Costs() {
               label={t("costs.metrics.financeEvents", { defaultValue: "Finance events" })}
               value={String(financeData?.summary.eventCount ?? 0)}
               subtitle={t("costs.metrics.financeEventsSubtitle", {
-                defaultValue: `${formatCents(financeData?.summary.estimatedDebitCents ?? 0)} estimated in range`,
+                defaultValue: "{{estimated}} estimated in range",
+                estimated: formatCents(financeData?.summary.estimatedDebitCents ?? 0),
               })}
               icon={ArrowUpRight}
             />
@@ -689,7 +696,8 @@ export function Costs() {
                         <div className="mt-1 text-sm text-muted-foreground">
                           {spendData?.summary.budgetCents && spendData.summary.budgetCents > 0
                             ? t("costs.inferenceLedger.budgetValue", {
-                                defaultValue: `Budget ${formatCents(spendData.summary.budgetCents)}`,
+                                defaultValue: "Budget {{budget}}",
+                                budget: formatCents(spendData.summary.budgetCents),
                               })
                             : t("costs.inferenceLedger.unlimitedBudget", { defaultValue: "Unlimited budget" })}
                         </div>
@@ -720,7 +728,8 @@ export function Costs() {
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {t("costs.inferenceLedger.budgetConsumed", {
-                            defaultValue: `${spendData.summary.utilizationPercent}% of monthly budget consumed in this range.`,
+                            defaultValue: "{{percent}}% of monthly budget consumed in this range.",
+                            percent: spendData.summary.utilizationPercent,
                           })}
                         </div>
                       </div>

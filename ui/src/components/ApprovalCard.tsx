@@ -53,6 +53,16 @@ export function ApprovalCard({
     approval.type !== "budget_override_required" &&
     (approval.status === "pending" || approval.status === "revision_requested");
   const hasFooter = showResolutionButtons || Boolean(detailLink || onOpen);
+  const statusLabel =
+    approval.status === "revision_requested"
+      ? tx("approvals.status.revisionRequested")
+      : approval.status === "pending"
+        ? tx("approvals.status.pending")
+        : approval.status === "approved"
+          ? tx("approvals.status.approved")
+          : approval.status === "rejected"
+            ? tx("approvals.status.rejected")
+            : approval.status;
 
   return (
     <div className="rounded-xl border border-border/70 bg-card p-4 shadow-sm">
@@ -92,7 +102,7 @@ export function ApprovalCard({
           <div className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-background/80 px-2.5 py-1 text-xs text-muted-foreground">
             {statusIcon(approval.status)}
             <span>
-              {tx(`approvals.status.${approval.status === "revision_requested" ? "revisionRequested" : approval.status}`)}
+              {statusLabel}
             </span>
           </div>
         </div>

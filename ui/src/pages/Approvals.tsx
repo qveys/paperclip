@@ -86,6 +86,10 @@ export function Approvals() {
     return <PageSkeleton variant="approvals" />;
   }
 
+  const emptyStateLabel = statusFilter === "pending"
+    ? tx("approvals.noPending")
+    : tx("approvals.noApprovals");
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -111,7 +115,7 @@ export function Approvals() {
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <ShieldCheck className="h-8 w-8 text-muted-foreground/30 mb-3" />
           <p className="text-sm text-muted-foreground">
-            {tx(statusFilter === "pending" ? "approvals.noPending" : "approvals.noApprovals")}
+            {emptyStateLabel}
           </p>
         </div>
       )}

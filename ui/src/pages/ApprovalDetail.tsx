@@ -155,14 +155,13 @@ export function ApprovalDetail() {
   const TypeIcon = typeIcon[approval.type] ?? defaultTypeIcon;
   const showApprovedBanner = searchParams.get("resolved") === "approved" && approval.status === "approved";
   const primaryLinkedIssue = linkedIssues?.[0] ?? null;
+  const resolvedCtaLabel = (linkedIssues?.length ?? 0) > 1
+    ? tx("approvals.reviewLinkedIssues")
+    : tx("approvals.reviewLinkedIssue");
   const resolvedCta =
     primaryLinkedIssue
       ? {
-          label: tx(
-            (linkedIssues?.length ?? 0) > 1
-              ? "approvals.reviewLinkedIssues"
-              : "approvals.reviewLinkedIssue"
-          ),
+          label: resolvedCtaLabel,
           to: `/issues/${primaryLinkedIssue.identifier ?? primaryLinkedIssue.id}`,
         }
       : linkedAgentId
