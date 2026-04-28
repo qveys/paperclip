@@ -1,0 +1,8 @@
+{
+  "markdownEditor": {
+    "failedToLoadContent": "L'editeur enrichi n'a pas pu charger le contenu",
+    "imageUploadFailed": "Echec du televersement de l'image",
+    "richEditorUnavailable": "L'editeur enrichi n'est pas disponible pour ce Markdown. Le contenu brut est affiche a la place.",
+    "retryRichEditor": "Reessayer l'editeur enrichi"
+  }
+}

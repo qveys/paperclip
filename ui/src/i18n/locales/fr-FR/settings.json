@@ -1,0 +1,47 @@
+{
+  "profile": {
+    "title": "Profil",
+    "subtitle": "Contrôle l'apparence de ton compte dans la barre latérale et sur les autres surfaces du tableau.",
+    "loading": "Chargement du profil…",
+    "noEmail": "Aucune adresse e-mail",
+    "errors": {
+      "loadFailed": "Impossible de charger le profil.",
+      "updateFailed": "Impossible de mettre à jour le profil.",
+      "uploadAvatarFailed": "Impossible d'envoyer l'avatar.",
+      "removeAvatarFailed": "Impossible de supprimer l'avatar.",
+      "selectCompanyFirst": "Sélectionne une entreprise avant d'envoyer un avatar de profil."
+    },
+    "avatar": {
+      "hintWithCompany": "Clique sur l'avatar pour téléverser une nouvelle image.",
+      "hintNoCompany": "Sélectionne une entreprise pour téléverser un avatar dans le stockage Paperclip.",
+      "storedIn": "Stocké dans le stockage de fichiers Paperclip pour {{companyName}}.",
+      "changePhoto": "Changer la photo",
+      "uploadPhoto": "Téléverser une photo",
+      "remove": "Supprimer"
+    },
+    "fields": {
+      "displayName": {
+        "label": "Nom affiché",
+        "placeholder": "Board",
+        "helper": "Affiché dans le pied de la barre latérale et comme auteur des commentaires."
+      },
+      "email": {
+        "label": "Adresse e-mail",
+        "helper": "Ton adresse e-mail est gérée par ta session d'authentification et est en lecture seule ici.",
+        "noEmail": "Aucune adresse e-mail"
+      },
+      "language": {
+        "label": "Langue",
+        "helper": "Enregistré uniquement sur ce navigateur — le changement prend effet immédiatement."
+      }
+    },
+    "actions": {
+      "saving": "Enregistrement…",
+      "save": "Enregistrer le profil"
+    },
+    "breadcrumbs": {
+      "instanceSettings": "Paramètres de l'instance",
+      "profile": "Profil"
+    }
+  }
+}

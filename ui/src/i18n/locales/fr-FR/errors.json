@@ -1,0 +1,12 @@
+{
+  "notFound": {
+    "pageTitle": "Page introuvable"
+  },
+  "error": {
+    "unauthorized": "Non autorisé",
+    "forbidden": "Interdit",
+    "notFound": "Introuvable",
+    "validation": "Erreur de validation",
+    "internal": "Erreur interne du serveur"
+  }
+}

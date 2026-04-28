@@ -1,0 +1,241 @@
+{
+  "breadcrumbBar": {
+    "openSidebar": "Ouvrir la barre latérale"
+  },
+  "commandPalette": {
+    "searchPlaceholder": "Rechercher des tickets, agents, projets...",
+    "noResults": "Aucun résultat trouvé.",
+    "actions": "Actions",
+    "createNewIssue": "Créer un nouveau ticket",
+    "createNewAgent": "Créer un nouvel agent",
+    "createNewProject": "Créer un nouveau projet",
+    "pages": "Pages",
+    "dashboard": "Tableau de bord",
+    "inbox": "Boîte de réception",
+    "issues": "Tickets",
+    "projects": "Projets",
+    "goals": "Objectifs",
+    "agents": "Agents",
+    "costs": "Coûts",
+    "activity": "Activité"
+  },
+  "devRestartBanner": {
+    "restartRequired": "Redémarrage requis",
+    "autoRestartOn": "Redémarrage automatique activé",
+    "reasonBoth": "les fichiers du serveur ont changé et des migrations sont en attente",
+    "reasonMigrations": "les migrations en attente nécessitent un démarrage frais",
+    "reasonChanges": "les fichiers du serveur ont changé depuis le démarrage de ce serveur",
+    "updated": "mis à jour {{time}}",
+    "changed": "Modifié",
+    "moreCount_one": " +{{count}} de plus",
+    "moreCount_other": " +{{count}} de plus",
+    "pendingMigrations": "Migrations en attente",
+    "waitingForIdle_one": "En attente de {{count}} exécution en direct pour terminer",
+    "waitingForIdle_other": "En attente de {{count}} exécutions en direct pour terminer",
+    "autoRestartWill": "Le redémarrage automatique se déclenchera lorsque l'instance sera inactive",
+    "restartAfter": "Redémarrer <code>pnpm dev:once</code> après que le travail actif soit sûr à interrompre"
+  },
+  "executionWorkspaceDetail": {
+    "runtimeCommandsJsonMustBeObject": "Le JSON des commandes du workspace doit être un objet JSON.",
+    "failedToControlWorkspaceCommands": "Impossible de piloter les commandes du workspace.",
+    "workspaceJobCompleted": "La tâche du workspace est terminée.",
+    "workspaceServiceStopped": "Le service du workspace a été arrêté.",
+    "workspaceServiceRestarted": "Le service du workspace a été redémarré.",
+    "workspaceServiceStarted": "Le service du workspace a été démarré.",
+    "runtimeLogsTab": "Journaux runtime",
+    "advancedRuntimeJson": "JSON runtime avancé",
+    "advancedRuntimeJsonDescription": "Remplacez le modèle hérité de commandes du workspace uniquement lorsque cet execution workspace a réellement besoin d'un comportement différent pour les services ou les tâches.",
+    "workspaceCommandsJson": "JSON des commandes du workspace",
+    "workspaceCommandsJsonHint": "Les tableaux historiques `services` fonctionnent encore, mais `commands` prend en charge les services et les tâches.",
+    "workspaceCommands": "Commandes du workspace",
+    "servicesAndJobs": "Services et tâches",
+    "workspaceCommandsSource": "Source",
+    "noServicesStartedYet": "Aucun service n'a encore été démarré pour cet execution workspace.",
+    "noWorkspaceCommandConfig": "Aucune configuration de commandes n'est encore définie pour cet execution workspace.",
+    "noJobsConfigured": "Aucune tâche ponctuelle n'est encore configurée pour cet execution workspace.",
+    "workspaceCommandsDisabledHint": "Les execution workspaces ont besoin d'un répertoire de travail pour lancer des commandes locales, et les services ont aussi besoin d'une configuration runtime."
+  },
+  "instanceSidebar": {
+    "title": "Paramètres de l'instance",
+    "profile": "Profil",
+    "general": "Général",
+    "access": "Accès",
+    "heartbeats": "Battements",
+    "experimental": "Expérimental",
+    "plugins": "Plugins",
+    "adapters": "Adaptateurs"
+  },
+  "keyboardShortcuts": {
+    "title": "Raccourcis clavier",
+    "inbox": "Boîte de réception",
+    "moveDown": "Descendre",
+    "moveUp": "Monter",
+    "collapseGroup": "Réduire le groupe sélectionné",
+    "expandGroup": "Développer le groupe sélectionné",
+    "openItem": "Ouvrir l'élément sélectionné",
+    "archiveItem": "Archiver l'élément",
+    "markAsRead": "Marquer comme lu",
+    "markAsUnread": "Marquer comme non lu",
+    "issueDetail": "Détail du ticket",
+    "quickArchive": "Archivage rapide vers la boîte de réception",
+    "goToInbox": "Aller à la boîte de réception",
+    "focusComposer": "Mettre le focus sur le compositeur de commentaire",
+    "global": "Global",
+    "search": "Rechercher dans la page actuelle ou recherche rapide",
+    "newIssue": "Nouveau ticket",
+    "toggleSidebar": "Basculer la barre latérale",
+    "togglePanel": "Basculer le panneau",
+    "showShortcuts": "Afficher les raccourcis clavier",
+    "then": "puis",
+    "footer": "Appuyez sur <kbd>Esc</kbd> pour fermer · Les raccourcis sont désactivés dans les champs de texte"
+  },
+  "layout": {
+    "skipToMainContent": "Aller au contenu principal",
+    "closeSidebar": "Fermer la barre latérale"
+  },
+  "mobileBottomNav": {
+    "home": "Accueil",
+    "issues": "Tickets",
+    "create": "Créer",
+    "agents": "Agents",
+    "inbox": "Boîte de réception",
+    "ariaLabel": "Navigation mobile"
+  },
+  "projectDetail": {
+    "executionWorkspaceStatus": {
+      "active": "Actif",
+      "idle": "Inactif",
+      "inReview": "En revue",
+      "archived": "Archivé",
+      "cleanupFailed": "Nettoyage en échec"
+    }
+  },
+  "projectWorkspaceDetail": {
+    "runtimeCommandsJsonMustBeObject": "Le JSON des commandes du workspace doit être un objet JSON.",
+    "failedToControlWorkspaceCommands": "Impossible de piloter les commandes du workspace.",
+    "workspaceJobCompleted": "La tâche du workspace est terminée.",
+    "workspaceServiceStopped": "Le service du workspace a été arrêté.",
+    "workspaceServiceRestarted": "Le service du workspace a été redémarré.",
+    "workspaceServiceStarted": "Le service du workspace a été démarré.",
+    "advancedRuntimeJson": "JSON runtime avancé",
+    "advancedRuntimeJsonDescription": "Remplacez le modèle de commandes du workspace uniquement lorsque ce project workspace a besoin d'un comportement personnalisé pour les services ou les tâches.",
+    "workspaceCommandsJson": "JSON des commandes du workspace",
+    "workspaceCommandsJsonHint": "Les tableaux historiques `services` fonctionnent encore, mais `commands` prend en charge les services et les tâches.",
+    "workspaceCommands": "Commandes du workspace",
+    "servicesAndJobs": "Services et tâches",
+    "workspaceCommandsDescription": "Configurez des services réutilisables et des tâches ponctuelles hérités par les execution workspaces.",
+    "noServicesStartedYet": "Aucun service n'a encore été démarré pour ce project workspace.",
+    "noWorkspaceCommandConfig": "Aucune configuration de commandes n'est encore définie pour ce project workspace.",
+    "noJobsConfigured": "Aucune tâche ponctuelle n'est encore configurée pour ce project workspace.",
+    "workspaceCommandsDisabledHint": "Les project workspaces ont besoin d'un chemin local avant de pouvoir exécuter des commandes locales."
+  },
+  "projectWorkspaceSummary": {
+    "executionWorkspace": "Workspace d'exécution",
+    "projectWorkspace": "Workspace du projet",
+    "updatedAgo": "Mis à jour {{time}}",
+    "serviceCountSummary": "{{running}}/{{total}} services",
+    "startServices": "Démarrer les services",
+    "stopServices": "Arrêter les services",
+    "branch": "Branche",
+    "path": "Chemin",
+    "serviceLabel": "Service",
+    "linkedIssues": "Tickets liés",
+    "moreIssues": "+{{count}} de plus"
+  },
+  "propertiesPanel": {
+    "title": "Propriétés"
+  },
+  "sidebar": {
+    "newIssue": "Nouveau ticket",
+    "dashboard": "Tableau de bord",
+    "inbox": "Boîte de réception",
+    "work": "Travail",
+    "issues": "Tickets",
+    "routines": "Routines",
+    "goals": "Objectifs",
+    "workspaces": "Espaces de travail",
+    "company": "Entreprise",
+    "org": "Org",
+    "skills": "Compétences",
+    "costs": "Coûts",
+    "activity": "Activité",
+    "settings": "Paramètres"
+  },
+  "sidebarAccountMenu": {
+    "defaultName": "Board",
+    "signedIn": "Connecté",
+    "localWorkspace": "Espace de travail local",
+    "account": "Compte",
+    "local": "Local",
+    "openAccountMenu": "Ouvrir le menu du compte",
+    "version": "Paperclip v{{version}}",
+    "viewProfile": "Voir le profil",
+    "viewProfileDesc": "Ouvrir vos activités, tâches et ledger d'utilisation.",
+    "editProfile": "Modifier le profil",
+    "editProfileDesc": "Mettre à jour votre nom d'affichage et votre avatar.",
+    "instanceSettings": "Paramètres de l'instance",
+    "instanceSettingsDesc": "Retourner à la dernière page de paramètres que vous avez ouverte.",
+    "documentation": "Documentation",
+    "documentationDesc": "Ouvrir la documentation de Paperclip dans un nouvel onglet.",
+    "switchToLight": "Passer en mode clair",
+    "switchToDark": "Passer en mode sombre",
+    "toggleAppearance": "Basculer l'apparence de l'application.",
+    "language": "Langue",
+    "languageDesc": "Choisir la langue de l'interface.",
+    "signOut": "Se déconnecter",
+    "signingOut": "Déconnexion...",
+    "signOutDesc": "Terminer cette session de navigateur."
+  },
+  "toastViewport": {
+    "dismiss": "Ignorer la notification",
+    "ariaLabel": "Notifications"
+  },
+  "workspaceRuntimeControls": {
+    "noServicesConfigured": "Aucun service n'est configuré pour ce workspace.",
+    "noJobsConfigured": "Aucune tâche ponctuelle n'est configurée pour ce workspace.",
+    "workspaceCommands": "Commandes du workspace",
+    "servicesRunning": "{count} services actifs",
+    "noServicesRunning": "Aucun service actif",
+    "jobsAvailable": "{count} tâches disponibles à lancer à la demande.",
+    "independentControl": "Chaque commande peut être contrôlée séparément.",
+    "services": "Services",
+    "servicesDescription": "Commandes longues que Paperclip peut superviser pour ce workspace.",
+    "jobs": "Tâches",
+    "jobsDescription": "Commandes ponctuelles qui s'exécutent immédiatement puis se terminent.",
+    "untrackedServices": "Services non suivis",
+    "untrackedServicesDescription": "Services en cours d'exécution qui ne correspondent plus à la configuration actuelle des commandes du workspace.",
+    "runOnce": "exécuter une fois",
+    "kind": {
+      "service": "service",
+      "job": "tâche"
+    },
+    "status": {
+      "starting": "démarrage",
+      "running": "en cours",
+      "stopped": "arrêté",
+      "failed": "échec"
+    },
+    "health": {
+      "healthy": "sain",
+      "unhealthy": "dégradé",
+      "unknown": "inconnu"
+    },
+    "lifecycle": {
+      "shared": "partagé",
+      "ephemeral": "éphémère"
+    },
+    "missingCommand": "Cette tâche n'a pas de commande.",
+    "untrackedService": "Ce service runtime ne correspond plus à une commande configurée du workspace.",
+    "port": "Port {port}"
+  },
+  "workspaces": {
+    "empty": "Aucune activité de workspace pour l'instant.",
+    "title": "Workspaces",
+    "workspaceCount": "{count} workspace{suffix}"
+  },
+  "worktreeBanner": {
+    "label": "Worktree",
+    "copyTitle": "Cliquer pour copier le nom du worktree",
+    "copied": "Copié !"
+  }
+}
