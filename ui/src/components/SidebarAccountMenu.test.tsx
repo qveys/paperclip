@@ -4,6 +4,7 @@ import { act } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { TestI18nProvider } from "../test/TestI18nProvider";
 import { SidebarAccountMenu } from "./SidebarAccountMenu";
 
 const mockAuthApi = vi.hoisted(() => ({
@@ -83,11 +84,13 @@ describe("SidebarAccountMenu", () => {
     await act(async () => {
       root.render(
         <QueryClientProvider client={queryClient}>
-          <SidebarAccountMenu
-            deploymentMode="authenticated"
-            instanceSettingsTarget="/instance/settings/general"
-            version="1.2.3"
-          />
+          <TestI18nProvider>
+            <SidebarAccountMenu
+              deploymentMode="authenticated"
+              instanceSettingsTarget="/instance/settings/general"
+              version="1.2.3"
+            />
+          </TestI18nProvider>
         </QueryClientProvider>,
       );
     });

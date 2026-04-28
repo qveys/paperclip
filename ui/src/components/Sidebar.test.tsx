@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { TestI18nProvider } from "../test/TestI18nProvider";
 import { Sidebar } from "./Sidebar";
 
 const mockHeartbeatsApi = vi.hoisted(() => ({
@@ -114,7 +115,9 @@ describe("Sidebar", () => {
     await act(async () => {
       root.render(
         <QueryClientProvider client={queryClient}>
-          <Sidebar />
+          <TestI18nProvider>
+            <Sidebar />
+          </TestI18nProvider>
         </QueryClientProvider>,
       );
     });
@@ -137,7 +140,9 @@ describe("Sidebar", () => {
     await act(async () => {
       root.render(
         <QueryClientProvider client={queryClient}>
-          <Sidebar />
+          <TestI18nProvider>
+            <Sidebar />
+          </TestI18nProvider>
         </QueryClientProvider>,
       );
     });
