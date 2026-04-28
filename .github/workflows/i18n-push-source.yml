@@ -1,0 +1,53 @@
+name: i18n-push-source
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "ui/src/i18n/locales/en/**"
+      - ".github/workflows/i18n-push-source.yml"
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch or commit to upload from (ex: feat/i18n-fr-via-weblate)"
+        required: false
+        default: ""
+
+jobs:
+  upload-en-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install Weblate CLI
+        run: pip install wlc
+
+      - name: Configure Weblate token
+        env:
+          WEBLATE_TOKEN: ${{ secrets.WEBLATE_TOKEN }}
+        run: |
+          if [ -z "${WEBLATE_TOKEN:-}" ]; then
+            echo "::error::WEBLATE_TOKEN secret is not configured"
+            exit 1
+          fi
+          mkdir -p ~/.config
+          printf '%s\n' '[weblate]' 'url = https://hosted.weblate.org/api/' "key = ${WEBLATE_TOKEN}" > ~/.config/weblate
+
+      - name: Upload English source namespaces
+        run: |
+          set -euo pipefail
+          for ns in core dashboard issues agents plugins settings auth errors forms modals common cli projects; do
+            wlc upload \
+              --input "ui/src/i18n/locales/en/${ns}.json" \
+              --method replace \
+              "paperclip/${ns}/en"
+          done
