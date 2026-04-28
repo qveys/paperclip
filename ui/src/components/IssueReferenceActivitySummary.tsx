@@ -37,7 +37,7 @@ function Section({
       </span>
       {items.map((issue) => (
         <IssueReferencePill
-          key={`${label}:${issue.id}`}
+          key={issue.id}
           strikethrough={strikethrough}
           issue={{
             id: issue.id,
