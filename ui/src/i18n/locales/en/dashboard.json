@@ -86,12 +86,31 @@
       "selectCompany": "Select a company to view costs."
     },
     "financeByBiller": {
+      "credits": "credits",
+      "debits": "debits",
       "description": "Account-level financial events grouped by who charged or credited them.",
       "empty": "No finance events yet.",
+      "estimated": "estimated",
+      "eventKindCounts": "{{eventCount}} event{{eventSuffix}} across {{kindCount}} kind{{kindSuffix}}",
+      "net": "net",
       "title": "By biller"
     },
+    "financeByKind": {
+      "debitsValue": "{{amount}} debits",
+      "description": "Account-level charges grouped by event kind.",
+      "empty": "No finance events in this period.",
+      "eventBillerCounts": "{{eventCount}} event{{eventSuffix}} · {{billerCount}} biller{{billerSuffix}}",
+      "title": "Financial event mix"
+    },
     "financeTimeline": {
-      "empty": "No finance events yet. Add account-level charges once biller invoices or credits land."
+      "description": "Top-ups, fees, credits, commitments, and other non-request charges.",
+      "empty": "No finance events yet. Add account-level charges once biller invoices or credits land.",
+      "emptyPeriod": "No financial events in this period.",
+      "estimated": "estimated",
+      "invoiceValue": "invoice {{invoiceId}}",
+      "regionValue": "region {{region}}",
+      "tierValue": "tier {{tier}}",
+      "title": "Recent financial events"
     },
     "inferenceLedger": {
       "budgetConsumed": "costs.inferenceLedger.budgetConsumed",

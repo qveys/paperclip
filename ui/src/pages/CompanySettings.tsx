@@ -160,13 +160,14 @@ function summarizeSandboxConfig(config: Record<string, unknown>): string | null 
 }
 
 function SupportMark({ supported }: { supported: boolean }) {
+  const { t } = useTranslation();
   return supported ? (
     <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400">
       <Check className="h-3 w-3" />
-      Yes
+      {t("companySettings.environment.support.yes", { defaultValue: "Yes" })}
     </span>
   ) : (
-    <span className="text-muted-foreground">No</span>
+    <span className="text-muted-foreground">{t("companySettings.environment.support.no", { defaultValue: "No" })}</span>
   );
 }
 
@@ -304,7 +305,9 @@ export function CompanySettings() {
     },
     onError: (err) => {
       setInviteError(
-        err instanceof Error ? err.message : "Failed to create invite"
+        err instanceof Error
+          ? err.message
+          : t("companySettings.invites.failedToCreateInvite", { defaultValue: "Failed to create invite" })
       );
     }
   });
@@ -353,7 +356,10 @@ export function CompanySettings() {
         title: editingEnvironmentId
           ? t("companySettings.environment.toast.updated", { defaultValue: "Environment updated" })
           : t("companySettings.environment.toast.created", { defaultValue: "Environment created" }),
-        body: `${environment.name} is ready.`,
+        body: t("companySettings.environment.toast.readyBody", {
+          defaultValue: "{{name}} is ready.",
+          name: environment.name,
+        }),
         tone: "success",
       });
     },
@@ -388,7 +394,9 @@ export function CompanySettings() {
         [environmentId]: {
           ok: false,
           driver: failedEnvironment?.driver ?? "local",
-          summary: error instanceof Error ? error.message : "Environment probe failed.",
+          summary: error instanceof Error
+            ? error.message
+            : t("companySettings.environment.toast.probeFailedBody", { defaultValue: "Environment probe failed." }),
           details: null,
         },
       }));
@@ -726,7 +734,7 @@ export function CompanySettings() {
                       onClick={() => setBrandColor("")}
                       className="text-xs text-muted-foreground"
                     >
-                      Clear
+                      {t("companySettings.appearance.clear", { defaultValue: "Clear" })}
                     </Button>
                   )}
                 </div>
@@ -859,7 +867,11 @@ export function CompanySettings() {
                               const displayName =
                                 environmentCapabilities?.sandboxProviders?.[provider]?.displayName ?? provider;
                               const summary = summarizeSandboxConfig(environment.config as Record<string, unknown>);
-                              return `${displayName} sandbox provider${summary ? ` · ${summary}` : ""}`;
+                              return t("companySettings.environment.sandboxProviderSummary", {
+                                defaultValue: "{{displayName}} sandbox provider{{suffix}}",
+                                displayName,
+                                suffix: summary ? ` · ${summary}` : "",
+                              });
                             })()}
                           </div>
                         ) : (
@@ -975,17 +987,20 @@ export function CompanySettings() {
                             : "ssh",
                     }))}
                 >
-                  <option value="ssh">SSH</option>
+                  <option value="ssh">{t("companySettings.environment.ssh", { defaultValue: "SSH" })}</option>
                   {sandboxCreationEnabled || environmentForm.driver === "sandbox" ? (
-                    <option value="sandbox">Sandbox</option>
+                    <option value="sandbox">{t("companySettings.environment.sandbox", { defaultValue: "Sandbox" })}</option>
                   ) : null}
-                  <option value="local">Local</option>
+                  <option value="local">{t("companySettings.environment.local", { defaultValue: "Local" })}</option>
                 </select>
               </Field>
 
               {environmentForm.driver === "ssh" ? (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Host" hint="DNS name or IP address for the remote machine.">
+                  <Field
+                    label={t("companySettings.environment.ssh.hostLabel", { defaultValue: "Host" })}
+                    hint={t("companySettings.environment.ssh.hostHint", { defaultValue: "DNS name or IP address for the remote machine." })}
+                  >
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -993,7 +1008,10 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshHost: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Port" hint="Defaults to 22.">
+                  <Field
+                    label={t("companySettings.environment.ssh.portLabel", { defaultValue: "Port" })}
+                    hint={t("companySettings.environment.ssh.portHint", { defaultValue: "Defaults to 22." })}
+                  >
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="number"
@@ -1003,7 +1021,10 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshPort: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Username" hint="SSH login user.">
+                  <Field
+                    label={t("companySettings.environment.ssh.usernameLabel", { defaultValue: "Username" })}
+                    hint={t("companySettings.environment.ssh.usernameHint", { defaultValue: "SSH login user." })}
+                  >
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -1011,17 +1032,23 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshUsername: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Remote workspace path" hint="Absolute path that Paperclip will verify during SSH connection tests.">
+                  <Field
+                    label={t("companySettings.environment.ssh.remotePathLabel", { defaultValue: "Remote workspace path" })}
+                    hint={t("companySettings.environment.ssh.remotePathHint", { defaultValue: "Absolute path that Paperclip will verify during SSH connection tests." })}
+                  >
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
-                      placeholder="/Users/paperclip/workspace"
+                      placeholder={t("companySettings.environment.ssh.remotePathPlaceholder", { defaultValue: "/Users/paperclip/workspace" })}
                       value={environmentForm.sshRemoteWorkspacePath}
                       onChange={(e) =>
                         setEnvironmentForm((current) => ({ ...current, sshRemoteWorkspacePath: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Private key" hint="Optional PEM private key. Leave blank to rely on the server's SSH agent or default keychain.">
+                  <Field
+                    label={t("companySettings.environment.ssh.privateKeyLabel", { defaultValue: "Private key" })}
+                    hint={t("companySettings.environment.ssh.privateKeyHint", { defaultValue: "Optional PEM private key. Leave blank to rely on the server's SSH agent or default keychain." })}
+                  >
                     <div className="space-y-2">
                       <select
                         className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
@@ -1033,7 +1060,7 @@ export function CompanySettings() {
                             sshPrivateKey: e.target.value ? "" : current.sshPrivateKey,
                           }))}
                       >
-                        <option value="">No saved secret</option>
+                        <option value="">{t("companySettings.environment.ssh.noSavedSecret", { defaultValue: "No saved secret" })}</option>
                         {(secrets ?? []).map((secret) => (
                           <option key={secret.id} value={secret.id}>{secret.name}</option>
                         ))}
@@ -1046,7 +1073,10 @@ export function CompanySettings() {
                       />
                     </div>
                   </Field>
-                  <Field label="Known hosts" hint="Optional known_hosts block used when strict host key checking is enabled.">
+                  <Field
+                    label={t("companySettings.environment.ssh.knownHostsLabel", { defaultValue: "Known hosts" })}
+                    hint={t("companySettings.environment.ssh.knownHostsHint", { defaultValue: "Optional known_hosts block used when strict host key checking is enabled." })}
+                  >
                     <textarea
                       className="h-32 w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-xs font-mono outline-none"
                       value={environmentForm.sshKnownHosts}
@@ -1055,8 +1085,8 @@ export function CompanySettings() {
                   </Field>
                   <div className="md:col-span-2">
                     <ToggleField
-                      label="Strict host key checking"
-                      hint="Keep this on unless you deliberately want probe-time host key acceptance disabled."
+                      label={t("companySettings.environment.ssh.strictHostKeyCheckingLabel", { defaultValue: "Strict host key checking" })}
+                      hint={t("companySettings.environment.ssh.strictHostKeyCheckingHint", { defaultValue: "Keep this on unless you deliberately want probe-time host key acceptance disabled." })}
                       checked={environmentForm.sshStrictHostKeyChecking}
                       onChange={(checked) =>
                         setEnvironmentForm((current) => ({ ...current, sshStrictHostKeyChecking: checked }))}
@@ -1067,7 +1097,10 @@ export function CompanySettings() {
 
               {environmentForm.driver === "sandbox" ? (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Provider" hint="Installed run-capable sandbox provider plugins appear here.">
+                  <Field
+                    label={t("companySettings.environment.sandbox.providerLabel", { defaultValue: "Provider" })}
+                    hint={t("companySettings.environment.sandbox.providerHint", { defaultValue: "Installed run-capable sandbox provider plugins appear here." })}
+                  >
                     <select
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       value={environmentForm.sandboxProvider}
@@ -1109,7 +1142,9 @@ export function CompanySettings() {
                       />
                     ) : (
                       <div className="rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-                        This provider does not declare additional configuration fields.
+                        {t("companySettings.environment.sandbox.noAdditionalConfig", {
+                          defaultValue: "This provider does not declare additional configuration fields.",
+                        })}
                       </div>
                     )}
                   </div>
@@ -1124,11 +1159,11 @@ export function CompanySettings() {
                 >
                   {environmentMutation.isPending
                     ? editingEnvironmentId
-                      ? "Saving..."
-                      : "Creating..."
+                      ? t("companySettings.environment.actions.saving", { defaultValue: "Saving..." })
+                      : t("companySettings.environment.actions.creating", { defaultValue: "Creating..." })
                     : editingEnvironmentId
-                      ? "Save environment"
-                      : "Create environment"}
+                      ? t("companySettings.environment.actions.saveEnvironment", { defaultValue: "Save environment" })
+                      : t("companySettings.environment.actions.createEnvironment", { defaultValue: "Create environment" })}
                 </Button>
                 {editingEnvironmentId ? (
                   <Button
@@ -1137,7 +1172,7 @@ export function CompanySettings() {
                     onClick={handleCancelEnvironmentEdit}
                     disabled={environmentMutation.isPending}
                   >
-                    Cancel
+                    {t("companySettings.environment.actions.cancel", { defaultValue: "Cancel" })}
                   </Button>
                 ) : null}
                 {environmentForm.driver !== "local" ? (
@@ -1147,14 +1182,16 @@ export function CompanySettings() {
                     onClick={() => draftEnvironmentProbeMutation.mutate(environmentForm)}
                     disabled={draftEnvironmentProbeMutation.isPending || !environmentFormValid}
                   >
-                    {draftEnvironmentProbeMutation.isPending ? "Testing..." : "Test draft"}
+                    {draftEnvironmentProbeMutation.isPending
+                      ? t("companySettings.environment.actions.testing", { defaultValue: "Testing..." })
+                      : t("companySettings.environment.actions.testDraft", { defaultValue: "Test draft" })}
                   </Button>
                 ) : null}
                 {environmentMutation.isError ? (
                   <span className="text-xs text-destructive">
                     {environmentMutation.error instanceof Error
                       ? environmentMutation.error.message
-                      : "Failed to save environment"}
+                      : t("companySettings.environment.errors.failedToSave", { defaultValue: "Failed to save environment" })}
                   </span>
                 ) : null}
                 {draftEnvironmentProbeMutation.data ? (
@@ -1176,8 +1213,8 @@ export function CompanySettings() {
         </div>
         <div className="rounded-md border border-border px-4 py-3">
           <ToggleField
-            label="Require board approval for new hires"
-            hint="New agent hires stay pending until approved by board."
+            label={t("companySettings.hiring.requireApprovalLabel", { defaultValue: "Require board approval for new hires" })}
+            hint={t("companySettings.hiring.requireApprovalHint", { defaultValue: "New agent hires stay pending until approved by board." })}
             checked={!!selectedCompany.requireBoardApprovalForNewAgents}
             onChange={(v) => settingsMutation.mutate(v)}
             toggleTestId="company-settings-team-approval-toggle"
@@ -1193,9 +1230,9 @@ export function CompanySettings() {
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-muted-foreground">
-              Generate an OpenClaw agent invite snippet.
+              {t("companySettings.invites.generateHint", { defaultValue: "Generate an OpenClaw agent invite snippet." })}
             </span>
-            <HintIcon text="Creates a short-lived OpenClaw agent invite and renders a copy-ready prompt." />
+            <HintIcon text={t("companySettings.invites.generateHintTooltip", { defaultValue: "Creates a short-lived OpenClaw agent invite and renders a copy-ready prompt." })} />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -1205,8 +1242,8 @@ export function CompanySettings() {
               disabled={inviteMutation.isPending}
             >
               {inviteMutation.isPending
-                ? "Generating..."
-                : "Generate OpenClaw Invite Prompt"}
+                ? t("companySettings.invites.generating", { defaultValue: "Generating..." })
+                : t("companySettings.invites.generatePrompt", { defaultValue: "Generate OpenClaw Invite Prompt" })}
             </Button>
           </div>
           {inviteError && (
@@ -1219,7 +1256,7 @@ export function CompanySettings() {
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="text-xs text-muted-foreground">
-                  OpenClaw Invite Prompt
+                  {t("companySettings.invites.promptTitle", { defaultValue: "OpenClaw Invite Prompt" })}
                 </div>
                 {snippetCopied && (
                   <span
@@ -1227,7 +1264,7 @@ export function CompanySettings() {
                     className="flex items-center gap-1 text-xs text-green-600 animate-pulse"
                   >
                     <Check className="h-3 w-3" />
-                    Copied
+                    {t("companySettings.invites.copied", { defaultValue: "Copied" })}
                   </span>
                 )}
               </div>
@@ -1254,7 +1291,9 @@ export function CompanySettings() {
                       }
                     }}
                   >
-                    {snippetCopied ? "Copied snippet" : "Copy snippet"}
+                    {snippetCopied
+                      ? t("companySettings.invites.copiedSnippet", { defaultValue: "Copied snippet" })
+                      : t("companySettings.invites.copySnippet", { defaultValue: "Copy snippet" })}
                   </Button>
                 </div>
               </div>
@@ -1270,20 +1309,25 @@ export function CompanySettings() {
         </div>
         <div className="rounded-md border border-border px-4 py-4">
           <p className="text-sm text-muted-foreground">
-            Import and export have moved to dedicated pages accessible from the{" "}
-            <a href="/org" className="underline hover:text-foreground">Org Chart</a> header.
+            {t("companySettings.companyPackages.movedNoticePrefix", {
+              defaultValue: "Import and export have moved to dedicated pages accessible from the ",
+            })}
+            <a href="/org" className="underline hover:text-foreground">
+              {t("companySettings.companyPackages.orgChart", { defaultValue: "Org Chart" })}
+            </a>
+            {t("companySettings.companyPackages.movedNoticeSuffix", { defaultValue: " header." })}
           </p>
           <div className="mt-3 flex items-center gap-2">
             <Button size="sm" variant="outline" asChild>
               <a href="/company/export">
                 <Download className="mr-1.5 h-3.5 w-3.5" />
-                Export
+                {t("companySettings.companyPackages.export", { defaultValue: "Export" })}
               </a>
             </Button>
             <Button size="sm" variant="outline" asChild>
               <a href="/company/import">
                 <Upload className="mr-1.5 h-3.5 w-3.5" />
-                Import
+                {t("companySettings.companyPackages.import", { defaultValue: "Import" })}
               </a>
             </Button>
           </div>
@@ -1297,8 +1341,9 @@ export function CompanySettings() {
         </div>
         <div className="space-y-3 rounded-md border border-destructive/40 bg-destructive/5 px-4 py-4">
           <p className="text-sm text-muted-foreground">
-            Archive this company to hide it from the sidebar. This persists in
-            the database.
+            {t("companySettings.dangerZone.archiveHint", {
+              defaultValue: "Archive this company to hide it from the sidebar. This persists in the database.",
+            })}
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -1311,7 +1356,10 @@ export function CompanySettings() {
               onClick={() => {
                 if (!selectedCompanyId) return;
                 const confirmed = window.confirm(
-                  `Archive company "${selectedCompany.name}"? It will be hidden from the sidebar.`
+                  t("companySettings.dangerZone.archiveConfirm", {
+                    defaultValue: 'Archive company "{{name}}"? It will be hidden from the sidebar.',
+                    name: selectedCompany.name,
+                  })
                 );
                 if (!confirmed) return;
                 const nextCompanyId =
@@ -1327,16 +1375,16 @@ export function CompanySettings() {
               }}
             >
               {archiveMutation.isPending
-                ? "Archiving..."
+                ? t("companySettings.dangerZone.archiving", { defaultValue: "Archiving..." })
                 : selectedCompany.status === "archived"
-                ? "Already archived"
-                : "Archive company"}
+                ? t("companySettings.dangerZone.alreadyArchived", { defaultValue: "Already archived" })
+                : t("companySettings.dangerZone.archiveCompany", { defaultValue: "Archive company" })}
             </Button>
             {archiveMutation.isError && (
               <span className="text-xs text-destructive">
                 {archiveMutation.error instanceof Error
                   ? archiveMutation.error.message
-                  : "Failed to archive company"}
+                  : t("companySettings.dangerZone.failedToArchive", { defaultValue: "Failed to archive company" })}
               </span>
             )}
           </div>
