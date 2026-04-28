@@ -30,6 +30,7 @@ import {
   type ComponentType,
 } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import type {
   PluginLauncherDeclaration,
   PluginUiSlotDeclaration,
@@ -38,6 +39,7 @@ import type {
 } from "@paperclipai/shared";
 import { pluginsApi, type PluginUiContribution } from "@/api/plugins";
 import { authApi } from "@/api/auth";
+import i18n from "@/i18n";
 import { queryKeys } from "@/lib/queryKeys";
 import { cn } from "@/lib/utils";
 import {
@@ -107,7 +109,7 @@ function requiresEntityType(slotType: PluginUiSlotType): boolean {
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error && error.message) return error.message;
-  return "Unknown error";
+  return i18n.t("plugins:slots.errors.unknown", { defaultValue: "Unknown error" });
 }
 
 /**
@@ -626,7 +628,7 @@ class PluginSlotErrorBoundary extends Component<PluginSlotErrorBoundaryProps, Pl
     if (this.state.hasError) {
       return (
         <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", this.props.className)}>
-          {this.props.slot.pluginDisplayName}: failed to render
+          {this.props.slot.pluginDisplayName}: {i18n.t("plugins:slots.renderFailed", { defaultValue: "failed to render" })}
         </div>
       );
     }
@@ -797,6 +799,7 @@ export function PluginSlotOutlet({
   errorClassName,
   missingBehavior = "hidden",
 }: PluginSlotOutletProps) {
+  const { t } = useTranslation("plugins");
   const { slots, errorMessage } = usePluginSlots({
     slotTypes,
     entityType,
@@ -806,7 +809,10 @@ export function PluginSlotOutlet({
   if (errorMessage) {
     return (
       <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", errorClassName)}>
-        Plugin extensions unavailable: {errorMessage}
+        {t("slots.extensionsUnavailable", {
+          defaultValue: "Plugin extensions unavailable: {{errorMessage}}",
+          errorMessage,
+        })}
       </div>
     );
   }

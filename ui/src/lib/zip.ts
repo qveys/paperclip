@@ -1,4 +1,5 @@
 import type { CompanyPortabilityFileEntry } from "@paperclipai/shared";
+import i18n from "@/i18n";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -139,10 +140,18 @@ function portableFileEntryToBytes(entry: CompanyPortabilityFileEntry): Uint8Arra
 async function inflateZipEntry(compressionMethod: number, bytes: Uint8Array) {
   if (compressionMethod === 0) return bytes;
   if (compressionMethod !== 8) {
-    throw new Error("Unsupported zip archive: only STORE and DEFLATE entries are supported.");
+    throw new Error(
+      i18n.t("core:zip.errors.unsupportedCompression", {
+        defaultValue: "Unsupported zip archive: only STORE and DEFLATE entries are supported.",
+      }),
+    );
   }
   if (typeof DecompressionStream !== "function") {
-    throw new Error("Unsupported zip archive: this browser cannot read compressed zip entries.");
+    throw new Error(
+      i18n.t("core:zip.errors.browserCompressionUnsupported", {
+        defaultValue: "Unsupported zip archive: this browser cannot read compressed zip entries.",
+      }),
+    );
   }
   const body = new Uint8Array(bytes.byteLength);
   body.set(bytes);
@@ -162,11 +171,19 @@ export async function readZipArchive(source: ArrayBuffer | Uint8Array): Promise<
     const signature = readUint32(bytes, offset);
     if (signature === 0x02014b50 || signature === 0x06054b50) break;
     if (signature !== 0x04034b50) {
-      throw new Error("Invalid zip archive: unsupported local file header.");
+      throw new Error(
+        i18n.t("core:zip.errors.unsupportedHeader", {
+          defaultValue: "Invalid zip archive: unsupported local file header.",
+        }),
+      );
     }
 
     if (offset + 30 > bytes.length) {
-      throw new Error("Invalid zip archive: truncated local file header.");
+      throw new Error(
+        i18n.t("core:zip.errors.truncatedHeader", {
+          defaultValue: "Invalid zip archive: truncated local file header.",
+        }),
+      );
     }
 
     const generalPurposeFlag = readUint16(bytes, offset + 6);
@@ -176,14 +193,22 @@ export async function readZipArchive(source: ArrayBuffer | Uint8Array): Promise<
     const extraFieldLength = readUint16(bytes, offset + 28);
 
     if ((generalPurposeFlag & 0x0008) !== 0) {
-      throw new Error("Unsupported zip archive: data descriptors are not supported.");
+      throw new Error(
+        i18n.t("core:zip.errors.dataDescriptorsUnsupported", {
+          defaultValue: "Unsupported zip archive: data descriptors are not supported.",
+        }),
+      );
     }
 
     const nameOffset = offset + 30;
     const bodyOffset = nameOffset + fileNameLength + extraFieldLength;
     const bodyEnd = bodyOffset + compressedSize;
     if (bodyEnd > bytes.length) {
-      throw new Error("Invalid zip archive: truncated file contents.");
+      throw new Error(
+        i18n.t("core:zip.errors.truncatedFileContents", {
+          defaultValue: "Invalid zip archive: truncated file contents.",
+        }),
+      );
     }
 
     const rawArchivePath = textDecoder.decode(bytes.slice(nameOffset, nameOffset + fileNameLength));

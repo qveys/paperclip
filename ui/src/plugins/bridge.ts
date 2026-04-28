@@ -34,6 +34,7 @@ import type {
 } from "@paperclipai/shared";
 import { pluginsApi } from "@/api/plugins";
 import { ApiError } from "@/api/client";
+import i18n from "@/i18n";
 import { useToastActions, type ToastInput } from "@/context/ToastContext";
 
 // ---------------------------------------------------------------------------
@@ -456,7 +457,14 @@ export function usePluginStream<T = unknown>(
     source.onerror = () => {
       setConnecting(false);
       setConnected(false);
-      setError(new Error(`Failed to connect to plugin stream "${channel}"`));
+      setError(
+        new Error(
+          i18n.t("plugins:bridge.stream.connectFailed", {
+            defaultValue: 'Failed to connect to plugin stream "{{channel}}"',
+            channel,
+          }),
+        ),
+      );
       source.close();
       if (sourceRef.current === source) {
         sourceRef.current = null;

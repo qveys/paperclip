@@ -16,6 +16,7 @@ import {
   type ReactNode,
 } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { PLUGIN_LAUNCHER_BOUNDS } from "@paperclipai/shared";
 import type {
   PluginLauncherBounds,
@@ -25,6 +26,7 @@ import type {
 } from "@paperclipai/shared";
 import { pluginsApi, type PluginUiContribution } from "@/api/plugins";
 import { authApi } from "@/api/auth";
+import i18n from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "@/lib/router";
 import { queryKeys } from "@/lib/queryKeys";
@@ -129,7 +131,7 @@ const PluginLauncherRuntimeContext = createContext<PluginLauncherRuntimeContextV
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error && error.message) return error.message;
-  return "Unknown error";
+  return i18n.t("plugins:launchers.errors.unknown", { defaultValue: "Unknown error" });
 }
 
 function buildLauncherHostContext(
@@ -391,7 +393,7 @@ class LauncherErrorBoundary extends Component<LauncherErrorBoundaryProps, Launch
     if (this.state.hasError) {
       return (
         <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-          {this.props.launcher.pluginDisplayName}: failed to render
+          {this.props.launcher.pluginDisplayName}: {i18n.t("plugins:launchers.renderFailed", { defaultValue: "failed to render" })}
         </div>
       );
     }
@@ -430,7 +432,11 @@ function LauncherRenderContent({
 
     return (
       <div className="rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-        {instance.launcher.pluginDisplayName}: could not resolve launcher target "{instance.launcher.action.target}".
+        {i18n.t("plugins:launchers.targetResolveFailed", {
+          defaultValue: '{{pluginName}}: could not resolve launcher target "{{target}}".',
+          pluginName: instance.launcher.pluginDisplayName,
+          target: instance.launcher.action.target,
+        })}
       </div>
     );
   }
@@ -470,6 +476,7 @@ function LauncherModalShell({
   requestBounds: (key: string, request: PluginModalBoundsRequest) => Promise<void>;
   closeLauncher: (key: string, event: PluginRenderCloseEvent) => Promise<void>;
 }) {
+  const { t } = useTranslation("plugins");
   const contentRef = useRef<HTMLDivElement | null>(null);
   const titleId = useId();
 
@@ -570,7 +577,7 @@ function LauncherModalShell({
             className="ml-auto"
             onClick={() => void closeLauncher(instance.key, { reason: "programmatic" })}
           >
-            Close
+            {t("launchers.close", { defaultValue: "Close" })}
           </Button>
         </div>
         <div
@@ -763,6 +770,7 @@ export function PluginLauncherOutlet({
   itemClassName,
   errorClassName,
 }: PluginLauncherOutletProps) {
+  const { t } = useTranslation("plugins");
   const { activateLauncher } = usePluginLauncherRuntime();
   const { launchers, contributionsByPluginId, errorMessage } = usePluginLaunchers({
     placementZones,
@@ -774,7 +782,10 @@ export function PluginLauncherOutlet({
   if (errorMessage) {
     return (
       <div className={cn("rounded-md border border-destructive/30 bg-destructive/5 px-2 py-1 text-xs text-destructive", errorClassName)}>
-        Plugin launchers unavailable: {errorMessage}
+        {t("launchers.unavailable", {
+          defaultValue: "Plugin launchers unavailable: {{errorMessage}}",
+          errorMessage,
+        })}
       </div>
     );
   }
