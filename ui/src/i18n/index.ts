@@ -21,7 +21,15 @@ i18n
     ns: [...NAMESPACES],
     defaultNS: "core",
     backend: {
-      backends: [HttpBackend, resourcesToBackend(bundledResources)],
+      backends: [
+        HttpBackend,
+        resourcesToBackend(
+          bundledResources as unknown as Record<
+            string,
+            Record<string, Record<string, unknown>>
+          >
+        ),
+      ],
       backendOptions: [
         {
           loadPath: `${WEBLATE_BASE}/{{ns}}/{{lng}}/file/?format=json`,
