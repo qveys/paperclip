@@ -18,6 +18,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { initPluginBridge } from "./plugins/bridge-init";
 import { PluginLauncherProvider } from "./plugins/launchers";
 import "./i18n";
+import { I18nDebugStyles } from "./i18n/components/I18nDebugStyles";
 import "@mdxeditor/editor/style.css";
 import "./index.css";
 
@@ -53,6 +54,7 @@ createRoot(document.getElementById("root")!).render(
                         <PanelProvider>
                           <PluginLauncherProvider>
                             <DialogProvider>
+                              <I18nDebugStyles />
                               <App />
                             </DialogProvider>
                           </PluginLauncherProvider>
