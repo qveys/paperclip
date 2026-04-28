@@ -27,6 +27,7 @@ import {
   HintIcon,
   adapterLabels,
 } from "../components/agent-config-primitives";
+import { useTranslation } from "react-i18next";
 
 type AgentSnippetInput = {
   onboardingTextUrl: string;
@@ -170,6 +171,7 @@ function SupportMark({ supported }: { supported: boolean }) {
 }
 
 export function CompanySettings() {
+  const { t } = useTranslation();
   const {
     companies,
     selectedCompany,
@@ -348,15 +350,17 @@ export function CompanySettings() {
       setEditingEnvironmentId(null);
       setEnvironmentForm(createEmptyEnvironmentForm());
       pushToast({
-        title: editingEnvironmentId ? "Environment updated" : "Environment created",
+        title: editingEnvironmentId
+          ? t("companySettings.environment.toast.updated", { defaultValue: "Environment updated" })
+          : t("companySettings.environment.toast.created", { defaultValue: "Environment created" }),
         body: `${environment.name} is ready.`,
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to save environment",
-        body: error instanceof Error ? error.message : "Environment save failed.",
+        title: t("companySettings.environment.toast.saveFailed", { defaultValue: "Failed to save environment" }),
+        body: error instanceof Error ? error.message : t("companySettings.environment.toast.saveFailedBody", { defaultValue: "Environment save failed." }),
         tone: "error",
       });
     },
@@ -370,7 +374,9 @@ export function CompanySettings() {
         [environmentId]: probe,
       }));
       pushToast({
-        title: probe.ok ? "Environment probe passed" : "Environment probe failed",
+        title: probe.ok
+          ? t("companySettings.environment.toast.probePassed", { defaultValue: "Environment probe passed" })
+          : t("companySettings.environment.toast.probeFailed", { defaultValue: "Environment probe failed" }),
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
@@ -387,8 +393,8 @@ export function CompanySettings() {
         },
       }));
       pushToast({
-        title: "Environment probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        title: t("companySettings.environment.toast.probeFailed", { defaultValue: "Environment probe failed" }),
+        body: error instanceof Error ? error.message : t("companySettings.environment.toast.probeFailedBody", { defaultValue: "Environment probe failed." }),
         tone: "error",
       });
     },
@@ -401,15 +407,17 @@ export function CompanySettings() {
     },
     onSuccess: (probe) => {
       pushToast({
-        title: probe.ok ? "Draft probe passed" : "Draft probe failed",
+        title: probe.ok
+          ? t("companySettings.environment.toast.draftProbePassed", { defaultValue: "Draft probe passed" })
+          : t("companySettings.environment.toast.draftProbeFailed", { defaultValue: "Draft probe failed" }),
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Draft probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        title: t("companySettings.environment.toast.draftProbeFailed", { defaultValue: "Draft probe failed" }),
+        body: error instanceof Error ? error.message : t("companySettings.environment.toast.probeFailedBody", { defaultValue: "Environment probe failed." }),
         tone: "error",
       });
     },
@@ -460,15 +468,15 @@ export function CompanySettings() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: selectedCompany?.name ?? "Company", href: "/dashboard" },
-      { label: "Settings" }
+      { label: selectedCompany?.name ?? t("companySettings.breadcrumb.company", { defaultValue: "Company" }), href: "/dashboard" },
+      { label: t("companySettings.breadcrumb.settings", { defaultValue: "Settings" }) }
     ]);
-  }, [setBreadcrumbs, selectedCompany?.name]);
+  }, [setBreadcrumbs, selectedCompany?.name, t]);
 
   if (!selectedCompany) {
     return (
       <div className="text-sm text-muted-foreground">
-        No company selected. Select a company from the switcher above.
+        {t("companySettings.states.noCompanySelected", { defaultValue: "No company selected. Select a company from the switcher above." })}
       </div>
     );
   }
@@ -592,13 +600,13 @@ export function CompanySettings() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center gap-2">
         <Settings className="h-5 w-5 text-muted-foreground" />
-        <h1 className="text-lg font-semibold">Company Settings</h1>
+        <h1 className="text-lg font-semibold">{t("companySettings.title", { defaultValue: "Company Settings" })}</h1>
       </div>
 
       {/* General */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          General
+          {t("companySettings.sections.general", { defaultValue: "General" })}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <Field label="Company name" hint="The display name for your company.">
@@ -627,7 +635,7 @@ export function CompanySettings() {
       {/* Appearance */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Appearance
+          {t("companySettings.sections.appearance", { defaultValue: "Appearance" })}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <div className="flex items-start gap-4">
@@ -729,16 +737,18 @@ export function CompanySettings() {
             onClick={handleSaveGeneral}
             disabled={generalMutation.isPending || !companyName.trim()}
           >
-            {generalMutation.isPending ? "Saving..." : "Save changes"}
+            {generalMutation.isPending
+              ? t("companySettings.actions.saving", { defaultValue: "Saving..." })
+              : t("companySettings.actions.saveChanges", { defaultValue: "Save changes" })}
           </Button>
           {generalMutation.isSuccess && (
-            <span className="text-xs text-muted-foreground">Saved</span>
+            <span className="text-xs text-muted-foreground">{t("companySettings.states.saved", { defaultValue: "Saved" })}</span>
           )}
           {generalMutation.isError && (
             <span className="text-xs text-destructive">
               {generalMutation.error instanceof Error
                   ? generalMutation.error.message
-                  : "Failed to save"}
+                  : t("companySettings.errors.failedToSave", { defaultValue: "Failed to save" })}
             </span>
           )}
         </div>
@@ -1129,7 +1139,7 @@ export function CompanySettings() {
       {/* Hiring */}
       <div className="space-y-4" data-testid="company-settings-team-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Hiring
+          {t("companySettings.sections.hiring", { defaultValue: "Hiring" })}
         </div>
         <div className="rounded-md border border-border px-4 py-3">
           <ToggleField
@@ -1145,7 +1155,7 @@ export function CompanySettings() {
       {/* Invites */}
       <div className="space-y-4" data-testid="company-settings-invites-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Invites
+          {t("companySettings.sections.invites", { defaultValue: "Invites" })}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <div className="flex items-center gap-1.5">
@@ -1223,7 +1233,7 @@ export function CompanySettings() {
       {/* Import / Export */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Company Packages
+          {t("companySettings.sections.companyPackages", { defaultValue: "Company Packages" })}
         </div>
         <div className="rounded-md border border-border px-4 py-4">
           <p className="text-sm text-muted-foreground">
@@ -1250,7 +1260,7 @@ export function CompanySettings() {
       {/* Danger Zone */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-destructive uppercase tracking-wide">
-          Danger Zone
+          {t("companySettings.sections.dangerZone", { defaultValue: "Danger Zone" })}
         </div>
         <div className="space-y-3 rounded-md border border-destructive/40 bg-destructive/5 px-4 py-4">
           <p className="text-sm text-muted-foreground">

@@ -43,6 +43,7 @@ import {
   FRONTMATTER_FIELD_LABELS,
   PackageFileTree,
 } from "../components/PackageFileTree";
+import { useTranslation } from "react-i18next";
 
 /**
  * Extract the set of agent/project/task slugs that are "checked" based on
@@ -578,6 +579,7 @@ function expandAncestors(filePath: string): string[] {
 }
 
 export function CompanyExport() {
+  const { t } = useTranslation();
   const { selectedCompanyId, selectedCompany } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const { pushToast } = useToastActions();
@@ -672,10 +674,10 @@ export function CompanyExport() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Org Chart", href: "/org" },
-      { label: "Export" },
+      { label: t("companyExport.breadcrumb.orgChart", { defaultValue: "Org Chart" }), href: "/org" },
+      { label: t("companyExport.breadcrumb.export", { defaultValue: "Export" }) },
     ]);
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, t]);
 
   const exportPreviewMutation = useMutation({
     mutationFn: () =>
@@ -719,8 +721,8 @@ export function CompanyExport() {
     onError: (err) => {
       pushToast({
         tone: "error",
-        title: "Export failed",
-        body: err instanceof Error ? err.message : "Failed to load export data.",
+        title: t("companyExport.toast.exportFailed.title", { defaultValue: "Export failed" }),
+        body: err instanceof Error ? err.message : t("companyExport.toast.exportFailed.loadBody", { defaultValue: "Failed to load export data." }),
       });
     },
   });
@@ -737,15 +739,15 @@ export function CompanyExport() {
       downloadZip(result, resultCheckedFiles, result.files);
       pushToast({
         tone: "success",
-        title: "Export downloaded",
+        title: t("companyExport.toast.downloaded.title", { defaultValue: "Export downloaded" }),
         body: `${resultCheckedFiles.size} file${resultCheckedFiles.size === 1 ? "" : "s"} exported as ${result.rootPath}.zip`,
       });
     },
     onError: (err) => {
       pushToast({
         tone: "error",
-        title: "Export failed",
-        body: err instanceof Error ? err.message : "Failed to build export package.",
+        title: t("companyExport.toast.exportFailed.title", { defaultValue: "Export failed" }),
+        body: err instanceof Error ? err.message : t("companyExport.toast.exportFailed.buildBody", { defaultValue: "Failed to build export package." }),
       });
     },
   });
@@ -911,7 +913,7 @@ export function CompanyExport() {
   }
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={Package} message="Select a company to export." />;
+    return <EmptyState icon={Package} message={t("companyExport.states.selectCompany", { defaultValue: "Select a company to export." })} />;
   }
 
   if (exportPreviewMutation.isPending && !exportData) {
@@ -919,7 +921,7 @@ export function CompanyExport() {
   }
 
   if (!exportData) {
-    return <EmptyState icon={Package} message="Loading export data..." />;
+    return <EmptyState icon={Package} message={t("companyExport.states.loading", { defaultValue: "Loading export data..." })} />;
   }
 
   const previewContent = selectedFile
@@ -981,7 +983,7 @@ export function CompanyExport() {
                 type="text"
                 value={treeSearch}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                placeholder="Search files..."
+                placeholder={t("companyExport.search.placeholder", { defaultValue: "Search files..." })}
                 className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                 data-page-search-target="true"
               />
@@ -1004,7 +1006,7 @@ export function CompanyExport() {
                   onClick={() => setTaskLimit((prev) => prev + TASKS_PAGE_SIZE)}
                   className="w-full rounded-md border border-border px-3 py-1.5 text-xs text-muted-foreground hover:bg-accent/30 hover:text-foreground transition-colors"
                 >
-                  Show more issues ({visibleTaskChildren} of {totalTaskChildren})
+                  {t("companyExport.actions.showMoreIssues", { defaultValue: "Show more issues ({{visible}} of {{total}})", visible: visibleTaskChildren, total: totalTaskChildren })}
                 </button>
               </div>
             )}
