@@ -471,7 +471,7 @@ export function ProjectWorkspaceDetail() {
                     className="w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm outline-none"
                     value={form.cwd}
                     onChange={(event) => setForm((current) => current ? { ...current, cwd: event.target.value } : current)}
-                    placeholder="/absolute/path/to/workspace"
+                    placeholder={t("projectWorkspaceDetail.localPathPlaceholder", { defaultValue: "/absolute/path/to/workspace" })}
                   />
                 </Field>
                 <div className="flex items-end">

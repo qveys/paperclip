@@ -68,6 +68,8 @@ function AdapterRow({
   toggleTitleDisabled?: string;
   disabledBadgeLabel?: string;
 }) {
+  const { t } = useTranslation("plugins");
+
   return (
     <li>
       <div className="flex items-center gap-4 px-4 py-3">
@@ -76,11 +78,15 @@ function AdapterRow({
             <span className={cn("font-medium", adapter.disabled && "text-muted-foreground line-through")}>
               {adapter.label || getAdapterLabel(adapter.type)}
             </span>
-            <Badge variant="outline">{adapter.source === "external" ? "External" : "Built-in"}</Badge>
+            <Badge variant="outline">
+              {adapter.source === "external"
+                ? t("adapterManager.sourceExternal", { defaultValue: "External" })
+                : t("adapterManager.sourceBuiltin", { defaultValue: "Built-in" })}
+            </Badge>
             {adapter.source === "external" && (
               adapter.isLocalPath
-                ? <span title="Installed from local path"><FolderOpen className="h-4 w-4 text-amber-500" /></span>
-                : <span title="Installed from npm"><Package className="h-4 w-4 text-red-500" /></span>
+                ? <span title={t("adapterManager.installedFromLocalPath", { defaultValue: "Installed from local path" })}><FolderOpen className="h-4 w-4 text-amber-500" /></span>
+                : <span title={t("adapterManager.installedFromNpm", { defaultValue: "Installed from npm" })}><Package className="h-4 w-4 text-red-500" /></span>
             )}
             {adapter.version && (
               <Badge variant="secondary" className="font-mono text-[10px]">
@@ -89,17 +95,17 @@ function AdapterRow({
             )}
             {adapter.overriddenBuiltin && (
               <Badge variant="secondary" className="text-blue-600 border-blue-400">
-                Overrides built-in
+                {t("adapterManager.overridesBuiltin", { defaultValue: "Overrides built-in" })}
               </Badge>
             )}
             {overriddenBy && (
               <Badge variant="secondary" className="text-blue-600 border-blue-400">
-                Overridden by {overriddenBy}
+                {t("adapterManager.overriddenBy", { defaultValue: "Overridden by {{name}}", name: overriddenBy })}
               </Badge>
             )}
             {adapter.disabled && (
               <Badge variant="secondary" className="text-amber-600 border-amber-400">
-                {disabledBadgeLabel ?? "Hidden from menus"}
+                {disabledBadgeLabel ?? t("adapterManager.hiddenFromMenus", { defaultValue: "Hidden from menus" })}
               </Badge>
             )}
           </div>
@@ -108,7 +114,8 @@ function AdapterRow({
             {adapter.packageName && adapter.packageName !== adapter.type && (
               <> · {adapter.packageName}</>
             )}
-            {" · "}{adapter.modelsCount} models
+            {" · "}
+            {t("adapterManager.modelsCount", { defaultValue: "{{count}} models", count: adapter.modelsCount })}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -117,7 +124,7 @@ function AdapterRow({
               variant="outline"
               size="icon-sm"
               className="h-8 w-8"
-              title="Reinstall adapter (pull latest from npm)"
+              title={t("adapterManager.reinstallAdapterTooltip", { defaultValue: "Reinstall adapter (pull latest from npm)" })}
               disabled={isReinstalling}
               onClick={() => onReinstall(adapter.type)}
             >
@@ -129,7 +136,7 @@ function AdapterRow({
               variant="outline"
               size="icon-sm"
               className="h-8 w-8"
-              title="Reload adapter (hot-swap)"
+              title={t("adapterManager.reloadAdapterTooltip", { defaultValue: "Reload adapter (hot-swap)" })}
               disabled={isReloading}
               onClick={() => onReload(adapter.type)}
             >
@@ -141,8 +148,8 @@ function AdapterRow({
             size="icon-sm"
             className="h-8 w-8"
             title={adapter.disabled
-              ? (toggleTitleEnabled ?? "Show in agent menus")
-              : (toggleTitleDisabled ?? "Hide from agent menus")}
+              ? (toggleTitleEnabled ?? t("adapterManager.showInAgentMenus", { defaultValue: "Show in agent menus" }))
+              : (toggleTitleDisabled ?? t("adapterManager.hideFromAgentMenus", { defaultValue: "Hide from agent menus" }))}
             disabled={isToggling}
             onClick={() => onToggle(adapter.type, !adapter.disabled)}
           >
@@ -153,7 +160,7 @@ function AdapterRow({
               variant="outline"
               size="icon-sm"
               className="h-8 w-8 text-destructive hover:text-destructive"
-              title="Remove adapter"
+              title={t("adapterManager.removeAdapterTooltip", { defaultValue: "Remove adapter" })}
               onClick={() => onRemove(adapter.type)}
             >
               <Trash2 className="h-4 w-4" />
@@ -461,7 +468,9 @@ export function AdapterManager() {
                     <Input
                       id="adapterLocalPath"
                       className="flex-1 font-mono text-xs"
-                      placeholder="/mnt/e/Projects/my-adapter  or  E:\Projects\my-adapter"
+                      placeholder={t("adapterManager.localPathPlaceholder", {
+                        defaultValue: "/mnt/e/Projects/my-adapter  or  E:\\Projects\\my-adapter",
+                      })}
                       value={installPackage}
                       onChange={(e) => setInstallPackage(e.target.value)}
                     />
@@ -478,7 +487,7 @@ export function AdapterManager() {
                     <Label htmlFor="adapterPackageName">{tx("adapterManager.packageName")}</Label>
                     <Input
                       id="adapterPackageName"
-                      placeholder="my-paperclip-adapter"
+                      placeholder={t("adapterManager.packageNamePlaceholder", { defaultValue: "my-paperclip-adapter" })}
                       value={installPackage}
                       onChange={(e) => setInstallPackage(e.target.value)}
                     />
@@ -487,7 +496,7 @@ export function AdapterManager() {
                     <Label htmlFor="adapterVersion">{tx("adapterManager.versionOptional")}</Label>
                     <Input
                       id="adapterVersion"
-                      placeholder="latest"
+                      placeholder={t("adapterManager.versionPlaceholder", { defaultValue: "latest" })}
                       value={installVersion}
                       onChange={(e) => setInstallVersion(e.target.value)}
                     />

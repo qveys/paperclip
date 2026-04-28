@@ -189,7 +189,7 @@ export function PluginManager() {
                 <Label htmlFor="packageName">{tx("pluginManager.packageNameLabel")}</Label>
                 <Input
                   id="packageName"
-                  placeholder="@paperclipai/plugin-example"
+                  placeholder={t("pluginManager.packageNamePlaceholder", { defaultValue: "@paperclipai/plugin-example" })}
                   value={installPackage}
                   onChange={(e) => setInstallPackage(e.target.value)}
                 />

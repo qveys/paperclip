@@ -2523,7 +2523,7 @@ export function Inbox() {
           {showSeparatorBefore("alerts") && <Separator />}
           <div>
             <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-              Alerts
+              {t("inboxAlerts.title", { defaultValue: "Alerts" })}
             </h3>
             <div className="divide-y divide-border border border-border">
               {showAggregateAgentError && (
@@ -2535,14 +2535,19 @@ export function Inbox() {
                     <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
                     <span className="text-sm">
                       <span className="font-medium">{dashboard!.agents.error}</span>{" "}
-                      {dashboard!.agents.error === 1 ? "agent has" : "agents have"} errors
+                      {t("inboxAlerts.agentErrors", {
+                        defaultValue: "{{agentWord}} errors",
+                        agentWord: dashboard!.agents.error === 1
+                          ? t("inboxAlerts.agentSingular", { defaultValue: "agent has" })
+                          : t("inboxAlerts.agentPlural", { defaultValue: "agents have" }),
+                      })}
                     </span>
                   </Link>
                   <button
                     type="button"
                     onClick={() => dismissAlert("alert:agent-errors")}
                     className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground group-hover/alert:opacity-100"
-                    aria-label="Dismiss"
+                    aria-label={t("dismiss")}
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
@@ -2556,16 +2561,16 @@ export function Inbox() {
                   >
                     <AlertTriangle className="h-4 w-4 shrink-0 text-yellow-400" />
                     <span className="text-sm">
-                      Budget at{" "}
+                      {t("inboxAlerts.budgetAt", { defaultValue: "Budget at" })}{" "}
                       <span className="font-medium">{dashboard!.costs.monthUtilizationPercent}%</span>{" "}
-                      utilization this month
+                      {t("inboxAlerts.utilizationThisMonth", { defaultValue: "utilization this month" })}
                     </span>
                   </Link>
                   <button
                     type="button"
                     onClick={() => dismissAlert("alert:budget")}
                     className="rounded-md p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground group-hover/alert:opacity-100"
-                    aria-label="Dismiss"
+                    aria-label={t("dismiss")}
                   >
                     <X className="h-3.5 w-3.5" />
                   </button>
