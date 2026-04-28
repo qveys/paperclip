@@ -1,4 +1,4 @@
-import { useCallback, useState, type ChangeEvent, type ReactElement } from "react";
+import { useCallback, useEffect, useState, type ChangeEvent, type ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "../resources";
 
@@ -24,21 +24,22 @@ function readPersistedLng(): string | null {
 
 export function LanguageSwitcher(): ReactElement {
   const { i18n } = useTranslation();
-  // The <select> reflects the locale the user picked (persisted in
-  // localStorage), NOT i18n.resolvedLanguage. i18next has subtle race
-  // conditions around setResolvedLanguage when bundles have empty namespaces
-  // (it walks the language hierarchy, hasLanguageSomeTranslations may report
-  // false during the window between changeLanguage start and bundle register,
-  // so resolvedLanguage gets pinned to the fallback). Until Phase 1 wraps the
-  // UI in useT(), no rendered text depends on i18n.language anyway — the
-  // switcher just needs to flip visually and persist the choice.
   const [current, setCurrent] = useState<string>(
     () => readPersistedLng() ?? i18n.resolvedLanguage ?? i18n.language ?? "en"
   );
 
+  useEffect(() => {
+    const syncFromI18n = (lng: string) => setCurrent(lng);
+    i18n.on("languageChanged", syncFromI18n);
+    return () => {
+      i18n.off("languageChanged", syncFromI18n);
+    };
+  }, [i18n]);
+
   const onChange = useCallback(
     (event: ChangeEvent<HTMLSelectElement>) => {
       const next = event.target.value;
+      const previous = current;
       setCurrent(next);
       try {
         window.localStorage.setItem(LOCALE_KEY, next);
@@ -46,10 +47,15 @@ export function LanguageSwitcher(): ReactElement {
         /* storage unavailable */
       }
       void i18n.changeLanguage(next).catch(() => {
-        /* swallow — UI does not consume i18n.language yet */
+        setCurrent(previous);
+        try {
+          window.localStorage.setItem(LOCALE_KEY, previous);
+        } catch {
+          /* storage unavailable */
+        }
       });
     },
-    [i18n]
+    [current, i18n]
   );
 
   return (

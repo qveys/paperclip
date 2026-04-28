@@ -135,6 +135,7 @@ export function OnboardingWizard() {
       defaultValue: DEFAULT_TASK_DESCRIPTION
     })
   );
+  const wasOpenRef = useRef(false);
 
   // Auto-grow textarea for task description
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -158,6 +159,22 @@ export function OnboardingWizard() {
   const [createdAgentId, setCreatedAgentId] = useState<string | null>(null);
   const [createdProjectId, setCreatedProjectId] = useState<string | null>(null);
   const [createdIssueRef, setCreatedIssueRef] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (effectiveOnboardingOpen && !wasOpenRef.current) {
+      setTaskTitle(
+        t("onboarding.defaultTaskTitle", {
+          defaultValue: "Hire your first engineer and create a hiring plan",
+        }),
+      );
+      setTaskDescription(
+        t("onboarding.defaultTaskDescription", {
+          defaultValue: DEFAULT_TASK_DESCRIPTION,
+        }),
+      );
+    }
+    wasOpenRef.current = effectiveOnboardingOpen;
+  }, [effectiveOnboardingOpen, t]);
 
   useEffect(() => {
     setRouteDismissed(false);

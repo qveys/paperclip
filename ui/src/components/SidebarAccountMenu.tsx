@@ -132,11 +132,12 @@ export function SidebarAccountMenu({
     },
   });
 
-  const displayName = session?.user.name?.trim() || t("sidebarAccountMenu.defaultName");
+  const sessionName = session?.user.name?.trim() || "";
+  const displayName = sessionName || t("sidebarAccountMenu.defaultName");
   const secondaryLabel =
     session?.user.email?.trim() || (deploymentMode === "authenticated" ? t("sidebarAccountMenu.signedIn") : t("sidebarAccountMenu.localWorkspace"));
   const accountBadge = deploymentMode === "authenticated" ? t("sidebarAccountMenu.account") : t("sidebarAccountMenu.local");
-  const initials = deriveInitials(displayName);
+  const initials = deriveInitials(sessionName || "Board");
   const profileHref = `/u/${deriveUserSlug(session?.user.name, session?.user.email, session?.user.id)}`;
 
   function closeNavigationChrome() {

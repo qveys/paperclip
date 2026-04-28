@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { BudgetIncident } from "@paperclipai/shared";
 import { useT } from "@/i18n/hooks/useT";
@@ -19,7 +19,10 @@ function parseDollarInput(value: string) {
   return Math.round(parsed * 100);
 }
 
-function incidentStateLabel(incident: BudgetIncident, t: ReturnType<typeof useTranslation>['t']) {
+function incidentStateLabel(
+  incident: BudgetIncident,
+  t: (key: string, options?: Record<string, unknown>) => ReactNode
+) {
   if (incident.status === "resolved") return t("budgetIncidentCard.resolved");
   if (incident.status === "dismissed") return t("budgetIncidentCard.dismissed");
   if (incident.approvalStatus === "revision_requested") return t("budgetIncidentCard.escalated");
@@ -98,19 +101,19 @@ export function BudgetIncidentCard({
               }}
             >
               <ArrowUpRight className="h-4 w-4" />
-              {tx(isMutating ? "budgetIncidentCard.applying" : "budgetIncidentCard.raiseBudgetResume")}
+              {t(isMutating ? "budgetIncidentCard.applying" : "budgetIncidentCard.raiseBudgetResume")}
             </Button>
           </div>
           {parsed !== null && parsed <= incident.amountObserved ? (
             <p className="mt-2 text-xs text-red-200/80">
-              {tx("budgetIncidentCard.budgetExceedsSpendError")}
+              {t("budgetIncidentCard.budgetExceedsSpendError")}
             </p>
           ) : null}
         </div>
 
         <div className="flex justify-end">
           <Button variant="ghost" className="text-muted-foreground" disabled={isMutating} onClick={onKeepPaused}>
-            {tx("budgetIncidentCard.keepPaused")}
+            {t("budgetIncidentCard.keepPaused")}
           </Button>
         </div>
       </CardContent>

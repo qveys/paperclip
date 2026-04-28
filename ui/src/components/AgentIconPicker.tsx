@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import {
   type LucideIcon,
 } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { useT } from "@/i18n/hooks/useT";
 import { AGENT_ICON_NAMES, type AgentIconName } from "@paperclipai/shared";
 import {
@@ -10,6 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { AGENT_ICONS, getAgentIcon } from "../lib/agent-icons";

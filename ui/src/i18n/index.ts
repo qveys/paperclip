@@ -9,6 +9,7 @@ import { bundledResources, NAMESPACES, SUPPORTED_LANGUAGES } from "./resources";
 const WEBLATE_BASE =
   (import.meta.env.VITE_PAPERCLIP_I18N_BACKEND_URL as string | undefined) ??
   "https://hosted.weblate.org/api/translations/paperclip";
+const isDev = import.meta.env.DEV;
 
 i18n
   .use(ChainedBackend)
@@ -34,7 +35,7 @@ i18n
         {
           loadPath: `${WEBLATE_BASE}/{{ns}}/{{lng}}/file/?format=json`,
           requestOptions: {
-            cache: "default",
+            cache: isDev ? "no-store" : "default",
           },
         },
         {},

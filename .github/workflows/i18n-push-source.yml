@@ -27,17 +27,17 @@ jobs:
         env:
           WEBLATE_TOKEN: ${{ secrets.WEBLATE_TOKEN }}
         run: |
+          if [ -z "${WEBLATE_TOKEN:-}" ]; then
+            echo "::error::WEBLATE_TOKEN secret is not configured"
+            exit 1
+          fi
           mkdir -p ~/.config
-          cat > ~/.config/weblate <<EOF
-[weblate]
-url = https://hosted.weblate.org/api/
-key = ${WEBLATE_TOKEN}
-EOF
+          printf '%s\n' '[weblate]' 'url = https://hosted.weblate.org/api/' "key = ${WEBLATE_TOKEN}" > ~/.config/weblate
 
       - name: Upload English source namespaces
         run: |
           set -euo pipefail
-          for ns in core dashboard issues agents plugins settings auth errors forms modals common cli; do
+          for ns in core dashboard issues agents plugins settings auth errors forms modals common cli projects; do
             wlc upload \
               --input "ui/src/i18n/locales/en/${ns}.json" \
               --method replace \

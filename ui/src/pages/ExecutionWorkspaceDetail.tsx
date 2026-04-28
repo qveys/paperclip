@@ -152,9 +152,13 @@ function buildWorkspacePatch(initialState: WorkspaceFormState, nextState: Worksp
   maybeAssignConfigText("cleanupCommand");
 
   if (initialState.inheritRuntime !== nextState.inheritRuntime || initialState.workspaceRuntime !== nextState.workspaceRuntime) {
-    const parsed = parseWorkspaceRuntimeJson(nextState.workspaceRuntime, t);
-    if (!parsed.ok) throw new Error(parsed.error);
-    configPatch.workspaceRuntime = nextState.inheritRuntime ? null : parsed.value;
+    if (nextState.inheritRuntime) {
+      configPatch.workspaceRuntime = null;
+    } else {
+      const parsed = parseWorkspaceRuntimeJson(nextState.workspaceRuntime, t);
+      if (!parsed.ok) throw new Error(parsed.error);
+      configPatch.workspaceRuntime = parsed.value;
+    }
   }
 
   if (Object.keys(configPatch).length > 0) {

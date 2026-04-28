@@ -91,13 +91,13 @@
     "rejectedToast": "Join request rejected",
     "requestDetails": "Request details",
     "selectCompany": "Select a company to review join requests.",
-    "sourceIp": "joinRequests.sourceIp",
+    "sourceIp": "Source IP",
     "status": {
       "approved": "Approved",
       "pendingApproval": "Pending approval",
       "rejected": "Rejected"
     },
-    "submittedAt": "joinRequests.submittedAt",
+    "submittedAt": "Submitted at",
     "title": "Join Requests",
     "type": {
       "agent": "Agent",
@@ -109,46 +109,46 @@
   },
   "profile": {
     "actions": {
-      "save": "",
-      "saving": ""
+      "save": "Save profile",
+      "saving": "Saving..."
     },
     "avatar": {
-      "changePhoto": "",
-      "hintNoCompany": "",
-      "hintWithCompany": "",
-      "remove": "",
-      "storedIn": "",
-      "uploadPhoto": ""
+      "changePhoto": "Change photo",
+      "hintNoCompany": "Select a company to upload and store your avatar.",
+      "hintWithCompany": "Profile photos are uploaded with your selected company context.",
+      "remove": "Remove photo",
+      "storedIn": "Stored in {{companyName}} assets.",
+      "uploadPhoto": "Upload photo"
     },
     "breadcrumbs": {
-      "instanceSettings": "",
-      "profile": ""
+      "instanceSettings": "Instance settings",
+      "profile": "Profile"
     },
     "errors": {
-      "loadFailed": "",
-      "removeAvatarFailed": "",
-      "selectCompanyFirst": "",
-      "updateFailed": "",
-      "uploadAvatarFailed": ""
+      "loadFailed": "Failed to load profile settings.",
+      "removeAvatarFailed": "Failed to remove avatar.",
+      "selectCompanyFirst": "Select a company before uploading an avatar.",
+      "updateFailed": "Failed to update profile.",
+      "uploadAvatarFailed": "Failed to upload avatar."
     },
     "fields": {
       "displayName": {
-        "helper": "",
-        "label": "",
-        "placeholder": ""
+        "helper": "This name appears in approvals, comments, and activity feeds.",
+        "label": "Display name",
+        "placeholder": "Board"
       },
       "email": {
-        "helper": "",
-        "label": ""
+        "helper": "Email is managed by your account credentials.",
+        "label": "Email"
       },
       "language": {
-        "helper": "",
-        "label": ""
+        "helper": "Choose your preferred interface language.",
+        "label": "Language"
       }
     },
-    "loading": "",
-    "noEmail": "",
-    "subtitle": "",
-    "title": ""
+    "loading": "Loading profile settings...",
+    "noEmail": "No email on file",
+    "subtitle": "Manage your profile, avatar, and language preferences.",
+    "title": "Profile settings"
   }
 }

@@ -285,7 +285,7 @@ export function RoutineRunVariablesDialog({
           {routineName && (
             <p className="text-muted-foreground text-sm">{routineName}</p>
           )}
-          <DialogTitle>{t("routineRunVariablesDialog.runRoutine", { defaultValue: "Run routine" })}</DialogTitle>
+          <DialogTitle>{t("routineRunVariablesDialog.title", { defaultValue: "Run routine" })}</DialogTitle>
           <DialogDescription>
             {t("routineRunVariablesDialog.description", {
               defaultValue: "Choose the agent and optional project for this one run. Routine defaults are prefilled and won't be changed.",
@@ -515,7 +515,7 @@ export function RoutineRunVariablesDialog({
           >
             {isPending
               ? t("routineRunVariablesDialog.running", { defaultValue: "Running..." })
-              : t("routineRunVariablesDialog.runRoutine", { defaultValue: "Run routine" })}
+              : t("routineRunVariablesDialog.submit", { defaultValue: "Run routine" })}
           </Button>
         </DialogFooter>
       </DialogContent>

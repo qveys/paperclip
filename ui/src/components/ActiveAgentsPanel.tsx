@@ -29,7 +29,10 @@ function relativeTimeForLocale(date: Date | string, locale: string): string {
   const then = new Date(date).getTime();
   const diffSec = Math.round((then - Date.now()) / 1000);
   const absSec = Math.abs(diffSec);
-  if (absSec < 60) return rtf.format(0, "second");
+  if (absSec < 60) {
+    const sec = diffSec === 0 ? 0 : diffSec > 0 ? Math.max(1, diffSec) : Math.min(-1, diffSec);
+    return rtf.format(sec, "second");
+  }
   const diffMin = Math.round(diffSec / 60);
   if (Math.abs(diffMin) < 60) return rtf.format(diffMin, "minute");
   const diffHr = Math.round(diffMin / 60);

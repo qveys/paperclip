@@ -144,9 +144,10 @@ export function ProfileSettings() {
     );
   }
 
-  const currentName = name.trim() || sessionQuery.data.user.name || displayNameFallback;
+  const currentName = name.trim() || sessionQuery.data.user.name || stableEmptyProfileName;
+  const stableInitialsSource = currentName;
   const currentImage = image.trim() || null;
-  const initials = deriveInitials(currentName);
+  const initials = deriveInitials(stableInitialsSource);
   const isSavingProfile = updateMutation.isPending || uploadAvatarMutation.isPending || removeAvatarMutation.isPending;
   return (
     <div className="max-w-4xl space-y-6">

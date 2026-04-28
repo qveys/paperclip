@@ -23,6 +23,7 @@ function writeEnabled(value: boolean): void {
   } catch {
     /* ignore */
   }
+  window.dispatchEvent(new Event("paperclip:i18n-debug-changed"));
 }
 
 export interface UseI18nDebugResult {

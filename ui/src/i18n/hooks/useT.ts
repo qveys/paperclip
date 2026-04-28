@@ -1,4 +1,4 @@
-import { createElement, useCallback, type ReactNode } from "react";
+import { createElement, useCallback, useEffect, useState, type ReactNode } from "react";
 import type { TOptions } from "i18next";
 import { useTranslation } from "react-i18next";
 
@@ -23,11 +23,29 @@ function isDebugEnabled(): boolean {
 
 export function useT(ns?: string | string[]): UseTResult {
   const { t: rawT, i18n, ready } = useTranslation(ns);
+  const [debugEnabled, setDebugEnabled] = useState<boolean>(() => isDebugEnabled());
+  const nsKey = Array.isArray(ns) ? ns.join("|") : ns ?? "";
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === DEBUG_KEY) {
+        setDebugEnabled(isDebugEnabled());
+      }
+    };
+    const onDebugToggle = () => setDebugEnabled(isDebugEnabled());
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("paperclip:i18n-debug-changed", onDebugToggle as EventListener);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("paperclip:i18n-debug-changed", onDebugToggle as EventListener);
+    };
+  }, []);
 
   const t = useCallback(
     (key: string, options?: TOptions & { lng?: string }): ReactNode => {
       const value = rawT(key, options) as unknown as string;
-      if (!isDebugEnabled()) return value;
+      if (!debugEnabled) return value;
 
       const overrideLng =
         options && typeof options === "object" && "lng" in options
@@ -36,14 +54,14 @@ export function useT(ns?: string | string[]): UseTResult {
       const lng = overrideLng ?? i18n.resolvedLanguage ?? i18n.language ?? "en";
       const existsOptions = ns ? { ns } : {};
 
-      const inLng = i18n.exists(key, { ...existsOptions, lng, fallbackLng: false });
+      const inLng = i18n.exists(key, { ...existsOptions, lng, fallbackLng: false }) && value !== key;
       const inEn = inLng
         ? false
         : i18n.exists(key, {
             ...existsOptions,
             lng: "en",
             fallbackLng: false,
-          });
+          }) && value !== key;
       const state: I18nKeyState = inLng ? "translated" : inEn ? "fallback-en" : "missing";
 
       return createElement(
@@ -56,7 +74,7 @@ export function useT(ns?: string | string[]): UseTResult {
         value
       );
     },
-    [i18n, ns, rawT]
+    [debugEnabled, i18n, ns, nsKey, rawT]
   );
 
   return { t, i18n, ready };

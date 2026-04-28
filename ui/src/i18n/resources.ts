@@ -22,6 +22,7 @@ import enForms from "./locales/en/forms.json";
 import enIssues from "./locales/en/issues.json";
 import enModals from "./locales/en/modals.json";
 import enPlugins from "./locales/en/plugins.json";
+import enProjects from "./locales/en/projects.json";
 import enSettings from "./locales/en/settings.json";
 
 import esEsAgents from "./locales/es-ES/agents.json";
@@ -48,6 +49,7 @@ import frFrForms from "./locales/fr-FR/forms.json";
 import frFrIssues from "./locales/fr-FR/issues.json";
 import frFrModals from "./locales/fr-FR/modals.json";
 import frFrPlugins from "./locales/fr-FR/plugins.json";
+import frFrProjects from "./locales/fr-FR/projects.json";
 import frFrSettings from "./locales/fr-FR/settings.json";
 
 import jaJpAgents from "./locales/ja-JP/agents.json";
@@ -89,6 +91,7 @@ export const NAMESPACES = [
   "modals",
   "common",
   "cli",
+  "projects",
 ] as const;
 
 export type Namespace = (typeof NAMESPACES)[number];
@@ -121,6 +124,7 @@ export const bundledResources: Record<
     modals: enModals,
     common: enCommon,
     cli: enCli,
+    projects: enProjects,
   },
   "fr-FR": {
     core: frFrCore,
@@ -135,6 +139,7 @@ export const bundledResources: Record<
     modals: frFrModals,
     common: frFrCommon,
     cli: frFrCli,
+    projects: frFrProjects,
   },
   "zh-CN": {
     core: zhCnCore,
@@ -149,6 +154,7 @@ export const bundledResources: Record<
     modals: zhCnModals,
     common: zhCnCommon,
     cli: zhCnCli,
+    projects: {},
   },
   "ja-JP": {
     core: jaJpCore,
@@ -163,6 +169,7 @@ export const bundledResources: Record<
     modals: jaJpModals,
     common: jaJpCommon,
     cli: jaJpCli,
+    projects: {},
   },
   "es-ES": {
     core: esEsCore,
@@ -177,6 +184,7 @@ export const bundledResources: Record<
     modals: esEsModals,
     common: esEsCommon,
     cli: esEsCli,
+    projects: {},
   },
   "de-DE": {
     core: deDeCore,
@@ -191,5 +199,6 @@ export const bundledResources: Record<
     modals: deDeModals,
     common: deDeCommon,
     cli: deDeCli,
+    projects: {},
   },
 };
