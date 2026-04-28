@@ -41,11 +41,11 @@ import { StatusBadge } from "./StatusBadge";
 import { ChoosePathButton } from "./PathInstructionsModal";
 
 const projectStatuses = [
-  { value: "backlog", label: "Backlog" },
-  { value: "planned", label: "Planned" },
-  { value: "in_progress", label: "In Progress" },
-  { value: "completed", label: "Completed" },
-  { value: "cancelled", label: "Cancelled" },
+  { value: "backlog" },
+  { value: "planned" },
+  { value: "in_progress" },
+  { value: "completed" },
+  { value: "cancelled" },
 ];
 
 export function NewProjectDialog() {
@@ -226,7 +226,7 @@ export function NewProjectDialog() {
               </span>
             )}
             <span className="text-muted-foreground/60">&rsaquo;</span>
-            <span>New project</span>
+            <span>{t("newProjectDialog.newProject", { defaultValue: "New project" })}</span>
           </div>
           <div className="flex items-center gap-1">
             <Button
@@ -292,7 +292,7 @@ export function NewProjectDialog() {
                   <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-[240px] text-xs">
-                  Link a GitHub repository so agents can clone, read, and push code for this project.
+                  {t("newProjectDialog.repoUrlHelp", { defaultValue: "Link a GitHub repository so agents can clone, read, and push code for this project." })}
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -313,7 +313,7 @@ export function NewProjectDialog() {
                   <HelpCircle className="h-3 w-3 text-muted-foreground/50 cursor-help" />
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-[240px] text-xs">
-                  Set an absolute path on this machine where local agents will read and write files for this project.
+                  {t("newProjectDialog.localFolderHelp", { defaultValue: "Set an absolute path on this machine where local agents will read and write files for this project." })}
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -322,7 +322,7 @@ export function NewProjectDialog() {
                 className="w-full rounded border border-border bg-transparent px-2 py-1 text-xs font-mono outline-none"
                 value={workspaceLocalPath}
                 onChange={(e) => { setWorkspaceLocalPath(e.target.value); setWorkspaceError(null); }}
-                placeholder="/absolute/path/to/workspace"
+                placeholder={t("newProjectDialog.localFolderPlaceholder", { defaultValue: "/absolute/path/to/workspace" })}
               />
               <ChoosePathButton />
             </div>
@@ -352,7 +352,18 @@ export function NewProjectDialog() {
                   )}
                   onClick={() => { setStatus(s.value); setStatusOpen(false); }}
                 >
-                  {s.label}
+                  {t(`newProjectDialog.status.${s.value}`, {
+                    defaultValue:
+                      s.value === "backlog"
+                        ? "Backlog"
+                        : s.value === "planned"
+                          ? "Planned"
+                          : s.value === "in_progress"
+                            ? "In Progress"
+                            : s.value === "completed"
+                              ? "Completed"
+                              : "Cancelled",
+                  })}
                 </button>
               ))}
             </PopoverContent>
@@ -368,7 +379,10 @@ export function NewProjectDialog() {
               <button
                 className="text-muted-foreground hover:text-foreground"
                 onClick={() => setGoalIds((prev) => prev.filter((id) => id !== goal.id))}
-                aria-label={`Remove goal ${goal.title}`}
+                aria-label={t("newProjectDialog.removeGoalAria", {
+                  defaultValue: "Remove goal {{goalTitle}}",
+                  goalTitle: goal.title,
+                })}
                 type="button"
               >
                 <X className="h-3 w-3" />
@@ -394,7 +408,7 @@ export function NewProjectDialog() {
                   className="flex items-center gap-2 w-full px-2 py-1.5 text-xs rounded hover:bg-accent/50 text-muted-foreground"
                   onClick={() => setGoalOpen(false)}
                 >
-                  No goal
+                  {t("newProjectDialog.noGoal", { defaultValue: "No goal" })}
                 </button>
               )}
               {availableGoals.map((g) => (
@@ -411,7 +425,7 @@ export function NewProjectDialog() {
               ))}
               {selectedGoals.length > 0 && availableGoals.length === 0 && (
                 <div className="px-2 py-1.5 text-xs text-muted-foreground">
-                  All goals already selected.
+                  {t("newProjectDialog.allGoalsSelected", { defaultValue: "All goals already selected." })}
                 </div>
               )}
             </PopoverContent>

@@ -321,7 +321,7 @@ export function CompanyInvites() {
                     <tr key={invite.id} className="border-b border-border last:border-b-0">
                       <td className="px-5 py-3 align-top">
                         <span className="inline-flex rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground">
-                          {formatInviteState(invite.state)}
+                          {formatInviteState(invite.state, t)}
                         </span>
                       </td>
                       <td className="px-5 py-3 align-top">{invite.humanRole ?? t("companyInvites.common.emDash", { defaultValue: "—" })}</td>
@@ -383,6 +383,15 @@ export function CompanyInvites() {
   );
 }
 
-function formatInviteState(state: "active" | "accepted" | "expired" | "revoked") {
-  return state.charAt(0).toUpperCase() + state.slice(1);
+function formatInviteState(
+  state: "active" | "accepted" | "expired" | "revoked",
+  t: (key: string, options?: Record<string, unknown>) => string,
+) {
+  const labels: Record<typeof state, string> = {
+    active: t("companyInvites.state.active", { defaultValue: "Active" }),
+    accepted: t("companyInvites.state.accepted", { defaultValue: "Accepted" }),
+    expired: t("companyInvites.state.expired", { defaultValue: "Expired" }),
+    revoked: t("companyInvites.state.revoked", { defaultValue: "Revoked" }),
+  };
+  return labels[state];
 }
