@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useT } from "@/i18n/hooks/useT";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   BookOpen,
@@ -111,7 +111,8 @@ export function SidebarAccountMenu({
   onOpenChange,
   version,
 }: SidebarAccountMenuProps) {
-  const { t } = useTranslation("core");
+  const { t } = useT("core");
+  const ts = (key: string, options?: Record<string, unknown>) => String(t(key, options));
   const [internalOpen, setInternalOpen] = useState(false);
   const queryClient = useQueryClient();
   const { isMobile, setSidebarOpen } = useSidebar();
@@ -133,10 +134,10 @@ export function SidebarAccountMenu({
   });
 
   const sessionName = session?.user.name?.trim() || "";
-  const displayName = sessionName || t("sidebarAccountMenu.defaultName");
+  const displayName = sessionName || ts("sidebarAccountMenu.defaultName");
   const secondaryLabel =
-    session?.user.email?.trim() || (deploymentMode === "authenticated" ? t("sidebarAccountMenu.signedIn") : t("sidebarAccountMenu.localWorkspace"));
-  const accountBadge = deploymentMode === "authenticated" ? t("sidebarAccountMenu.account") : t("sidebarAccountMenu.local");
+    session?.user.email?.trim() || (deploymentMode === "authenticated" ? ts("sidebarAccountMenu.signedIn") : ts("sidebarAccountMenu.localWorkspace"));
+  const accountBadge = deploymentMode === "authenticated" ? ts("sidebarAccountMenu.account") : ts("sidebarAccountMenu.local");
   const initials = deriveInitials(sessionName || "Board");
   const profileHref = `/u/${deriveUserSlug(session?.user.name, session?.user.email, session?.user.id)}`;
 
@@ -152,7 +153,7 @@ export function SidebarAccountMenu({
           <button
             type="button"
             className="flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] font-medium text-foreground/80 transition-colors hover:bg-accent/50 hover:text-foreground"
-            aria-label={t("sidebarAccountMenu.openAccountMenu")}
+            aria-label={ts("sidebarAccountMenu.openAccountMenu")}
           >
             <Avatar size="sm">
               {session?.user.image ? <AvatarImage src={session.user.image} alt={displayName} /> : null}
@@ -185,44 +186,44 @@ export function SidebarAccountMenu({
                 </div>
                 <p className="truncate text-sm text-muted-foreground">{secondaryLabel}</p>
                 {version ? (
-                  <p className="mt-1 text-xs text-muted-foreground">{t("sidebarAccountMenu.version", { version })}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{ts("sidebarAccountMenu.version", { version })}</p>
                 ) : null}
               </div>
             </div>
 
             <div className="mt-4 space-y-1">
               <MenuAction
-                label={t("sidebarAccountMenu.viewProfile")}
-                description={t("sidebarAccountMenu.viewProfileDesc")}
+                label={ts("sidebarAccountMenu.viewProfile")}
+                description={ts("sidebarAccountMenu.viewProfileDesc")}
                 icon={UserRound}
                 href={profileHref}
                 onClick={closeNavigationChrome}
               />
               <MenuAction
-                label={t("sidebarAccountMenu.editProfile")}
-                description={t("sidebarAccountMenu.editProfileDesc")}
+                label={ts("sidebarAccountMenu.editProfile")}
+                description={ts("sidebarAccountMenu.editProfileDesc")}
                 icon={UserRoundPen}
                 href={PROFILE_SETTINGS_PATH}
                 onClick={closeNavigationChrome}
               />
               <MenuAction
-                label={t("sidebarAccountMenu.instanceSettings")}
-                description={t("sidebarAccountMenu.instanceSettingsDesc")}
+                label={ts("sidebarAccountMenu.instanceSettings")}
+                description={ts("sidebarAccountMenu.instanceSettingsDesc")}
                 icon={Settings}
                 href={instanceSettingsTarget}
                 onClick={closeNavigationChrome}
               />
               <MenuAction
-                label={t("sidebarAccountMenu.documentation")}
-                description={t("sidebarAccountMenu.documentationDesc")}
+                label={ts("sidebarAccountMenu.documentation")}
+                description={ts("sidebarAccountMenu.documentationDesc")}
                 icon={BookOpen}
                 href={DOCS_URL}
                 external
                 onClick={() => setOpen(false)}
               />
               <MenuAction
-                label={theme === "dark" ? t("sidebarAccountMenu.switchToLight") : t("sidebarAccountMenu.switchToDark")}
-                description={t("sidebarAccountMenu.toggleAppearance")}
+                label={theme === "dark" ? ts("sidebarAccountMenu.switchToLight") : ts("sidebarAccountMenu.switchToDark")}
+                description={ts("sidebarAccountMenu.toggleAppearance")}
                 icon={theme === "dark" ? Sun : Moon}
                 onClick={() => {
                   toggleTheme();
@@ -234,8 +235,8 @@ export function SidebarAccountMenu({
                   <Languages className="size-4" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-medium text-foreground">{t("sidebarAccountMenu.language")}</span>
-                  <span className="block text-xs text-muted-foreground">{t("sidebarAccountMenu.languageDesc")}</span>
+                  <span className="block text-sm font-medium text-foreground">{ts("sidebarAccountMenu.language")}</span>
+                  <span className="block text-xs text-muted-foreground">{ts("sidebarAccountMenu.languageDesc")}</span>
                 </span>
                 <LanguageSwitcher />
               </div>
@@ -254,10 +255,10 @@ export function SidebarAccountMenu({
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-medium text-foreground">
-                      {signOutMutation.isPending ? t("sidebarAccountMenu.signingOut") : t("sidebarAccountMenu.signOut")}
+                      {signOutMutation.isPending ? ts("sidebarAccountMenu.signingOut") : ts("sidebarAccountMenu.signOut")}
                     </span>
                     <span className="block text-xs text-muted-foreground">
-                      {t("sidebarAccountMenu.signOutDesc")}
+                      {ts("sidebarAccountMenu.signOutDesc")}
                     </span>
                   </span>
                 </button>

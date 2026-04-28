@@ -1,5 +1,4 @@
 import { useState, type ReactNode } from "react";
-import { useTranslation } from "react-i18next";
 import type { BudgetIncident } from "@paperclipai/shared";
 import { useT } from "@/i18n/hooks/useT";
 import { AlertOctagon, ArrowUpRight, PauseCircle } from "lucide-react";
@@ -41,8 +40,7 @@ export function BudgetIncidentCard({
   onKeepPaused: () => void;
   isMutating?: boolean;
 }) {
-  const { t } = useTranslation("dashboard");
-  const { t: tx } = useT("dashboard");
+  const { t } = useT("dashboard");
   const [draftAmount, setDraftAmount] = useState(
     centsInputValue(Math.max(incident.amountObserved + 1000, incident.amountLimit)),
   );
@@ -76,7 +74,7 @@ export function BudgetIncidentCard({
         <div className="flex items-start gap-2 rounded-xl border border-red-400/20 bg-red-500/10 px-3 py-2 text-sm text-red-50/90">
           <PauseCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
-            {tx(incident.scopeType === "project"
+            {t(incident.scopeType === "project"
               ? "budgetIncidentCard.projectPausedMessage"
               : "budgetIncidentCard.scopePausedMessage")}
           </div>
@@ -84,14 +82,14 @@ export function BudgetIncidentCard({
 
         <div className="rounded-xl border border-border/60 bg-background/60 p-3">
           <label className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-            {tx("budgetIncidentCard.newBudgetLabel")}
+            {t("budgetIncidentCard.newBudgetLabel")}
           </label>
           <div className="mt-2 flex flex-col gap-3 sm:flex-row">
             <Input
               value={draftAmount}
               onChange={(event) => setDraftAmount(event.target.value)}
               inputMode="decimal"
-              placeholder={t("budgetIncidentCard.budgetPlaceholder")}
+              placeholder={String(t("budgetIncidentCard.budgetPlaceholder"))}
             />
             <Button
               className="gap-2"

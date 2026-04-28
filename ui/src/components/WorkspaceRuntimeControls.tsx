@@ -414,7 +414,10 @@ export function WorkspaceRuntimeControls({
             </span>
             <span className="text-xs text-muted-foreground">
               {resolvedSections.jobs.length > 0
-                ? tx("workspaceRuntimeControls.jobsAvailable", { count: resolvedSections.jobs.length, suffix: resolvedSections.jobs.length === 1 ? "" : "s" })
+                ? tx("workspaceRuntimeControls.jobsAvailable", {
+                    count: resolvedSections.jobs.length,
+                    defaultValue: "{{count}} jobs available",
+                  })
                 : tx("workspaceRuntimeControls.independentControl")}
             </span>
           </div>

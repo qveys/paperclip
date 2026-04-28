@@ -48,8 +48,17 @@ export function approvalLabel(
   const t = hasTranslator ? tOrType : null;
   const type = hasTranslator ? String(typeOrPayload) : tOrType;
   const payload = hasTranslator ? payloadArg : (typeOrPayload as Record<string, unknown> | null | undefined);
-  const key = typeLabelKey[type];
-  const base = key && t ? (t(key) as string) : (typeLabelFallback[type] ?? type);
+  const base = t
+    ? type === "hire_agent"
+      ? (t("approvals.types.hireAgent") as string)
+      : type === "approve_ceo_strategy"
+        ? (t("approvals.types.approveCeoStrategy") as string)
+        : type === "budget_override_required"
+          ? (t("approvals.types.budgetOverrideRequired") as string)
+          : type === "request_board_approval"
+            ? (t("approvals.types.requestBoardApproval") as string)
+            : (typeLabelFallback[type] ?? type)
+    : (typeLabelFallback[type] ?? type);
   const subject = approvalSubject(payload);
   if (subject) {
     return `${base}: ${subject}`;

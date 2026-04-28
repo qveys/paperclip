@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { FeedbackDataSharingPreference, FeedbackVoteValue } from "@paperclipai/shared";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -207,8 +207,14 @@ export function OutputFeedbackButtons({
               {t("outputFeedbackButtons.savedLocally", { defaultValue: "This vote is always saved locally." })}
             </p>
             <p>
-              {t("outputFeedbackButtons.choose", { defaultValue: "Choose" })} <span className="font-medium text-foreground">{t("outputFeedbackButtons.alwaysAllow", { defaultValue: "Always allow" })}</span> {t("outputFeedbackButtons.toShare", { defaultValue: "to share this vote and future voted AI outputs. Choose" })}{" "}
-              <span className="font-medium text-foreground">{t("outputFeedbackButtons.dontAllow", { defaultValue: "Don't allow" })}</span> {t("outputFeedbackButtons.toKeepLocal", { defaultValue: "to keep this vote and future votes local." })}
+              <Trans
+                i18nKey="outputFeedbackButtons.preferenceHelp"
+                defaults="Choose <allow>Always allow</allow> to share this vote and future voted AI outputs. Choose <deny>Don't allow</deny> to keep this vote and future votes local."
+                components={{
+                  allow: <span className="font-medium text-foreground" />,
+                  deny: <span className="font-medium text-foreground" />,
+                }}
+              />
             </p>
             <p>
               {t("outputFeedbackButtons.changeLater", { defaultValue: "You can change this later in Instance Settings > General." })}

@@ -9,7 +9,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { AGENT_ICONS, getAgentIcon } from "../lib/agent-icons";
@@ -33,8 +32,7 @@ interface AgentIconPickerProps {
 }
 
 export function AgentIconPicker({ value, onChange, children }: AgentIconPickerProps) {
-  const { t } = useTranslation("agents");
-  const { t: tx } = useT("agents");
+  const { t } = useT("agents");
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -50,7 +48,7 @@ export function AgentIconPicker({ value, onChange, children }: AgentIconPickerPr
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-72 p-3" align="start">
         <Input
-          placeholder={t("agentIconPicker.searchPlaceholder")}
+          placeholder={String(t("agentIconPicker.searchPlaceholder"))}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="mb-2 h-8 text-sm"
@@ -75,7 +73,7 @@ export function AgentIconPicker({ value, onChange, children }: AgentIconPickerPr
             </button>
           ))}
           {filtered.length === 0 && (
-            <p className="col-span-7 text-xs text-muted-foreground text-center py-2">{tx("agentIconPicker.noIconsMatch")}</p>
+            <p className="col-span-7 text-xs text-muted-foreground text-center py-2">{t("agentIconPicker.noIconsMatch")}</p>
           )}
         </div>
       </PopoverContent>

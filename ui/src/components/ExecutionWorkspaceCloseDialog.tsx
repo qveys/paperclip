@@ -295,7 +295,9 @@ export function ExecutionWorkspaceCloseDialog({
             ) : null}
 
             <div className="text-xs text-muted-foreground">
-              {tx("executionWorkspaceCloseDialog.lastChecked", { time: formatDateTime(new Date()) })}
+              {tx("executionWorkspaceCloseDialog.lastChecked", {
+                time: formatDateTime(new Date(readinessQuery.dataUpdatedAt || Date.now())),
+              })}
             </div>
           </div>
         ) : null}
