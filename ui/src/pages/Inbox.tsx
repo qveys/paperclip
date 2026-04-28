@@ -2124,14 +2124,14 @@ export function Inbox() {
           icon={searchQuery.trim() ? Search : InboxIcon}
           message={
             searchQuery.trim()
-              ? "No inbox items match your search."
+              ? t("emptySearch")
               : tab === "mine"
-              ? "Inbox zero."
+              ? t("emptyMine")
               : tab === "unread"
-              ? "No new inbox items."
+              ? t("emptyUnread")
               : tab === "recent"
-                ? "No recent inbox items."
-                : "No inbox items match these filters."
+                ? t("emptyRecent")
+                : t("emptyFiltered")
           }
         />
       )}
