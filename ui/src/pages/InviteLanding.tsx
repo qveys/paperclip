@@ -336,12 +336,12 @@ export function InviteLandingPage() {
 
   const acceptMutation = useMutation({
     mutationFn: async () => {
-      if (!invite) throw new Error("Invite not found");
+      if (!invite) throw new Error(t("invite.errors.notFound", { defaultValue: "Invite not found" }));
       if (isCheckingExistingMembership) {
-        throw new Error("Checking your company access. Try again in a moment.");
+        throw new Error(t("invite.errors.checkingAccess", { defaultValue: "Checking your company access. Try again in a moment." }));
       }
       if (isCurrentMember) {
-        throw new Error("This account already belongs to the company.");
+        throw new Error(t("invite.errors.alreadyMember", { defaultValue: "This account already belongs to the company." }));
       }
       if (invite.inviteType === "bootstrap_ceo" || invite.allowedJoinTypes !== "agent") {
         return accessApi.acceptInvite(token, { requestType: "human" });
@@ -366,7 +366,7 @@ export function InviteLandingPage() {
       }
     },
     onError: (err) => {
-      setError(err instanceof Error ? err.message : "Failed to accept invite");
+      setError(err instanceof Error ? err.message : t("invite.errors.acceptFailed", { defaultValue: "Failed to accept invite" }));
     },
   });
 
@@ -575,52 +575,62 @@ export function InviteLandingPage() {
               />
               <div className="min-w-0">
                 <p className="text-xs uppercase tracking-[0.24em] text-zinc-500">
-                  You&apos;ve been invited to join Paperclip
+                  {t("invite.hero.invited", { defaultValue: "You've been invited to join Paperclip" })}
                 </p>
                 <h1 className="mt-2 text-2xl font-semibold">
-                  {invite.inviteType === "bootstrap_ceo" ? "Set up Paperclip" : `Join ${companyDisplayName}`}
+                  {invite.inviteType === "bootstrap_ceo"
+                    ? t("invite.hero.setupPaperclip", { defaultValue: "Set up Paperclip" })
+                    : t("invite.hero.joinCompany", { defaultValue: `Join ${companyDisplayName}` })}
                 </h1>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-300">
                   {showsAgentForm
-                    ? "Review the invite details, then submit the agent information below to start the join request."
+                    ? t("invite.hero.agentFlow", {
+                        defaultValue: "Review the invite details, then submit the agent information below to start the join request.",
+                      })
                     : requiresHumanAccount
-                      ? "Create your Paperclip account first. If you already have one, switch to sign in and continue the invite with the same email."
-                      : "Your account is ready. Review the invite details, then accept it to continue."}
+                      ? t("invite.hero.requiresAccount", {
+                          defaultValue: "Create your Paperclip account first. If you already have one, switch to sign in and continue the invite with the same email.",
+                        })
+                      : t("invite.hero.accountReady", {
+                          defaultValue: "Your account is ready. Review the invite details, then accept it to continue.",
+                        })}
                 </p>
               </div>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="border border-zinc-800 p-3">
-                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Company</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">{t("invite.details.company", { defaultValue: "Company" })}</div>
                 <div className="mt-1 text-sm text-zinc-100">{companyDisplayName}</div>
               </div>
               <div className="border border-zinc-800 p-3">
-                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Invited by</div>
-                <div className="mt-1 text-sm text-zinc-100">{invitedByUserName ?? "Paperclip board"}</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">{t("invite.details.invitedBy", { defaultValue: "Invited by" })}</div>
+                <div className="mt-1 text-sm text-zinc-100">{invitedByUserName ?? t("invite.details.boardFallback", { defaultValue: "Paperclip board" })}</div>
               </div>
               <div className="border border-zinc-800 p-3">
-                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Requested access</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">{t("invite.details.requestedAccess", { defaultValue: "Requested access" })}</div>
                 <div className="mt-1 text-sm text-zinc-100">
-                  {showsAgentForm ? "Agent join request" : requestedHumanRole ?? "Company access"}
+                  {showsAgentForm
+                    ? t("invite.details.agentJoinRequest", { defaultValue: "Agent join request" })
+                    : requestedHumanRole ?? t("invite.details.companyAccess", { defaultValue: "Company access" })}
                 </div>
               </div>
               <div className="border border-zinc-800 p-3">
-                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Invite expires</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">{t("invite.details.expires", { defaultValue: "Invite expires" })}</div>
                 <div className="mt-1 text-sm text-zinc-100">{formatDate(invite.expiresAt)}</div>
               </div>
             </div>
 
             {inviteMessage ? (
               <div className="border border-amber-500/40 bg-amber-500/10 p-4">
-                <div className="text-xs uppercase tracking-[0.2em] text-amber-200/80">Message from inviter</div>
+                <div className="text-xs uppercase tracking-[0.2em] text-amber-200/80">{t("invite.details.messageFromInviter", { defaultValue: "Message from inviter" })}</div>
                 <p className="mt-2 text-sm leading-6 text-amber-50">{inviteMessage}</p>
               </div>
             ) : null}
 
             {sessionQuery.data ? (
               <div className="border border-emerald-500/40 bg-emerald-500/10 p-4 text-sm text-emerald-50">
-                Signed in as <span className="font-medium">{sessionLabel}</span>.
+                {t("invite.details.signedInAs", { defaultValue: `Signed in as ${sessionLabel}.` })}
               </div>
             ) : null}
           </section>
@@ -629,13 +639,15 @@ export function InviteLandingPage() {
             {showsAgentForm ? (
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-lg font-semibold">Submit agent details</h2>
+                  <h2 className="text-lg font-semibold">{t("invite.agent.title", { defaultValue: "Submit agent details" })}</h2>
                   <p className="mt-1 text-sm text-zinc-400">
-                    This invite will create an approval request for a new agent in {companyDisplayName}.
+                    {t("invite.agent.description", {
+                      defaultValue: `This invite will create an approval request for a new agent in ${companyDisplayName}.`,
+                    })}
                   </p>
                 </div>
                 <label className="block text-sm">
-                  <span className="mb-1 block text-zinc-400">Agent name</span>
+                  <span className="mb-1 block text-zinc-400">{t("invite.agent.name", { defaultValue: "Agent name" })}</span>
                   <input
                     className={fieldClassName}
                     value={agentName}
@@ -643,7 +655,7 @@ export function InviteLandingPage() {
                   />
                 </label>
                 <label className="block text-sm">
-                  <span className="mb-1 block text-zinc-400">Adapter type</span>
+                  <span className="mb-1 block text-zinc-400">{t("invite.agent.adapterType", { defaultValue: "Adapter type" })}</span>
                   <select
                     className={fieldClassName}
                     value={adapterType}
@@ -657,7 +669,7 @@ export function InviteLandingPage() {
                   </select>
                 </label>
                 <label className="block text-sm">
-                  <span className="mb-1 block text-zinc-400">Capabilities</span>
+                  <span className="mb-1 block text-zinc-400">{t("invite.agent.capabilities", { defaultValue: "Capabilities" })}</span>
                   <textarea
                     className={fieldClassName}
                     rows={4}
@@ -671,19 +683,25 @@ export function InviteLandingPage() {
                   disabled={acceptMutation.isPending || agentName.trim().length === 0}
                   onClick={() => acceptMutation.mutate()}
                 >
-                  {acceptMutation.isPending ? "Working..." : joinButtonLabel}
+                  {acceptMutation.isPending ? t("common.working", { defaultValue: "Working..." }) : joinButtonLabel}
                 </Button>
               </div>
             ) : requiresHumanAccount ? (
               <div className="space-y-5">
                 <div>
                   <h2 className="text-lg font-semibold">
-                    {authMode === "sign_up" ? "Create your account" : "Sign in to continue"}
+                    {authMode === "sign_up"
+                      ? t("invite.auth.createAccount", { defaultValue: "Create your account" })
+                      : t("invite.auth.signInToContinue", { defaultValue: "Sign in to continue" })}
                   </h2>
                   <p className="mt-1 text-sm text-zinc-400">
                     {authMode === "sign_up"
-                      ? `Start with a Paperclip account. After that, you'll come right back here to accept the invite for ${companyDisplayName}.`
-                      : "Use the Paperclip account that already matches this invite. If you do not have one yet, switch back to create account."}
+                      ? t("invite.auth.createAccountDescription", {
+                          defaultValue: `Start with a Paperclip account. After that, you'll come right back here to accept the invite for ${companyDisplayName}.`,
+                        })
+                      : t("invite.auth.signInDescription", {
+                          defaultValue: "Use the Paperclip account that already matches this invite. If you do not have one yet, switch back to create account.",
+                        })}
                   </p>
                 </div>
 
@@ -700,7 +718,7 @@ export function InviteLandingPage() {
                       setAuthMode("sign_up");
                     }}
                   >
-                    Create account
+                    {t("invite.auth.createAccountAction", { defaultValue: "Create account" })}
                   </button>
                   <button
                     type="button"
@@ -714,7 +732,7 @@ export function InviteLandingPage() {
                       setAuthMode("sign_in");
                     }}
                   >
-                    I already have an account
+                    {t("invite.auth.alreadyHaveAccount", { defaultValue: "I already have an account" })}
                   </button>
                 </div>
 
@@ -726,7 +744,10 @@ export function InviteLandingPage() {
                     event.preventDefault();
                     if (authMutation.isPending) return;
                     if (!authCanSubmit) {
-                      setAuthFeedback({ tone: "error", message: "Please fill in all required fields." });
+                      setAuthFeedback({
+                        tone: "error",
+                        message: t("invite.auth.fillRequired", { defaultValue: "Please fill in all required fields." }),
+                      });
                       return;
                     }
                     authMutation.mutate();
@@ -735,7 +756,7 @@ export function InviteLandingPage() {
                 >
                   {authMode === "sign_up" ? (
                     <label className="block text-sm">
-                      <span className="mb-1 block text-zinc-400">Name</span>
+                      <span className="mb-1 block text-zinc-400">{t("invite.auth.name", { defaultValue: "Name" })}</span>
                       <input
                         name="name"
                         className={fieldClassName}
@@ -750,7 +771,7 @@ export function InviteLandingPage() {
                     </label>
                   ) : null}
                   <label className="block text-sm">
-                    <span className="mb-1 block text-zinc-400">Email</span>
+                    <span className="mb-1 block text-zinc-400">{t("invite.auth.email", { defaultValue: "Email" })}</span>
                     <input
                       name="email"
                       type="email"
@@ -765,7 +786,7 @@ export function InviteLandingPage() {
                     />
                   </label>
                   <label className="block text-sm">
-                    <span className="mb-1 block text-zinc-400">Password</span>
+                    <span className="mb-1 block text-zinc-400">{t("invite.auth.password", { defaultValue: "Password" })}</span>
                     <input
                       name="password"
                       type="password"
@@ -794,17 +815,21 @@ export function InviteLandingPage() {
                     aria-disabled={!authCanSubmit || authMutation.isPending}
                   >
                     {authMutation.isPending
-                      ? "Working..."
+                      ? t("common.working", { defaultValue: "Working..." })
                       : authMode === "sign_in"
-                        ? "Sign in and continue"
-                        : "Create account and continue"}
+                        ? t("invite.auth.signInAndContinue", { defaultValue: "Sign in and continue" })
+                        : t("invite.auth.createAndContinue", { defaultValue: "Create account and continue" })}
                   </Button>
                 </form>
 
                 <p className="text-xs leading-5 text-zinc-500">
                   {authMode === "sign_up"
-                    ? "Already signed up before? Use the existing-account option instead so the invite lands on the right Paperclip user."
-                    : "No account yet? Switch back to create account so you can accept the invite with a new login."}
+                    ? t("invite.auth.signupHint", {
+                        defaultValue: "Already signed up before? Use the existing-account option instead so the invite lands on the right Paperclip user.",
+                      })
+                    : t("invite.auth.signinHint", {
+                        defaultValue: "No account yet? Switch back to create account so you can accept the invite with a new login.",
+                      })}
                 </p>
               </div>
             ) : (
@@ -812,25 +837,31 @@ export function InviteLandingPage() {
                 <div>
                   <h2 className="text-lg font-semibold">
                     {shouldAutoAcceptHumanInvite
-                      ? "Submitting join request"
+                      ? t("invite.accept.submittingJoinRequest", { defaultValue: "Submitting join request" })
                       : invite.inviteType === "bootstrap_ceo"
-                        ? "Accept bootstrap invite"
-                        : "Accept company invite"}
+                        ? t("invite.accept.bootstrap", { defaultValue: "Accept bootstrap invite" })
+                        : t("invite.accept.company", { defaultValue: "Accept company invite" })}
                   </h2>
                   <p className="mt-1 text-sm text-zinc-400">
                     {shouldAutoAcceptHumanInvite
-                      ? `Submitting your join request for ${companyDisplayName}.`
+                      ? t("invite.accept.submittingForCompany", {
+                          defaultValue: `Submitting your join request for ${companyDisplayName}.`,
+                        })
                       : isCurrentMember
-                      ? `This account already belongs to ${companyDisplayName}.`
-                      : `This will ${
+                      ? t("invite.accept.alreadyMemberCompany", {
+                          defaultValue: `This account already belongs to ${companyDisplayName}.`,
+                        })
+                      : t("invite.accept.thisWill", { defaultValue: `This will ${
                           invite.inviteType === "bootstrap_ceo" ? "finish setting up Paperclip" : `submit or complete your join request for ${companyDisplayName}`
-                        }.`}
+                        }.` })}
                   </p>
                 </div>
                 {error ? <p className="text-xs text-red-400">{error}</p> : null}
                 {shouldAutoAcceptHumanInvite ? (
                   <div className="text-sm text-zinc-400">
-                    {acceptMutation.isPending ? "Submitting request..." : "Finishing sign-in..."}
+                    {acceptMutation.isPending
+                      ? t("invite.accept.submittingRequest", { defaultValue: "Submitting request..." })
+                      : t("invite.accept.finishingSignin", { defaultValue: "Finishing sign-in..." })}
                   </div>
                 ) : (
                   <Button
@@ -838,7 +869,7 @@ export function InviteLandingPage() {
                     disabled={acceptMutation.isPending || isCurrentMember}
                     onClick={() => acceptMutation.mutate()}
                   >
-                    {acceptMutation.isPending ? "Working..." : joinButtonLabel}
+                    {acceptMutation.isPending ? t("common.working", { defaultValue: "Working..." }) : joinButtonLabel}
                   </Button>
                 )}
               </div>
