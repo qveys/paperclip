@@ -17,11 +17,16 @@ on:
 jobs:
   upload-en-source:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref || github.ref }}
+          # Pin to the triggering commit on push events so we upload the exact
+          # EN catalog that fired the workflow. workflow_dispatch can override
+          # with a branch/commit (e.g. backfilling from feat/i18n-fr-via-weblate).
+          ref: ${{ inputs.ref != '' && inputs.ref || github.sha }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
