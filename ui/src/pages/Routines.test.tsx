@@ -327,6 +327,12 @@ describe("Routines page", () => {
         ["agent-1", { name: "Agent One" }],
         ["agent-2", { name: "Agent Two" }],
       ]),
+      {
+        noProject: "No project",
+        unknownProject: "Unknown project",
+        unassigned: "Unassigned",
+        unknownAgent: "Unknown agent",
+      },
     );
 
     expect(groups.map((group) => group.label)).toEqual(["Project Alpha", "Project Beta"]);
