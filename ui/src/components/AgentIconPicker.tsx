@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import {
   type LucideIcon,
 } from "lucide-react";
+import { useT } from "@/i18n/hooks/useT";
 import { AGENT_ICON_NAMES, type AgentIconName } from "@paperclipai/shared";
 import {
   Popover,
@@ -31,6 +32,7 @@ interface AgentIconPickerProps {
 }
 
 export function AgentIconPicker({ value, onChange, children }: AgentIconPickerProps) {
+  const { t } = useT("agents");
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -46,7 +48,7 @@ export function AgentIconPicker({ value, onChange, children }: AgentIconPickerPr
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-72 p-3" align="start">
         <Input
-          placeholder="Search icons..."
+          placeholder={String(t("agentIconPicker.searchPlaceholder"))}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="mb-2 h-8 text-sm"
@@ -71,7 +73,7 @@ export function AgentIconPicker({ value, onChange, children }: AgentIconPickerPr
             </button>
           ))}
           {filtered.length === 0 && (
-            <p className="col-span-7 text-xs text-muted-foreground text-center py-2">No icons match</p>
+            <p className="col-span-7 text-xs text-muted-foreground text-center py-2">{t("agentIconPicker.noIconsMatch")}</p>
           )}
         </div>
       </PopoverContent>
