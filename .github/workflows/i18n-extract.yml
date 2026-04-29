@@ -47,8 +47,8 @@ jobs:
 
       - name: Ensure extracted locales are committed
         run: |
-          if ! git diff --exit-code -- ui/src/i18n/locales/en/ ui/src/i18n/locales/fr-FR/ ui/src/i18n/locales/de-DE/ \
-            || [ -n "$(git ls-files --others --exclude-standard -- ui/src/i18n/locales/en/ ui/src/i18n/locales/fr-FR/ ui/src/i18n/locales/de-DE/)" ]; then
+          if ! git diff --exit-code -- ui/src/i18n/locales/en/ ui/src/i18n/locales/fr-FR/ ui/src/i18n/locales/de-DE/ ui/src/i18n/locales/es-ES/ \
+            || [ -n "$(git ls-files --others --exclude-standard -- ui/src/i18n/locales/en/ ui/src/i18n/locales/fr-FR/ ui/src/i18n/locales/de-DE/ ui/src/i18n/locales/es-ES/)" ]; then
             echo "::error::Locale files changed after extraction. Run 'pnpm --filter @paperclipai/ui exec i18next-cli extract --config i18next.config.ts' locally and commit the updates."
             exit 1
           fi
