@@ -1600,16 +1600,16 @@ export function IssueDetail() {
             ? t("issueDetail.subtreePaused", { defaultValue: "Subtree paused" })
             : t("issueDetail.modeApplied", {
               defaultValue: "{{mode}} applied",
-              mode: modeLabel,
+              mode: t(`issueDetail.treeControlModes.${result.hold.mode}`, { defaultValue: modeLabel }),
             }),
         body: result.kind === "release"
           ? (result.hold.releaseReason?.trim()
             || t("issueDetail.activeSubtreePauseReleased", { defaultValue: "Active subtree pause released." }))
           : result.hold.mode === "pause"
             ? t("issueDetail.subtreePausedRunsCancelled", {
-              defaultValue: "Subtree paused. {{count}} run{{suffix}} cancelled.",
               count: cancelCount,
-              suffix: cancelCount === 1 ? "" : "s",
+              defaultValue_one: "Subtree paused. {{count}} run cancelled.",
+              defaultValue_other: "Subtree paused. {{count}} runs cancelled.",
             })
             : result.hold.reason?.trim()
               ? result.hold.reason
@@ -3324,7 +3324,7 @@ export function IssueDetail() {
                         }}
                         disabled={deleteAttachment.isPending}
                       >
-                        {t("common.yes", { defaultValue: "Yes" })}
+                        {t("common:yes", { defaultValue: "Yes" })}
                       </button>
                       <button
                         type="button"
@@ -3334,7 +3334,7 @@ export function IssueDetail() {
                           setConfirmDeleteId(null);
                         }}
                       >
-                        {t("common.no", { defaultValue: "No" })}
+                        {t("common:no", { defaultValue: "No" })}
                       </button>
                     </div>
                   </div>
@@ -3636,7 +3636,7 @@ export function IssueDetail() {
                             </span>
                             <span className="min-w-0 flex-1 truncate">{candidate.title}</span>
                             {candidate.skipped && candidate.skipReason === "terminal_status" ? (
-                              <span className="shrink-0 text-xs text-muted-foreground">{t("common.complete", { defaultValue: "Complete" })}</span>
+                              <span className="shrink-0 text-xs text-muted-foreground">{t("common:completed", { defaultValue: "Completed" })}</span>
                             ) : null}
                           </Link>
                         </div>
