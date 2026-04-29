@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState, type ChangeEvent, type ReactElement }
 import { useTranslation } from "react-i18next";
 import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "../resources";
 
-const LOCALE_KEY = "paperclip.locale";
-
 // Labels are added per language as their locale catalog lands (PRs 29-33
 // in the i18n rollout). EN is the only entry at this stage; SUPPORTED_LANGUAGES
 // matches, so the dropdown still lists every supported language correctly.
@@ -11,19 +9,14 @@ const LANGUAGE_LABELS: Record<SupportedLanguage, { flag: string; native: string 
   en: { flag: "🇬🇧", native: "English" },
 };
 
-function readPersistedLng(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    return window.localStorage.getItem(LOCALE_KEY);
-  } catch {
-    return null;
-  }
-}
-
 export function LanguageSwitcher(): ReactElement {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
+  // i18n.resolvedLanguage is already validated against supportedLngs by the
+  // LanguageDetector (which reads paperclip.locale from localStorage). Reading
+  // raw localStorage here would bypass that validation and could leave the
+  // <select> with an unsupported value.
   const [current, setCurrent] = useState<string>(
-    () => readPersistedLng() ?? i18n.resolvedLanguage ?? i18n.language ?? "en"
+    () => i18n.resolvedLanguage ?? i18n.language ?? "en"
   );
 
   useEffect(() => {
@@ -39,18 +32,11 @@ export function LanguageSwitcher(): ReactElement {
       const next = event.target.value;
       const previous = current;
       setCurrent(next);
-      try {
-        window.localStorage.setItem(LOCALE_KEY, next);
-      } catch {
-        /* storage unavailable */
-      }
+      // i18next's LanguageDetector caches the resolved language to
+      // localStorage (paperclip.locale) on changeLanguage, so no manual
+      // storage write is needed here.
       void i18n.changeLanguage(next).catch(() => {
         setCurrent(previous);
-        try {
-          window.localStorage.setItem(LOCALE_KEY, previous);
-        } catch {
-          /* storage unavailable */
-        }
       });
     },
     [current, i18n]
@@ -58,7 +44,7 @@ export function LanguageSwitcher(): ReactElement {
 
   return (
     <select
-      aria-label="Language"
+      aria-label={t("core:language", { defaultValue: "Language" })}
       value={current}
       onChange={onChange}
       className="rounded border px-2 py-1 text-sm"
