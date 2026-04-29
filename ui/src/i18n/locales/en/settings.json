@@ -82,6 +82,8 @@
     },
     "inbox": "Inbox",
     "inviteContext": "Invite context",
+    "inviteContextValue": "{{allowedJoinTypes}} join invite",
+    "inviteContextValueWithRole": "{{allowedJoinTypes}} join invite • default role {{humanRole}}",
     "inviteMetadataUnavailable": "Invite metadata unavailable",
     "loadFailed": "Failed to load join requests.",
     "loading": "Loading join requests...",
@@ -91,13 +93,13 @@
     "rejectedToast": "Join request rejected",
     "requestDetails": "Request details",
     "selectCompany": "Select a company to review join requests.",
-    "sourceIp": "Source IP",
+    "sourceIp": "Source IP {{ip}}",
     "status": {
       "approved": "Approved",
       "pendingApproval": "Pending approval",
       "rejected": "Rejected"
     },
-    "submittedAt": "Submitted at",
+    "submittedAt": "Submitted {{date}}",
     "title": "Join Requests",
     "type": {
       "agent": "Agent",

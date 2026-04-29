@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { InviteLandingPage } from "./InviteLanding";
+import { TestI18nProvider } from "../test/TestI18nProvider";
 
 const getInviteMock = vi.hoisted(() => vi.fn());
 const acceptInviteMock = vi.hoisted(() => vi.fn());
@@ -136,9 +137,11 @@ describe("InviteLandingPage", () => {
       root.render(
         <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
           <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
+            <TestI18nProvider>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </TestI18nProvider>
           </QueryClientProvider>
         </MemoryRouter>,
       );
@@ -221,9 +224,11 @@ describe("InviteLandingPage", () => {
       root.render(
         <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
           <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
+            <TestI18nProvider>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </TestI18nProvider>
           </QueryClientProvider>
         </MemoryRouter>,
       );
@@ -307,9 +312,11 @@ describe("InviteLandingPage", () => {
       root.render(
         <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
           <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
+            <TestI18nProvider>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </TestI18nProvider>
           </QueryClientProvider>
         </MemoryRouter>,
       );
@@ -387,9 +394,11 @@ describe("InviteLandingPage", () => {
       root.render(
         <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
           <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
+            <TestI18nProvider>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </TestI18nProvider>
           </QueryClientProvider>
         </MemoryRouter>,
       );
@@ -456,9 +465,11 @@ describe("InviteLandingPage", () => {
       root.render(
         <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
           <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
+            <TestI18nProvider>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </TestI18nProvider>
           </QueryClientProvider>
         </MemoryRouter>,
       );
@@ -501,9 +512,11 @@ describe("InviteLandingPage", () => {
       root.render(
         <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
           <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
+            <TestI18nProvider>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </TestI18nProvider>
           </QueryClientProvider>
         </MemoryRouter>,
       );
@@ -568,9 +581,11 @@ describe("InviteLandingPage", () => {
       root.render(
         <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
           <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
+            <TestI18nProvider>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </TestI18nProvider>
           </QueryClientProvider>
         </MemoryRouter>,
       );
@@ -627,9 +642,11 @@ describe("InviteLandingPage", () => {
       root.render(
         <MemoryRouter initialEntries={["/invite/pcp_invite_test"]}>
           <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route path="/invite/:token" element={<InviteLandingPage />} />
-            </Routes>
+            <TestI18nProvider>
+              <Routes>
+                <Route path="/invite/:token" element={<InviteLandingPage />} />
+              </Routes>
+            </TestI18nProvider>
           </QueryClientProvider>
         </MemoryRouter>,
       );

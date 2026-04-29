@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ProfileSettings } from "./ProfileSettings";
+import { TestI18nProvider } from "../test/TestI18nProvider";
 
 const mockAuthApi = vi.hoisted(() => ({
   getSession: vi.fn(),
@@ -96,7 +97,9 @@ describe("ProfileSettings", () => {
     await act(async () => {
       root.render(
         <QueryClientProvider client={queryClient}>
-          <ProfileSettings />
+          <TestI18nProvider>
+            <ProfileSettings />
+          </TestI18nProvider>
         </QueryClientProvider>,
       );
     });
