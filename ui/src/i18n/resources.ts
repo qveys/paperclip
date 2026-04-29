@@ -63,6 +63,19 @@ import jaModals from "./locales/ja-JP/modals.json";
 import jaPlugins from "./locales/ja-JP/plugins.json";
 import jaProjects from "./locales/ja-JP/projects.json";
 import jaSettings from "./locales/ja-JP/settings.json";
+import zhAgents from "./locales/zh-CN/agents.json";
+import zhAuth from "./locales/zh-CN/auth.json";
+import zhCli from "./locales/zh-CN/cli.json";
+import zhCommon from "./locales/zh-CN/common.json";
+import zhCore from "./locales/zh-CN/core.json";
+import zhDashboard from "./locales/zh-CN/dashboard.json";
+import zhErrors from "./locales/zh-CN/errors.json";
+import zhForms from "./locales/zh-CN/forms.json";
+import zhIssues from "./locales/zh-CN/issues.json";
+import zhModals from "./locales/zh-CN/modals.json";
+import zhPlugins from "./locales/zh-CN/plugins.json";
+import zhProjects from "./locales/zh-CN/projects.json";
+import zhSettings from "./locales/zh-CN/settings.json";
 
 export const NAMESPACES = [
   "core",
@@ -82,7 +95,7 @@ export const NAMESPACES = [
 
 export type Namespace = (typeof NAMESPACES)[number];
 
-export const SUPPORTED_LANGUAGES = ["en", "fr-FR", "de-DE", "es-ES", "ja-JP"] as const;
+export const SUPPORTED_LANGUAGES = ["en", "fr-FR", "de-DE", "es-ES", "ja-JP", "zh-CN"] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
@@ -164,5 +177,20 @@ export const bundledResources: Record<
     common: jaCommon,
     cli: jaCli,
     projects: jaProjects,
+  },
+  "zh-CN": {
+    core: zhCore,
+    dashboard: zhDashboard,
+    issues: zhIssues,
+    agents: zhAgents,
+    plugins: zhPlugins,
+    settings: zhSettings,
+    auth: zhAuth,
+    errors: zhErrors,
+    forms: zhForms,
+    modals: zhModals,
+    common: zhCommon,
+    cli: zhCli,
+    projects: zhProjects,
   },
 };
