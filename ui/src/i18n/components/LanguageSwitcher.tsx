@@ -9,6 +9,7 @@ const LANGUAGE_LABELS: Record<SupportedLanguage, { flag: string; native: string 
   "fr-FR": { flag: "🇫🇷", native: "Français" },
   "de-DE": { flag: "🇩🇪", native: "Deutsch" },
   "es-ES": { flag: "🇪🇸", native: "Español" },
+  "ja-JP": { flag: "🇯🇵", native: "日本語" },
 };
 
 function readPersistedLng(): string | null {

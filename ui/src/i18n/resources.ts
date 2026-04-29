@@ -50,6 +50,19 @@ import esModals from "./locales/es-ES/modals.json";
 import esPlugins from "./locales/es-ES/plugins.json";
 import esProjects from "./locales/es-ES/projects.json";
 import esSettings from "./locales/es-ES/settings.json";
+import jaAgents from "./locales/ja-JP/agents.json";
+import jaAuth from "./locales/ja-JP/auth.json";
+import jaCli from "./locales/ja-JP/cli.json";
+import jaCommon from "./locales/ja-JP/common.json";
+import jaCore from "./locales/ja-JP/core.json";
+import jaDashboard from "./locales/ja-JP/dashboard.json";
+import jaErrors from "./locales/ja-JP/errors.json";
+import jaForms from "./locales/ja-JP/forms.json";
+import jaIssues from "./locales/ja-JP/issues.json";
+import jaModals from "./locales/ja-JP/modals.json";
+import jaPlugins from "./locales/ja-JP/plugins.json";
+import jaProjects from "./locales/ja-JP/projects.json";
+import jaSettings from "./locales/ja-JP/settings.json";
 
 export const NAMESPACES = [
   "core",
@@ -69,7 +82,7 @@ export const NAMESPACES = [
 
 export type Namespace = (typeof NAMESPACES)[number];
 
-export const SUPPORTED_LANGUAGES = ["en", "fr-FR", "de-DE", "es-ES"] as const;
+export const SUPPORTED_LANGUAGES = ["en", "fr-FR", "de-DE", "es-ES", "ja-JP"] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
@@ -136,5 +149,20 @@ export const bundledResources: Record<
     common: esCommon,
     cli: esCli,
     projects: esProjects,
+  },
+  "ja-JP": {
+    core: jaCore,
+    dashboard: jaDashboard,
+    issues: jaIssues,
+    agents: jaAgents,
+    plugins: jaPlugins,
+    settings: jaSettings,
+    auth: jaAuth,
+    errors: jaErrors,
+    forms: jaForms,
+    modals: jaModals,
+    common: jaCommon,
+    cli: jaCli,
+    projects: jaProjects,
   },
 };
