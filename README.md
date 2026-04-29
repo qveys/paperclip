@@ -418,9 +418,9 @@ Paperclip's UI is translated by the community via [Weblate](https://hosted.webla
 
 Currently shipping: English (source). Additional languages (Français, Deutsch, Español, 日本語, 中文) are translated on Weblate and bundled in subsequent releases — see the rollout in [`docs/i18n-rollout.md`](docs/i18n-rollout.md).
 
-**Want to translate Paperclip into your language?** Open the [Weblate project page](https://hosted.weblate.org/engage/paperclip/), pick a language, and start translating in your browser — no git, no PR. Translations are pulled back into the repo via a periodic sync.
+**Want to translate Paperclip into your language?** Open the [Weblate project page](https://hosted.weblate.org/engage/paperclip/), pick a language, and start translating in your browser — no git, no PR. Maintainers import accepted translations from Weblate back into the repo for subsequent releases.
 
-Source strings (`en`) are the canonical reference and live at `ui/src/i18n/locales/en/`. They are pushed to Weblate automatically on each merge to `master` via [`.github/workflows/i18n-push-source.yml`](.github/workflows/i18n-push-source.yml).
+Source strings (`en`) are the canonical reference and live at `ui/src/i18n/locales/en/`. They are pushed to Weblate automatically via [`.github/workflows/i18n-push-source.yml`](.github/workflows/i18n-push-source.yml) on pushes to `master` that update files in `ui/src/i18n/locales/en/`.
 
 <br/>
 
