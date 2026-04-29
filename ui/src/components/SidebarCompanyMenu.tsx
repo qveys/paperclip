@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { ChevronDown, LogOut, Settings, UserPlus } from "lucide-react";
 import { Link } from "@/lib/router";
 import { authApi } from "@/api/auth";
@@ -22,6 +23,7 @@ interface SidebarCompanyMenuProps {
 }
 
 export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: SidebarCompanyMenuProps = {}) {
+  const { t } = useTranslation("core");
   const [internalOpen, setInternalOpen] = useState(false);
   const queryClient = useQueryClient();
   const { selectedCompany } = useCompany();
@@ -54,7 +56,11 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
         <Button
           variant="ghost"
           className="h-auto flex-1 justify-start gap-1 px-2 py-1.5 text-left"
-          aria-label={selectedCompany ? `Open ${selectedCompany.name} menu` : "Open company menu"}
+          aria-label={
+            selectedCompany
+              ? t("sidebarCompanyMenu.openCompanyNamed", { defaultValue: `Open ${selectedCompany.name} menu`, companyName: selectedCompany.name })
+              : t("sidebarCompanyMenu.openCompanyMenu", { defaultValue: "Open company menu" })
+          }
           disabled={!selectedCompany}
         >
           <span className="flex min-w-0 flex-1 items-center gap-2">
@@ -65,7 +71,7 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
               />
             ) : null}
             <span className="truncate text-sm font-bold text-foreground">
-              {selectedCompany?.name ?? "Select company"}
+              {selectedCompany?.name ?? t("sidebarCompanyMenu.selectCompany", { defaultValue: "Select company" })}
             </span>
           </span>
           <ChevronDown className="size-4 shrink-0 text-muted-foreground" />
@@ -73,21 +79,26 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">
         <DropdownMenuLabel className="truncate">
-          {selectedCompany?.name ?? "Company"}
+          {selectedCompany?.name ?? t("sidebarCompanyMenu.company", { defaultValue: "Company" })}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/company/settings/invites" onClick={closeNavigationChrome}>
             <UserPlus className="size-4" />
             <span className="truncate">
-              {selectedCompany ? `Invite people to ${selectedCompany.name}` : "Invite people"}
+              {selectedCompany
+                ? t("sidebarCompanyMenu.invitePeopleToCompany", {
+                    defaultValue: `Invite people to ${selectedCompany.name}`,
+                    companyName: selectedCompany.name,
+                  })
+                : t("sidebarCompanyMenu.invitePeople", { defaultValue: "Invite people" })}
             </span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link to="/company/settings" onClick={closeNavigationChrome}>
             <Settings className="size-4" />
-            <span>Company settings</span>
+            <span>{t("sidebarCompanyMenu.companySettings", { defaultValue: "Company settings" })}</span>
           </Link>
         </DropdownMenuItem>
         {session?.session ? (
@@ -99,7 +110,11 @@ export function SidebarCompanyMenu({ open: controlledOpen, onOpenChange }: Sideb
               disabled={signOutMutation.isPending}
             >
               <LogOut className="size-4" />
-              <span>{signOutMutation.isPending ? "Signing out..." : "Sign out"}</span>
+              <span>
+                {signOutMutation.isPending
+                  ? t("sidebarCompanyMenu.signingOut", { defaultValue: "Signing out..." })
+                  : t("sidebarCompanyMenu.signOut", { defaultValue: "Sign out" })}
+              </span>
             </DropdownMenuItem>
           </>
         ) : null}
