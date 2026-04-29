@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatDateTime } from "../lib/utils";
@@ -191,6 +192,7 @@ function DashboardPreview({
 }
 
 export function RunTranscriptUxLab() {
+  const { t } = useTranslation("core");
   const [selectedSurface, setSelectedSurface] = useState<SurfaceId>("detail");
   const [detailMode, setDetailMode] = useState<TranscriptMode>("nice");
   const [streaming, setStreaming] = useState(true);
@@ -206,9 +208,11 @@ export function RunTranscriptUxLab() {
             <div className="mb-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/[0.08] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-700 dark:text-cyan-300">
                 <FlaskConical className="h-3.5 w-3.5" />
-                UX Lab
+                {t("runTranscriptUxLab.uxLab", { defaultValue: "UX Lab" })}
               </div>
-              <h1 className="mt-4 text-2xl font-semibold tracking-tight">Run Transcript Fixtures</h1>
+              <h1 className="mt-4 text-2xl font-semibold tracking-tight">
+                {t("runTranscriptUxLab.title", { defaultValue: "Run Transcript Fixtures" })}
+              </h1>
               <p className="mt-2 text-sm text-muted-foreground">
                 Built from a real Paperclip development run, then sanitized so no secrets, local paths, or environment details survive into the fixture.
               </p>
@@ -273,7 +277,7 @@ export function RunTranscriptUxLab() {
 
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                Controls
+                {t("runTranscriptUxLab.controls", { defaultValue: "Controls" })}
               </span>
               <div className="inline-flex rounded-full border border-border/70 bg-background/80 p-1">
                 {(["nice", "raw"] as const).map((mode) => (
@@ -311,7 +315,9 @@ export function RunTranscriptUxLab() {
                 className="rounded-full"
                 onClick={() => setStreaming((value) => !value)}
               >
-                {streaming ? "Show settled state" : "Show streaming state"}
+                {streaming
+                  ? t("runTranscriptUxLab.showSettledState", { defaultValue: "Show settled state" })
+                  : t("runTranscriptUxLab.showStreamingState", { defaultValue: "Show streaming state" })}
               </Button>
             </div>
 
