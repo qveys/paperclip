@@ -1,9 +1,10 @@
 /*
  * i18n debug overlay — traffic-light coloring for translation health.
  *
- * Activated by useI18nDebug, which sets html[data-i18n-debug="on"].
- * useT writes data-i18n-key, data-i18n-state, and data-i18n-lng on the
- * <span> wrapping each translated string.
+ * Activated when I18nDebugStyles sets html[data-i18n-debug="on"] in
+ * response to the useI18nDebug flag. useT writes data-i18n-key,
+ * data-i18n-state, and data-i18n-lng on the <span> wrapping each
+ * translated string.
  *
  * Each state gets a tinted background fill plus a thin border of the same
  * hue. Backgrounds are kept low-opacity so dark and light themes both stay
@@ -30,24 +31,20 @@ html[data-i18n-debug="on"] [data-i18n-state="fallback-en"] {
 
 html[data-i18n-debug="on"] [data-i18n-state="missing"] {
   background-color: rgba(239, 68, 68, 0.6);
+  box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.95);
+  /* Pulse opacity instead of animating box-shadow blur radii. Opacity is a
+   * compositor-only property, so even hundreds of "missing" badges stay
+   * cheap; large-blur box-shadow forces full repaints per frame. */
   animation: paperclip-i18n-pulse 0.9s ease-in-out infinite;
 }
 
 @keyframes paperclip-i18n-pulse {
   0%,
   100% {
-    background-color: rgba(239, 68, 68, 0.35);
-    box-shadow:
-      inset 0 0 0 1.5px rgba(239, 68, 68, 0.85),
-      0 0 0 2px rgba(239, 68, 68, 0.35),
-      0 0 12px 4px rgba(239, 68, 68, 0.45);
+    opacity: 0.7;
   }
   50% {
-    background-color: rgba(239, 68, 68, 1);
-    box-shadow:
-      inset 0 0 0 2px rgba(255, 120, 120, 1),
-      0 0 0 3px rgba(239, 68, 68, 0.85),
-      0 0 24px 8px rgba(239, 68, 68, 0.85);
+    opacity: 1;
   }
 }
 

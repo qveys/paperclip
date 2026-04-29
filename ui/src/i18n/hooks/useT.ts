@@ -1,8 +1,7 @@
 import { createElement, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { TOptions } from "i18next";
 import { useTranslation } from "react-i18next";
-
-const DEBUG_KEY = "paperclip.i18n.debug";
+import { I18N_DEBUG_EVENT, I18N_DEBUG_STORAGE_KEY, readDebugFlag } from "../debug-flag";
 
 export type I18nKeyState = "translated" | "fallback-en" | "missing";
 
@@ -12,18 +11,9 @@ export interface UseTResult {
   ready: boolean;
 }
 
-function isDebugEnabled(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return window.localStorage.getItem(DEBUG_KEY) === "1";
-  } catch {
-    return false;
-  }
-}
-
 export function useT(ns?: string | string[]): UseTResult {
   const { t: rawT, i18n, ready } = useTranslation(ns);
-  const [debugEnabled, setDebugEnabled] = useState<boolean>(() => isDebugEnabled());
+  const [debugEnabled, setDebugEnabled] = useState<boolean>(() => readDebugFlag());
   const nsKey = Array.isArray(ns) ? ns.join("|") : ns ?? "";
   // Stabilize the namespace reference across renders: callers passing inline
   // arrays (`useT(['core', 'common'])`) would otherwise re-create the t
@@ -33,16 +23,16 @@ export function useT(ns?: string | string[]): UseTResult {
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onStorage = (event: StorageEvent) => {
-      if (event.key === DEBUG_KEY) {
-        setDebugEnabled(isDebugEnabled());
+      if (event.key === I18N_DEBUG_STORAGE_KEY) {
+        setDebugEnabled(readDebugFlag());
       }
     };
-    const onDebugToggle = () => setDebugEnabled(isDebugEnabled());
+    const onDebugToggle = () => setDebugEnabled(readDebugFlag());
     window.addEventListener("storage", onStorage);
-    window.addEventListener("paperclip:i18n-debug-changed", onDebugToggle as EventListener);
+    window.addEventListener(I18N_DEBUG_EVENT, onDebugToggle as EventListener);
     return () => {
       window.removeEventListener("storage", onStorage);
-      window.removeEventListener("paperclip:i18n-debug-changed", onDebugToggle as EventListener);
+      window.removeEventListener(I18N_DEBUG_EVENT, onDebugToggle as EventListener);
     };
   }, []);
 

@@ -25,12 +25,34 @@ describe("I18nDebugStyles", () => {
 
   it("updates html data attribute via storage events", () => {
     render(<I18nDebugStyles />);
+    // Mirror real browser behavior: another tab writes localStorage first,
+    // then the storage event fires in this tab. The hook re-reads localStorage,
+    // so the event alone (without the write) is not enough.
     act(() => {
+      window.localStorage.setItem(DEBUG_KEY, "1");
       window.dispatchEvent(new StorageEvent("storage", { key: DEBUG_KEY, newValue: "1" }));
     });
     expect(document.documentElement.getAttribute("data-i18n-debug")).toBe("on");
     act(() => {
+      window.localStorage.removeItem(DEBUG_KEY);
       window.dispatchEvent(new StorageEvent("storage", { key: DEBUG_KEY, newValue: null }));
+    });
+    expect(document.documentElement.getAttribute("data-i18n-debug")).toBeNull();
+  });
+
+  it("updates html data attribute via same-tab debug-changed event", () => {
+    render(<I18nDebugStyles />);
+    expect(document.documentElement.getAttribute("data-i18n-debug")).toBeNull();
+
+    window.localStorage.setItem(DEBUG_KEY, "1");
+    act(() => {
+      window.dispatchEvent(new Event("paperclip:i18n-debug-changed"));
+    });
+    expect(document.documentElement.getAttribute("data-i18n-debug")).toBe("on");
+
+    window.localStorage.removeItem(DEBUG_KEY);
+    act(() => {
+      window.dispatchEvent(new Event("paperclip:i18n-debug-changed"));
     });
     expect(document.documentElement.getAttribute("data-i18n-debug")).toBeNull();
   });

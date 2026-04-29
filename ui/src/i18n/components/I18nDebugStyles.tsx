@@ -12,6 +12,12 @@ export function I18nDebugStyles(): null {
     } else {
       document.documentElement.removeAttribute("data-i18n-debug");
     }
+    // Always strip on unmount so React 18 StrictMode double-mounts in dev,
+    // or component teardown while enabled, never leave the debug attribute
+    // stuck on <html>.
+    return () => {
+      document.documentElement.removeAttribute("data-i18n-debug");
+    };
   }, [enabled]);
 
   return null;

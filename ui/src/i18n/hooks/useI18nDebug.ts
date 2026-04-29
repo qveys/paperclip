@@ -1,30 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-
-const DEBUG_KEY = "paperclip.i18n.debug";
-const ENABLED_VALUE = "1";
-
-function readEnabled(): boolean {
-  if (typeof window === "undefined") return false;
-  try {
-    return window.localStorage.getItem(DEBUG_KEY) === ENABLED_VALUE;
-  } catch {
-    return false;
-  }
-}
-
-function writeEnabled(value: boolean): void {
-  if (typeof window === "undefined") return;
-  try {
-    if (value) {
-      window.localStorage.setItem(DEBUG_KEY, ENABLED_VALUE);
-    } else {
-      window.localStorage.removeItem(DEBUG_KEY);
-    }
-  } catch {
-    /* ignore */
-  }
-  window.dispatchEvent(new Event("paperclip:i18n-debug-changed"));
-}
+import {
+  I18N_DEBUG_EVENT,
+  I18N_DEBUG_STORAGE_KEY,
+  readDebugFlag,
+  writeDebugFlag,
+} from "../debug-flag";
 
 export interface UseI18nDebugResult {
   enabled: boolean;
@@ -33,19 +13,17 @@ export interface UseI18nDebugResult {
 }
 
 export function useI18nDebug(): UseI18nDebugResult {
-  const [enabled, setEnabledState] = useState<boolean>(() => readEnabled());
+  const [enabled, setEnabledState] = useState<boolean>(() => readDebugFlag());
 
   const setEnabled = useCallback((value: boolean) => {
-    writeEnabled(value);
+    writeDebugFlag(value);
     setEnabledState(value);
   }, []);
 
   const toggle = useCallback(() => {
-    setEnabledState((prev) => {
-      const next = !prev;
-      writeEnabled(next);
-      return next;
-    });
+    const next = !readDebugFlag();
+    writeDebugFlag(next);
+    setEnabledState(next);
   }, []);
 
   useEffect(() => {
@@ -56,23 +34,28 @@ export function useI18nDebug(): UseI18nDebugResult {
       if (!isModifier || !e.shiftKey) return;
       if (e.key !== "L" && e.key !== "l") return;
       e.preventDefault();
-      setEnabledState((prev) => {
-        const next = !prev;
-        writeEnabled(next);
-        return next;
-      });
+      const next = !readDebugFlag();
+      writeDebugFlag(next);
+      setEnabledState(next);
     };
 
     const onStorage = (e: StorageEvent) => {
-      if (e.key !== DEBUG_KEY) return;
-      setEnabledState(e.newValue === ENABLED_VALUE);
+      if (e.key !== I18N_DEBUG_STORAGE_KEY) return;
+      setEnabledState(readDebugFlag());
     };
+
+    // Same-tab toggles: writeDebugFlag dispatches this event so every
+    // mounted hook (including useT) re-syncs without waiting on a reload
+    // or another tab's storage event.
+    const onDebugChanged = () => setEnabledState(readDebugFlag());
 
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("storage", onStorage);
+    window.addEventListener(I18N_DEBUG_EVENT, onDebugChanged);
     return () => {
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("storage", onStorage);
+      window.removeEventListener(I18N_DEBUG_EVENT, onDebugChanged);
     };
   }, []);
 
