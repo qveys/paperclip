@@ -1,6 +1,8 @@
 import { useEffect, useId, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Camera, LoaderCircle, Save, Trash2, UserRoundPen } from "lucide-react";
+import { useT } from "@/i18n/hooks/useT";
 import type { AuthSession, CurrentUserProfile, UpdateCurrentUserProfile } from "@paperclipai/shared";
 import { authApi } from "@/api/auth";
 import { assetsApi } from "@/api/assets";
@@ -20,6 +22,14 @@ function deriveInitials(name: string) {
 }
 
 export function ProfileSettings() {
+  // Plain string-returning t() for non-JSX surfaces:
+  // breadcrumb labels, error messages, throw new Error, placeholder=.
+  const { t } = useTranslation("settings");
+  // ReactNode-returning t() that wraps each rendered string in a
+  // <span data-i18n-key data-i18n-state data-i18n-lng> when debug
+  // mode is on (Ctrl/Cmd+Shift+L). Use it for any string that ends
+  // up directly in JSX so the traffic-light overlay can color it.
+  const { t: tx } = useT("settings");
   const { setBreadcrumbs } = useBreadcrumbs();
   const { selectedCompanyId, selectedCompany } = useCompany();
   const queryClient = useQueryClient();
@@ -36,10 +46,10 @@ export function ProfileSettings() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Instance Settings" },
-      { label: "Profile" },
+      { label: t("profile.breadcrumbs.instanceSettings") },
+      { label: t("profile.breadcrumbs.profile") },
     ]);
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, t]);
 
   useEffect(() => {
     const session = sessionQuery.data;
@@ -67,8 +77,12 @@ export function ProfileSettings() {
     return profile;
   }
 
+  /** Locale-neutral value persisted when the user has no display name (must not be translated). */
+  const stableEmptyProfileName = "Board";
+  const displayNameFallback = t("profile.fields.displayName.placeholder");
+
   function resolveProfileName() {
-    return name.trim() || sessionQuery.data?.user.name || "Board";
+    return name.trim() || sessionQuery.data?.user.name || stableEmptyProfileName;
   }
 
   const updateMutation = useMutation({
@@ -79,14 +93,14 @@ export function ProfileSettings() {
       setImage(profile.image ?? "");
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to update profile.");
+      setActionError(error instanceof Error ? error.message : t("profile.errors.updateFailed"));
     },
   });
 
   const uploadAvatarMutation = useMutation({
     mutationFn: async (file: File) => {
       if (!selectedCompanyId) {
-        throw new Error("Select a company before uploading a profile avatar.");
+        throw new Error(t("profile.errors.selectCompanyFirst"));
       }
 
       const asset = await assetsApi.uploadImage(
@@ -102,7 +116,7 @@ export function ProfileSettings() {
       setImage(profile.image ?? "");
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to upload avatar.");
+      setActionError(error instanceof Error ? error.message : t("profile.errors.uploadAvatarFailed"));
     },
   });
 
@@ -114,39 +128,36 @@ export function ProfileSettings() {
       setImage(profile.image ?? "");
     },
     onError: (error) => {
-      setActionError(error instanceof Error ? error.message : "Failed to remove avatar.");
+      setActionError(error instanceof Error ? error.message : t("profile.errors.removeAvatarFailed"));
     },
   });
 
   if (sessionQuery.isLoading) {
-    return <div className="text-sm text-muted-foreground">Loading profile...</div>;
+    return <div className="text-sm text-muted-foreground">{tx("profile.loading")}</div>;
   }
 
   if (sessionQuery.error || !sessionQuery.data) {
     return (
       <div className="text-sm text-destructive">
-        {sessionQuery.error instanceof Error ? sessionQuery.error.message : "Failed to load profile."}
+        {sessionQuery.error instanceof Error ? sessionQuery.error.message : tx("profile.errors.loadFailed")}
       </div>
     );
   }
 
-  const currentName = name.trim() || sessionQuery.data.user.name || "Board";
+  const currentName = name.trim() || sessionQuery.data.user.name || stableEmptyProfileName;
+  const stableInitialsSource = currentName;
   const currentImage = image.trim() || null;
-  const initials = deriveInitials(currentName);
+  const initials = deriveInitials(stableInitialsSource);
   const isSavingProfile = updateMutation.isPending || uploadAvatarMutation.isPending || removeAvatarMutation.isPending;
-  const uploadHint = selectedCompany
-    ? `Stored in Paperclip file storage for ${selectedCompany.name}.`
-    : "Select a company to upload an avatar into Paperclip storage.";
-
   return (
     <div className="max-w-4xl space-y-6">
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <UserRoundPen className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">Profile</h1>
+          <h1 className="text-lg font-semibold">{tx("profile.title")}</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Control how your account appears in the sidebar and other board surfaces.
+          {tx("profile.subtitle")}
         </p>
       </div>
 
@@ -198,7 +209,7 @@ export function ProfileSettings() {
                     disabled={!selectedCompanyId || isSavingProfile}
                   >
                     {uploadAvatarMutation.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <Camera className="size-4" />}
-                    {currentImage ? "Change photo" : "Upload photo"}
+                    {currentImage ? tx("profile.avatar.changePhoto") : tx("profile.avatar.uploadPhoto")}
                   </Button>
                   {currentImage ? (
                     <Button
@@ -208,7 +219,7 @@ export function ProfileSettings() {
                       disabled={isSavingProfile}
                     >
                       {removeAvatarMutation.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <Trash2 className="size-4" />}
-                      Remove
+                      {tx("profile.avatar.remove")}
                     </Button>
                   ) : null}
                 </div>
@@ -217,10 +228,19 @@ export function ProfileSettings() {
               <div className="min-w-0 flex-1 space-y-2 pb-1">
                 <div>
                   <h2 className="truncate text-2xl font-semibold text-foreground">{currentName}</h2>
-                  <p className="truncate text-sm text-muted-foreground">{sessionQuery.data.user.email ?? "No email"}</p>
+                  <p className="truncate text-sm text-muted-foreground">
+                    {sessionQuery.data.user.email ?? tx("profile.noEmail")}
+                  </p>
                 </div>
                 <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
-                  Click the avatar to upload a new image. {uploadHint}
+                  {selectedCompany ? (
+                    <>
+                      {tx("profile.avatar.hintWithCompany")}{" "}
+                      {tx("profile.avatar.storedIn", { companyName: selectedCompany.name })}
+                    </>
+                  ) : (
+                    tx("profile.avatar.hintNoCompany")
+                  )}
                 </p>
               </div>
             </div>
@@ -235,21 +255,21 @@ export function ProfileSettings() {
           }}
         >
           <div className="space-y-2">
-            <Label htmlFor="profile-name">Display name</Label>
+            <Label htmlFor="profile-name">{tx("profile.fields.displayName.label")}</Label>
             <Input
               id="profile-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
               maxLength={120}
-              placeholder="Board"
+              placeholder={t("profile.fields.displayName.placeholder")}
             />
             <p className="text-xs text-muted-foreground">
-              Shown in the sidebar account footer and comment author surfaces.
+              {tx("profile.fields.displayName.helper")}
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="profile-email">Email</Label>
+            <Label htmlFor="profile-email">{tx("profile.fields.email.label")}</Label>
             <Input
               id="profile-email"
               value={sessionQuery.data.user.email ?? ""}
@@ -257,22 +277,22 @@ export function ProfileSettings() {
               disabled
             />
             <p className="text-xs text-muted-foreground">
-              Email is managed by your auth session and is read-only here.
+              {tx("profile.fields.email.helper")}
             </p>
           </div>
 
           <div className="space-y-2 md:col-span-2">
-            <Label>Language</Label>
+            <Label>{tx("profile.fields.language.label")}</Label>
             <LanguageSwitcher />
             <p className="text-xs text-muted-foreground">
-              Affects only your account.
+              {tx("profile.fields.language.helper")}
             </p>
           </div>
 
           <div className="md:col-span-2 flex justify-end">
             <Button type="submit" disabled={isSavingProfile || !name.trim()}>
               {updateMutation.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <Save className="size-4" />}
-              {updateMutation.isPending ? "Saving..." : "Save profile"}
+              {updateMutation.isPending ? tx("profile.actions.saving") : tx("profile.actions.save")}
             </Button>
           </div>
         </form>
