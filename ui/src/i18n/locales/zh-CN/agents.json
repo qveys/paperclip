@@ -1,0 +1,20 @@
+{
+  "pageTitle": "智能体",
+  "selectCompany": "选择一个公司以查看智能体。",
+  "tabAll": "全部",
+  "tabActive": "活跃",
+  "tabPaused": "已暂停",
+  "tabError": "错误",
+  "filters": "筛选",
+  "showTerminated": "显示已终止",
+  "listView": "列表视图",
+  "orgView": "组织视图",
+  "newAgent": "新建智能体",
+  "count": "{count} 个智能体",
+  "empty": "创建你的第一个智能体以开始使用。",
+  "noMatch": "没有智能体匹配当前筛选条件。",
+  "noOrg": "尚未定义组织层级。",
+  "noHeartbeat": "—",
+  "live": "实时",
+  "liveWithCount": "实时（{count}）"
+}
