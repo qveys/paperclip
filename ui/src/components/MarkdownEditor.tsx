@@ -39,6 +39,7 @@ import { MentionAwareLinkNode, mentionAwareLinkNodeReplacement } from "../lib/me
 import { mentionDeletionPlugin } from "../lib/mention-deletion";
 import { looksLikeMarkdownPaste } from "../lib/markdownPaste";
 import { normalizeMarkdown } from "../lib/normalize-markdown";
+import { useT } from "@/i18n/hooks/useT";
 import { pasteNormalizationPlugin } from "../lib/paste-normalization";
 import { cn } from "../lib/utils";
 import { useEditorAutocomplete, type SkillCommandOption } from "../context/EditorAutocompleteContext";
@@ -506,6 +507,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
   onSubmit,
   readOnly = false,
 }: MarkdownEditorProps, forwardedRef) {
+  const { t } = useT("core");
   const editorValue = useMemo(() => prepareMarkdownForEditor(value), [value]);
   const { slashCommands } = useEditorAutocomplete();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -941,7 +943,11 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
         )}
       >
         <div className="flex items-start justify-between gap-3 px-3 pt-2 text-xs text-muted-foreground">
-          <p>Rich editor unavailable for this markdown. Showing raw source instead.</p>
+          <p>
+            {t("markdownEditor.richUnavailable", {
+              defaultValue: "Rich editor unavailable for this markdown. Showing raw source instead.",
+            })}
+          </p>
           <button
             type="button"
             className="shrink-0 underline underline-offset-2 hover:text-foreground"
@@ -949,7 +955,7 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
               setRichEditorError(null);
             }}
           >
-            Retry rich editor
+            {t("markdownEditor.retry", { defaultValue: "Retry rich editor" })}
           </button>
         </div>
         <textarea
@@ -1176,17 +1182,17 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
                 <span>{option.kind === "skill" ? `/${option.slug}` : option.name}</span>
                 {option.kind === "project" && option.projectId && (
                   <span className="ml-auto text-[10px] uppercase tracking-wide text-muted-foreground">
-                    Project
+                    {t("markdownEditor.mentionBadge.project", { defaultValue: "Project" })}
                   </span>
                 )}
                 {option.kind === "user" && (
                   <span className="ml-auto text-[10px] uppercase tracking-wide text-muted-foreground">
-                    User
+                    {t("markdownEditor.mentionBadge.user", { defaultValue: "User" })}
                   </span>
                 )}
                 {option.kind === "skill" && (
                   <span className="ml-auto text-[10px] uppercase tracking-wide text-muted-foreground">
-                    Skill
+                    {t("markdownEditor.mentionBadge.skill", { defaultValue: "Skill" })}
                   </span>
                 )}
               </button>
@@ -1202,7 +1208,12 @@ export const MarkdownEditor = forwardRef<MarkdownEditorRef, MarkdownEditorProps>
             !bordered && "inset-0 rounded-sm",
           )}
         >
-          Drop {onDropFile ? "file" : "image"} to upload
+          {t("markdownEditor.dropToUpload", {
+            defaultValue: "Drop {{kind}} to upload",
+            kind: onDropFile
+              ? t("markdownEditor.dropKind.file", { defaultValue: "file" })
+              : t("markdownEditor.dropKind.image", { defaultValue: "image" }),
+          })}
         </div>
       )}
       {uploadError && (
