@@ -37,6 +37,19 @@ import deModals from "./locales/de-DE/modals.json";
 import dePlugins from "./locales/de-DE/plugins.json";
 import deProjects from "./locales/de-DE/projects.json";
 import deSettings from "./locales/de-DE/settings.json";
+import esAgents from "./locales/es-ES/agents.json";
+import esAuth from "./locales/es-ES/auth.json";
+import esCli from "./locales/es-ES/cli.json";
+import esCommon from "./locales/es-ES/common.json";
+import esCore from "./locales/es-ES/core.json";
+import esDashboard from "./locales/es-ES/dashboard.json";
+import esErrors from "./locales/es-ES/errors.json";
+import esForms from "./locales/es-ES/forms.json";
+import esIssues from "./locales/es-ES/issues.json";
+import esModals from "./locales/es-ES/modals.json";
+import esPlugins from "./locales/es-ES/plugins.json";
+import esProjects from "./locales/es-ES/projects.json";
+import esSettings from "./locales/es-ES/settings.json";
 
 export const NAMESPACES = [
   "core",
@@ -56,7 +69,7 @@ export const NAMESPACES = [
 
 export type Namespace = (typeof NAMESPACES)[number];
 
-export const SUPPORTED_LANGUAGES = ["en", "fr-FR", "de-DE"] as const;
+export const SUPPORTED_LANGUAGES = ["en", "fr-FR", "de-DE", "es-ES"] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
@@ -108,5 +121,20 @@ export const bundledResources: Record<
     common: deCommon,
     cli: deCli,
     projects: deProjects,
+  },
+  "es-ES": {
+    core: esCore,
+    dashboard: esDashboard,
+    issues: esIssues,
+    agents: esAgents,
+    plugins: esPlugins,
+    settings: esSettings,
+    auth: esAuth,
+    errors: esErrors,
+    forms: esForms,
+    modals: esModals,
+    common: esCommon,
+    cli: esCli,
+    projects: esProjects,
   },
 };

@@ -8,6 +8,7 @@ const LANGUAGE_LABELS: Record<SupportedLanguage, { flag: string; native: string 
   en: { flag: "🇬🇧", native: "English" },
   "fr-FR": { flag: "🇫🇷", native: "Français" },
   "de-DE": { flag: "🇩🇪", native: "Deutsch" },
+  "es-ES": { flag: "🇪🇸", native: "Español" },
 };
 
 function readPersistedLng(): string | null {
