@@ -43,9 +43,15 @@ export function LanguageSwitcher({ id }: LanguageSwitcherProps = {}): ReactEleme
       setCurrent(next);
       // i18next's LanguageDetector caches the resolved language to
       // localStorage (paperclip.locale) on changeLanguage, so no manual
-      // storage write is needed here.
+      // storage write is needed here. On rejection, also flip i18next
+      // back: by the time the promise settles, i18next may have already
+      // mutated its internal language and persisted via the detector,
+      // so a React-state-only revert leaves engine + storage on `next`.
       void i18n.changeLanguage(next).catch(() => {
         setCurrent(previous);
+        void i18n.changeLanguage(previous).catch(() => {
+          /* second-revert failure: swallow — UI already shows previous */
+        });
       });
     },
     [current, i18n]
