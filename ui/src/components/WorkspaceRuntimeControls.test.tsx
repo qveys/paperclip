@@ -9,6 +9,7 @@ import {
   buildWorkspaceRuntimeControlSections,
   WorkspaceRuntimeControls,
 } from "./WorkspaceRuntimeControls";
+import { TestI18nProvider } from "../test/TestI18nProvider";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
@@ -278,10 +279,12 @@ describe("WorkspaceRuntimeControls", () => {
     const root = createRoot(container);
     act(() => {
       root.render(
-        <WorkspaceRuntimeControls
-          sections={sections}
-          onAction={vi.fn()}
-        />,
+        <TestI18nProvider>
+          <WorkspaceRuntimeControls
+            sections={sections}
+            onAction={vi.fn()}
+          />
+        </TestI18nProvider>,
       );
     });
 
@@ -309,11 +312,13 @@ describe("WorkspaceRuntimeControls", () => {
     const root = createRoot(container);
     act(() => {
       root.render(
-        <WorkspaceRuntimeControls
-          sections={sections}
-          disabledHint="Add a workspace path first."
-          onAction={vi.fn()}
-        />,
+        <TestI18nProvider>
+          <WorkspaceRuntimeControls
+            sections={sections}
+            disabledHint="Add a workspace path first."
+            onAction={vi.fn()}
+          />
+        </TestI18nProvider>,
       );
     });
 
@@ -340,11 +345,13 @@ describe("WorkspaceRuntimeControls", () => {
     const root = createRoot(container);
     act(() => {
       root.render(
-        <WorkspaceRuntimeControls
-          sections={sections}
-          disabledHint="Add runtime settings first."
-          onAction={vi.fn()}
-        />,
+        <TestI18nProvider>
+          <WorkspaceRuntimeControls
+            sections={sections}
+            disabledHint="Add runtime settings first."
+            onAction={vi.fn()}
+          />
+        </TestI18nProvider>,
       );
     });
 
@@ -369,10 +376,12 @@ describe("WorkspaceRuntimeControls", () => {
     const root = createRoot(container);
     act(() => {
       root.render(
-        <WorkspaceRuntimeControls
-          sections={sections}
-          onAction={vi.fn()}
-        />,
+        <TestI18nProvider>
+          <WorkspaceRuntimeControls
+            sections={sections}
+            onAction={vi.fn()}
+          />
+        </TestI18nProvider>,
       );
     });
 
@@ -395,11 +404,13 @@ describe("WorkspaceRuntimeControls", () => {
     const root = createRoot(container);
     act(() => {
       root.render(
-        <WorkspaceRuntimeControls
-          sections={sections}
-          square
-          onAction={vi.fn()}
-        />,
+        <TestI18nProvider>
+          <WorkspaceRuntimeControls
+            sections={sections}
+            square
+            onAction={vi.fn()}
+          />
+        </TestI18nProvider>,
       );
     });
 
@@ -431,12 +442,14 @@ describe("WorkspaceRuntimeControls", () => {
     const root = createRoot(container);
     act(() => {
       root.render(
-        <WorkspaceRuntimeControls
-          items={items}
-          emptyMessage="No runtime services have been started yet."
-          disabledHint="Add runtime settings first."
-          onAction={vi.fn()}
-        />,
+        <TestI18nProvider>
+          <WorkspaceRuntimeControls
+            items={items}
+            emptyMessage="No runtime services have been started yet."
+            disabledHint="Add runtime settings first."
+            onAction={vi.fn()}
+          />
+        </TestI18nProvider>,
       );
     });
 
