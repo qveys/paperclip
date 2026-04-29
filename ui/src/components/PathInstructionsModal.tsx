@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Apple, Monitor, Terminal } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -10,40 +11,6 @@ import {
 import { cn } from "@/lib/utils";
 
 type Platform = "mac" | "windows" | "linux";
-
-const platforms: { id: Platform; label: string; icon: typeof Apple }[] = [
-  { id: "mac", label: "macOS", icon: Apple },
-  { id: "windows", label: "Windows", icon: Monitor },
-  { id: "linux", label: "Linux", icon: Terminal },
-];
-
-const instructions: Record<Platform, { steps: string[]; tip?: string }> = {
-  mac: {
-    steps: [
-      "Open Finder and navigate to the folder.",
-      "Right-click (or Control-click) the folder.",
-      "Hold the Option (⌥) key — \"Copy\" changes to \"Copy as Pathname\".",
-      "Click \"Copy as Pathname\", then paste here.",
-    ],
-    tip: "You can also open Terminal, type cd, drag the folder into the terminal window, and press Enter. Then type pwd to see the full path.",
-  },
-  windows: {
-    steps: [
-      "Open File Explorer and navigate to the folder.",
-      "Click in the address bar at the top — the full path will appear.",
-      "Copy the path, then paste here.",
-    ],
-    tip: "Alternatively, hold Shift and right-click the folder, then select \"Copy as path\".",
-  },
-  linux: {
-    steps: [
-      "Open a terminal and navigate to the directory with cd.",
-      "Run pwd to print the full path.",
-      "Copy the output and paste here.",
-    ],
-    tip: "In most file managers, Ctrl+L reveals the full path in the address bar.",
-  },
-};
 
 function detectPlatform(): Platform {
   const ua = navigator.userAgent.toLowerCase();
@@ -61,7 +28,46 @@ export function PathInstructionsModal({
   open,
   onOpenChange,
 }: PathInstructionsModalProps) {
+  const { t } = useTranslation();
   const [platform, setPlatform] = useState<Platform>(detectPlatform);
+  const platforms: { id: Platform; label: string; icon: typeof Apple }[] = [
+    { id: "mac", label: t("pathInstructionsModal.platformMac", { defaultValue: "macOS" }), icon: Apple },
+    { id: "windows", label: t("pathInstructionsModal.platformWindows", { defaultValue: "Windows" }), icon: Monitor },
+    { id: "linux", label: t("pathInstructionsModal.platformLinux", { defaultValue: "Linux" }), icon: Terminal },
+  ];
+  const instructions: Record<Platform, { steps: string[]; tip?: string }> = {
+    mac: {
+      steps: [
+        t("pathInstructionsModal.mac.step1", { defaultValue: "Open Finder and navigate to the folder." }),
+        t("pathInstructionsModal.mac.step2", { defaultValue: "Right-click (or Control-click) the folder." }),
+        t("pathInstructionsModal.mac.step3", { defaultValue: "Hold the Option (⌥) key - \"Copy\" changes to \"Copy as Pathname\"." }),
+        t("pathInstructionsModal.mac.step4", { defaultValue: "Click \"Copy as Pathname\", then paste here." }),
+      ],
+      tip: t("pathInstructionsModal.mac.tip", {
+        defaultValue: "You can also open Terminal, type cd, drag the folder into the terminal window, and press Enter. Then type pwd to see the full path.",
+      }),
+    },
+    windows: {
+      steps: [
+        t("pathInstructionsModal.windows.step1", { defaultValue: "Open File Explorer and navigate to the folder." }),
+        t("pathInstructionsModal.windows.step2", { defaultValue: "Click in the address bar at the top - the full path will appear." }),
+        t("pathInstructionsModal.windows.step3", { defaultValue: "Copy the path, then paste here." }),
+      ],
+      tip: t("pathInstructionsModal.windows.tip", {
+        defaultValue: "Alternatively, hold Shift and right-click the folder, then select \"Copy as path\".",
+      }),
+    },
+    linux: {
+      steps: [
+        t("pathInstructionsModal.linux.step1", { defaultValue: "Open a terminal and navigate to the directory with cd." }),
+        t("pathInstructionsModal.linux.step2", { defaultValue: "Run pwd to print the full path." }),
+        t("pathInstructionsModal.linux.step3", { defaultValue: "Copy the output and paste here." }),
+      ],
+      tip: t("pathInstructionsModal.linux.tip", {
+        defaultValue: "In most file managers, Ctrl+L reveals the full path in the address bar.",
+      }),
+    },
+  };
 
   const current = instructions[platform];
 
@@ -69,11 +75,11 @@ export function PathInstructionsModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-base">How to get a full path</DialogTitle>
+          <DialogTitle className="text-base">{t("pathInstructionsModal.title", { defaultValue: "How to get a full path" })}</DialogTitle>
           <DialogDescription>
-            Paste the absolute path (e.g.{" "}
+            {t("pathInstructionsModal.descriptionPrefix", { defaultValue: "Paste the absolute path (e.g." })}{" "}
             <code className="text-xs bg-muted px-1 py-0.5 rounded">/Users/you/project</code>
-            ) into the input field.
+            ) {t("pathInstructionsModal.descriptionSuffix", { defaultValue: "into the input field." })}
           </DialogDescription>
         </DialogHeader>
 
@@ -124,6 +130,7 @@ export function PathInstructionsModal({
  * Drop-in replacement for the old showDirectoryPicker buttons.
  */
 export function ChoosePathButton({ className }: { className?: string }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -135,7 +142,7 @@ export function ChoosePathButton({ className }: { className?: string }) {
         )}
         onClick={() => setOpen(true)}
       >
-        Choose
+        {t("pathInstructionsModal.choose", { defaultValue: "Choose" })}
       </button>
       <PathInstructionsModal open={open} onOpenChange={setOpen} />
     </>

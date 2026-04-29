@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import type { ExecutionWorkspace, Issue } from "@paperclipai/shared";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ProjectWorkspaceSummary } from "../lib/project-workspaces-tab";
+import { TestI18nProvider } from "../test/TestI18nProvider";
 import { ProjectWorkspaceSummaryCard } from "./ProjectWorkspaceSummaryCard";
 
 vi.mock("@/lib/router", () => ({
@@ -109,14 +110,16 @@ describe("ProjectWorkspaceSummaryCard", () => {
     const root = createRoot(container);
     act(() => {
       root.render(
-        <ProjectWorkspaceSummaryCard
+        <TestI18nProvider>
+          <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={createSummary()}
           runtimeActionKey={null}
           runtimeActionPending={false}
           onRuntimeAction={() => {}}
           onCloseWorkspace={() => {}}
-        />,
+          />
+        </TestI18nProvider>,
       );
     });
 
@@ -147,7 +150,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
 
     act(() => {
       root.render(
-        <ProjectWorkspaceSummaryCard
+        <TestI18nProvider>
+          <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={createSummary({
             key: "project:workspace-2",
@@ -161,7 +165,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
           runtimeActionPending={false}
           onRuntimeAction={runtimeSpy}
           onCloseWorkspace={closeSpy}
-        />,
+          />
+        </TestI18nProvider>,
       );
     });
 
@@ -180,7 +185,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
 
     act(() => {
       root.render(
-        <ProjectWorkspaceSummaryCard
+        <TestI18nProvider>
+          <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={createSummary({
             executionWorkspaceStatus: "cleanup_failed" as ExecutionWorkspace["status"],
@@ -189,7 +195,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
           runtimeActionPending={false}
           onRuntimeAction={() => {}}
           onCloseWorkspace={() => {}}
-        />,
+          />
+        </TestI18nProvider>,
       );
     });
 
@@ -209,14 +216,16 @@ describe("ProjectWorkspaceSummaryCard", () => {
 
     await act(async () => {
       root.render(
-        <ProjectWorkspaceSummaryCard
+        <TestI18nProvider>
+          <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={summary}
           runtimeActionKey={null}
           runtimeActionPending={false}
           onRuntimeAction={() => {}}
           onCloseWorkspace={() => {}}
-        />,
+          />
+        </TestI18nProvider>,
       );
     });
 
@@ -259,7 +268,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
 
     act(() => {
       root.render(
-        <ProjectWorkspaceSummaryCard
+        <TestI18nProvider>
+          <ProjectWorkspaceSummaryCard
           projectRef="paperclip-app"
           summary={createSummary({
             primaryServiceUrl: "http://127.0.0.1:62475",
@@ -270,7 +280,8 @@ describe("ProjectWorkspaceSummaryCard", () => {
           runtimeActionPending={false}
           onRuntimeAction={() => {}}
           onCloseWorkspace={() => {}}
-        />,
+          />
+        </TestI18nProvider>,
       );
     });
 
