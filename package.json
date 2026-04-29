@@ -51,7 +51,7 @@
     "vitest": "^3.0.5"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "packageManager": "pnpm@9.15.4",
   "pnpm": {
@@ -59,7 +59,9 @@
       "embedded-postgres@18.1.0-beta.16": "patches/embedded-postgres@18.1.0-beta.16.patch"
     },
     "overrides": {
-      "rollup": ">=4.59.0"
+      "rollup": ">=4.59.0",
+      "react": "19.2.4",
+      "react-dom": "19.2.4"
     }
   }
 }
