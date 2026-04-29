@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "@/lib/router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { INBOX_MINE_ISSUE_STATUS_FILTER } from "@paperclipai/shared";
 import { approvalsApi } from "../api/approvals";
 import { accessApi } from "../api/access";
@@ -173,7 +173,7 @@ function firstNonEmptyLine(value: string | null | undefined): string | null {
 }
 
 function runFailureMessage(run: HeartbeatRun): string {
-  return firstNonEmptyLine(run.error) ?? firstNonEmptyLine(run.stderrExcerpt) ?? "An unknown error occurred.";
+  return firstNonEmptyLine(run.error) ?? firstNonEmptyLine(run.stderrExcerpt) ?? "Run exited with an error.";
 }
 
 function approvalStatusLabel(status: Approval["status"]): string {
@@ -612,7 +612,7 @@ function JoinRequestInboxRow({
             </span>
             <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
               <span>requested {timeAgo(joinRequest.createdAt)} from IP {joinRequest.requestIp}</span>
-              {joinRequest.adapterType && <span>{t("adapter")}: {joinRequest.adapterType}</span>}
+              {joinRequest.adapterType && <span>{t("adapter", { defaultValue: "adapter" })}: {joinRequest.adapterType}</span>}
             </span>
           </span>
         </div>
@@ -2051,11 +2051,9 @@ export function Inbox() {
                     <DialogTitle>{t("inbox.markAllRead.title", { defaultValue: "Mark all as read?" })}</DialogTitle>
                     <DialogDescription>
                       {t("inbox.markAllRead.description", {
-                        defaultValue: "This will mark {{count}} unread {{itemLabel}} as read.",
                         count: unreadIssueIds.length,
-                        itemLabel: unreadIssueIds.length === 1
-                          ? t("inbox.markAllRead.item", { defaultValue: "item" })
-                          : t("inbox.markAllRead.items", { defaultValue: "items" }),
+                        defaultValue_one: "This will mark {{count}} unread item as read.",
+                        defaultValue_other: "This will mark {{count}} unread items as read.",
                       })}
                     </DialogDescription>
                   </DialogHeader>
@@ -2539,13 +2537,20 @@ export function Inbox() {
                   >
                     <AlertTriangle className="h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
                     <span className="text-sm">
-                      <span className="font-medium">{dashboard!.agents.error}</span>{" "}
-                      {t("inboxAlerts.agentErrors", {
-                        defaultValue: "{{agentWord}} errors",
-                        agentWord: dashboard!.agents.error === 1
-                          ? t("inboxAlerts.agentSingular", { defaultValue: "agent has" })
-                          : t("inboxAlerts.agentPlural", { defaultValue: "agents have" }),
-                      })}
+                      <Trans
+                        i18nKey={
+                          dashboard!.agents.error === 1
+                            ? "inboxAlerts.agentErrors_one"
+                            : "inboxAlerts.agentErrors_other"
+                        }
+                        components={{ bold: <span className="font-medium" /> }}
+                        values={{ count: dashboard!.agents.error }}
+                        defaults={
+                          dashboard!.agents.error === 1
+                            ? "<bold>{{count}}</bold> agent has errors"
+                            : "<bold>{{count}}</bold> agents have errors"
+                        }
+                      />
                     </span>
                   </Link>
                   <button
@@ -2566,9 +2571,12 @@ export function Inbox() {
                   >
                     <AlertTriangle className="h-4 w-4 shrink-0 text-yellow-400" />
                     <span className="text-sm">
-                      {t("inboxAlerts.budgetAt", { defaultValue: "Budget at" })}{" "}
-                      <span className="font-medium">{dashboard!.costs.monthUtilizationPercent}%</span>{" "}
-                      {t("inboxAlerts.utilizationThisMonth", { defaultValue: "utilization this month" })}
+                      <Trans
+                        i18nKey="inboxAlerts.budgetUtilization"
+                        components={{ bold: <span className="font-medium" /> }}
+                        values={{ percent: dashboard!.costs.monthUtilizationPercent }}
+                        defaults="Budget at <bold>{{percent}}%</bold> utilization this month"
+                      />
                     </span>
                   </Link>
                   <button
