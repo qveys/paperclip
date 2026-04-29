@@ -1328,7 +1328,11 @@ function AgentOverview({
             ))}
             {assignedIssues.length > 10 && (
               <div className="px-3 py-2 text-xs text-muted-foreground text-center border-t border-border">
-                +{assignedIssues.length - 10} {t("agentDetail.recentIssues.moreIssues", { defaultValue: "more issues" })}
+                {t("agentDetail.recentIssues.moreIssues", {
+                  count: assignedIssues.length - 10,
+                  defaultValue_one: "+{{count}} more issue",
+                  defaultValue_other: "+{{count}} more issues",
+                })}
               </div>
             )}
           </div>

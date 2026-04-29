@@ -318,7 +318,7 @@
   "cachedTokens": "Cached tokens",
   "calledTools": "called {count} tool{suffix}",
   "canAssignTasks": "Can assign tasks",
-  "cancel": "",
+  "cancel": "Cancel",
   "cancelFailed": "Cancel failed",
   "cancelled": "Cancelled",
   "cancelledTitle": "CLI auth challenge cancelled",
