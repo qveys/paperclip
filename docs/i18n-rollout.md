@@ -63,7 +63,10 @@ Each PR's `base` is the previous branch in the stack. GitHub auto-retargets to `
 - [ ] **PR 27** — `i18n/27-components-plugins` — `ui/src/components/plugins/*`
 - [ ] **PR 28** — `i18n/28-components-shared` — remaining cross-cutting components
 
-### Locale catalogs (parallel, after PR 3, one per language)
+### Locale catalogs (stacked, after PR 11, one per language)
+
+Each locale PR amends `resources.ts` (extends `SUPPORTED_LANGUAGES` + `bundledResources`), `LanguageSwitcher` (`LANGUAGE_LABELS`), `i18next.config.ts`, the `i18n-extract` workflow drift check, and the README shipping list. They stack on each other to keep those amendments mergeable in sequence.
+
 
 - [ ] **PR 29** — `i18n/29-locale-fr` — `ui/src/i18n/locales/fr-FR/*.json` (12 namespaces)
 - [ ] **PR 30** — `i18n/30-locale-de` — `ui/src/i18n/locales/de-DE/*.json`
@@ -76,11 +79,10 @@ Each PR's `base` is the previous branch in the stack. GitHub auto-retargets to `
 ## Dependency graph
 
 ```
-master → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
-                              │       ├→ 9 → 10 → 11    (CI/docs, sequential)
-                              │       ├→ 12, 13, ..., 21  (page strings, parallel)
-                              │       └→ 22, 23, ..., 28  (component strings, parallel)
-                              └─────→ 29, 30, 31, 32, 33  (locales, parallel)
+master → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
+                                      │              └→ 29 → 30 → 31 → 32 → 33  (locales, stacked)
+                                      ├→ 12, 13, ..., 21  (page strings, parallel)
+                                      └→ 22, 23, ..., 28  (component strings, parallel)
 ```
 
 ## Conventions for each PR
