@@ -4,11 +4,9 @@ import { SUPPORTED_LANGUAGES, type SupportedLanguage } from "../resources";
 
 const LOCALE_KEY = "paperclip.locale";
 
-// Labels are added per language as their locale catalog lands (PRs 29-33
-// in the i18n rollout). EN is the only entry at this stage; SUPPORTED_LANGUAGES
-// matches, so the dropdown still lists every supported language correctly.
 const LANGUAGE_LABELS: Record<SupportedLanguage, { flag: string; native: string }> = {
   en: { flag: "🇬🇧", native: "English" },
+  "fr-FR": { flag: "🇫🇷", native: "Français" },
 };
 
 function readPersistedLng(): string | null {

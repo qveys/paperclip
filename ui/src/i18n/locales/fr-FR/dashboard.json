@@ -1,0 +1,497 @@
+{
+  "activity": {
+    "allTypes": "Tous les types",
+    "detail": {
+      "agent": {
+        "created": "a créé un agent",
+        "paused": "a mis l'agent en pause",
+        "resumed": "a repris l'agent",
+        "terminated": "a arrêté l'agent",
+        "updated": "a mis à jour l'agent"
+      },
+      "approval": {
+        "approved": "a approuvé",
+        "created": "a demandé une approbation",
+        "rejected": "a rejeté"
+      },
+      "heartbeat": {
+        "cancelled": "a annulé un heartbeat",
+        "invoked": "a lancé un heartbeat"
+      },
+      "issue": {
+        "approvalLinked": "a lié une approbation",
+        "approvalUnlinked": "a dissocié une approbation",
+        "approversAddedMany": "a ajouté {count} approbateurs",
+        "approversAddedOne": "a ajouté l'approbateur {label}",
+        "approversRemovedMany": "a retiré {count} approbateurs",
+        "approversRemovedOne": "a retiré l'approbateur {label}",
+        "approversUpdated": "a mis à jour les approbateurs",
+        "assigned": "a assigné le ticket",
+        "attachmentAdded": "a ajouté une pièce jointe",
+        "attachmentRemoved": "a retiré une pièce jointe",
+        "blockersAddedMany": "a ajouté {count} bloqueurs",
+        "blockersAddedOne": "a ajouté le bloqueur {label}",
+        "blockersRemovedMany": "a retiré {count} bloqueurs",
+        "blockersRemovedOne": "a retiré le bloqueur {label}",
+        "blockersUpdated": "a mis à jour les bloqueurs",
+        "checkedOut": "a extrait le ticket",
+        "commentAdded": "a ajouté un commentaire",
+        "created": "a créé le ticket",
+        "deleted": "a supprimé le ticket",
+        "documentCreated": "a créé un document",
+        "documentDeleted": "a supprimé un document",
+        "documentRestored": "a restauré un document",
+        "documentUpdated": "a mis à jour un document",
+        "feedbackVoteSaved": "a enregistré un feedback sur une sortie IA",
+        "inboxArchived": "a archivé le ticket depuis la boîte de réception",
+        "inboxUnarchived": "a restauré le ticket dans la boîte de réception",
+        "readMarked": "a marqué le ticket comme lu",
+        "readUnmarked": "a marqué le ticket comme non lu",
+        "released": "a publié le ticket",
+        "reviewersAddedMany": "a ajouté {count} relecteurs",
+        "reviewersAddedOne": "a ajouté le relecteur {label}",
+        "reviewersRemovedMany": "a retiré {count} relecteurs",
+        "reviewersRemovedOne": "a retiré le relecteur {label}",
+        "reviewersUpdated": "a mis à jour les relecteurs",
+        "unassigned": "a retiré l'assignation du ticket",
+        "updated": "a mis à jour le ticket",
+        "updatedDescription": "a mis à jour la description",
+        "updatedPriorityFrom": "a changé la priorité de {from} à {to}",
+        "updatedPriorityTo": "a changé la priorité en {to}",
+        "updatedStatusFrom": "a changé le statut de {from} à {to}",
+        "updatedStatusTo": "a changé le statut en {to}",
+        "updatedTitle": "a mis à jour le titre",
+        "workProductCreated": "a créé un livrable",
+        "workProductDeleted": "a supprimé un livrable",
+        "workProductUpdated": "a mis à jour un livrable"
+      }
+    },
+    "entityType": {
+      "agent": "Agent",
+      "agentApiKey": "Clé API d'agent",
+      "approval": "Approbation",
+      "asset": "Ressource",
+      "budgetIncident": "Incident budgétaire",
+      "budgetPolicy": "Politique budgétaire",
+      "company": "Entreprise",
+      "companySkill": "Compétence d'entreprise",
+      "costEvent": "Événement de coût",
+      "executionWorkspace": "Workspace d'exécution",
+      "financeEvent": "Événement financier",
+      "goal": "Objectif",
+      "heartbeatRun": "Exécution de heartbeat",
+      "instanceSettings": "Paramètres de l'instance",
+      "invite": "Invitation",
+      "issue": "Ticket",
+      "joinRequest": "Demande d'accès",
+      "label": "Étiquette",
+      "plugin": "Plugin",
+      "project": "Projet",
+      "routine": "Routine",
+      "routineRun": "Exécution de routine",
+      "routineTrigger": "Déclencheur de routine",
+      "secret": "Secret",
+      "user": "Utilisateur"
+    },
+    "filterByType": "Filtrer par type",
+    "issueReferenceFallback": "ticket",
+    "noActivity": "Aucune activité encore",
+    "row": {
+      "agent": {
+        "budgetUpdated": "a mis à jour le budget de",
+        "configRolledBack": "a annulé la configuration de",
+        "created": "a créé",
+        "deleted": "a supprimé",
+        "hireCreated": "a créé une demande d'embauche pour",
+        "instructionsBundleUpdated": "a mis à jour le bundle d'instructions de",
+        "instructionsFileDeleted": "a supprimé le fichier d'instructions de",
+        "instructionsFileUpdated": "a mis à jour le fichier d'instructions de",
+        "instructionsPathUpdated": "a mis à jour le chemin d'instructions de",
+        "keyCreated": "a créé une clé API pour",
+        "paused": "a mis en pause",
+        "permissionsUpdated": "a mis à jour les permissions de",
+        "resumed": "a repris",
+        "runtimeSessionReset": "a réinitialisé la session de",
+        "skillsSynced": "a synchronisé les compétences de",
+        "terminated": "a arrêté",
+        "updated": "a mis à jour",
+        "updatedFromJoinReplay": "a mis à jour depuis le replay d'accès de"
+      },
+      "agentApiKey": {
+        "claimed": "a réclamé une clé API d'agent"
+      },
+      "approval": {
+        "approved": "a approuvé",
+        "commentAdded": "a ajouté un commentaire à",
+        "created": "a demandé une approbation",
+        "rejected": "a rejeté",
+        "requesterWakeupFailed": "n'a pas pu réveiller le demandeur pour",
+        "requesterWakeupQueued": "a mis en file le réveil du demandeur pour",
+        "resubmitted": "a resoumis",
+        "revisionRequested": "a demandé une révision pour"
+      },
+      "asset": {
+        "created": "a créé une ressource"
+      },
+      "boardApiKey": {
+        "created": "a créé une clé API board",
+        "revoked": "a révoqué une clé API board"
+      },
+      "budget": {
+        "hardThresholdCrossed": "a déclenché le seuil budgétaire dur de",
+        "incidentResolved": "a résolu l'incident budgétaire de",
+        "policyUpserted": "a mis à jour la politique budgétaire de",
+        "softThresholdCrossed": "a déclenché le seuil budgétaire souple de"
+      },
+      "company": {
+        "archived": "a archivé",
+        "brandingUpdated": "a mis à jour le branding de",
+        "budgetUpdated": "a mis à jour le budget de",
+        "created": "a créé l'entreprise",
+        "feedbackDataSharingUpdated": "a mis à jour le partage de feedback de",
+        "imported": "a importé l'entreprise",
+        "skillCreated": "a créé une compétence pour",
+        "skillDeleted": "a supprimé une compétence de",
+        "skillFileUpdated": "a mis à jour le fichier de compétence de",
+        "skillsImported": "a importé des compétences pour",
+        "skillsScanned": "a scanné les compétences de",
+        "skillUpdateInstalled": "a installé une mise à jour de compétence pour",
+        "updated": "a mis à jour l'entreprise"
+      },
+      "cost": {
+        "recorded": "a enregistré un coût pour",
+        "reported": "a enregistré un coût pour"
+      },
+      "executionWorkspace": {
+        "updated": "a mis à jour le workspace d'exécution"
+      },
+      "financeEvent": {
+        "reported": "a enregistré un événement financier pour"
+      },
+      "goal": {
+        "created": "a créé",
+        "deleted": "a supprimé",
+        "updated": "a mis à jour"
+      },
+      "heartbeat": {
+        "cancelled": "a annulé le heartbeat de",
+        "invoked": "a lancé le heartbeat de"
+      },
+      "hireHook": {
+        "error": "le hook d'embauche a généré une erreur pour",
+        "failed": "le hook d'embauche a échoué pour",
+        "succeeded": "a terminé le hook d'embauche pour"
+      },
+      "inbox": {
+        "dismissed": "a ignoré un élément de boîte de réception pour"
+      },
+      "instanceSettings": {
+        "experimentalUpdated": "a mis à jour les paramètres expérimentaux de",
+        "generalUpdated": "a mis à jour les paramètres généraux de"
+      },
+      "invite": {
+        "created": "a créé une invitation",
+        "openclawPromptCreated": "a créé une invitation OpenClaw Prompt",
+        "revoked": "a révoqué une invitation"
+      },
+      "issue": {
+        "approvalLinked": "a lié une approbation à",
+        "approvalUnlinked": "a dissocié une approbation de",
+        "approversAddedMany": "a ajouté {count} approbateurs à",
+        "approversAddedOne": "a ajouté l'approbateur {label} à",
+        "approversRemovedMany": "a retiré {count} approbateurs de",
+        "approversRemovedOne": "a retiré l'approbateur {label} de",
+        "approversUpdated": "a mis à jour les approbateurs de",
+        "attachmentAdded": "a ajouté une pièce jointe à",
+        "attachmentRemoved": "a retiré une pièce jointe de",
+        "blockersAddedMany": "a ajouté {count} bloqueurs à",
+        "blockersAddedOne": "a ajouté le bloqueur {label} à",
+        "blockersRemovedMany": "a retiré {count} bloqueurs de",
+        "blockersRemovedOne": "a retiré le bloqueur {label} de",
+        "blockersUpdated": "a mis à jour les bloqueurs de",
+        "checkedOut": "a extrait",
+        "checkoutLockAdopted": "a repris le verrou de checkout de",
+        "commentAdded": "a commenté sur",
+        "commentCancelled": "a annulé un commentaire sur",
+        "commented": "a commenté sur",
+        "created": "a créé",
+        "deleted": "a supprimé",
+        "documentCreated": "a créé un document pour",
+        "documentDeleted": "a supprimé un document de",
+        "documentRestored": "a restauré un document sur",
+        "documentUpdated": "a mis à jour un document sur",
+        "feedbackVoteSaved": "a enregistré un feedback sur",
+        "inboxArchived": "a archivé",
+        "inboxUnarchived": "a restauré depuis l'archive",
+        "readMarked": "a marqué comme lu",
+        "readUnmarked": "a marqué comme non lu",
+        "released": "a publié",
+        "reviewersAddedMany": "a ajouté {count} relecteurs à",
+        "reviewersAddedOne": "a ajouté le relecteur {label} à",
+        "reviewersRemovedMany": "a retiré {count} relecteurs de",
+        "reviewersRemovedOne": "a retiré le relecteur {label} de",
+        "reviewersUpdated": "a mis à jour les relecteurs de",
+        "updated": "a mis à jour",
+        "updatedPriorityFrom": "a changé la priorité de {from} à {to} sur",
+        "updatedPriorityTo": "a changé la priorité en {to} sur",
+        "updatedStatusFrom": "a changé le statut de {from} à {to} sur",
+        "updatedStatusTo": "a changé le statut en {to} sur",
+        "workProductCreated": "a créé un livrable pour",
+        "workProductDeleted": "a supprimé un livrable de",
+        "workProductUpdated": "a mis à jour un livrable sur"
+      },
+      "join": {
+        "approved": "a approuvé la demande d'accès de",
+        "rejected": "a rejeté la demande d'accès de"
+      },
+      "label": {
+        "created": "a créé une étiquette",
+        "deleted": "a supprimé une étiquette"
+      },
+      "project": {
+        "created": "a créé",
+        "deleted": "a supprimé",
+        "updated": "a mis à jour",
+        "workspaceCreated": "a créé un workspace pour",
+        "workspaceDeleted": "a supprimé le workspace de",
+        "workspaceUpdated": "a mis à jour le workspace de"
+      },
+      "routine": {
+        "created": "a créé",
+        "runTriggered": "a lancé une exécution pour",
+        "triggerCreated": "a créé un déclencheur pour",
+        "triggerDeleted": "a supprimé le déclencheur de",
+        "triggerSecretRotated": "a renouvelé le secret du déclencheur de",
+        "triggerUpdated": "a mis à jour le déclencheur de",
+        "updated": "a mis à jour"
+      },
+      "secret": {
+        "created": "a créé un secret",
+        "deleted": "a supprimé un secret",
+        "rotated": "a renouvelé un secret",
+        "updated": "a mis à jour un secret"
+      }
+    },
+    "selectCompany": "Sélectionnez une entreprise pour voir l'activité.",
+    "separator": ", ",
+    "updatedTheIssue": "a mis à jour le ticket"
+  },
+  "activityCharts": {
+    "noIssues": "Aucun ticket",
+    "noRuns": "Aucune exécution encore"
+  },
+  "budgetIncidentCard": {
+    "applying": "Application...",
+    "budgetExceedsSpendError": "Le nouveau budget doit dépasser la dépense observée actuelle.",
+    "budgetPlaceholder": "0,00",
+    "dismissed": "Ignoré",
+    "escalated": "Escaladé",
+    "keepPaused": "Garder en pause",
+    "newBudgetLabel": "Nouveau budget (USD)",
+    "open": "Ouvert",
+    "pendingApproval": "En attente d'approbation",
+    "projectPausedMessage": "L'exécution du projet est interrompue. Le nouveau travail dans ce projet ne commencera pas tant que vous n'aurez pas résolu l'incident budgétaire.",
+    "raiseBudgetResume": "Augmenter le budget et reprendre",
+    "resolved": "Résolu",
+    "scopePausedMessage": "Cet espace est en pause. Les nouveaux heartbeats ne commenceront pas tant que vous n'aurez pas résolu l'incident budgétaire."
+  },
+  "budgetPolicyCard": {
+    "budget": "Budget",
+    "budgetPlaceholder": "0,00",
+    "budgetUsd": "Budget (USD)",
+    "disabled": "Désactivé",
+    "hardStop": "Arrêt difficile",
+    "healthy": "Sain",
+    "heartbeatsPausedMessage": "Les heartbeats sont en pause pour cet espace tant que le budget n'est pas augmenté ou que l'incident n'est pas ignoré.",
+    "lifetimeBudget": "Budget à vie",
+    "monthlyUtcBudget": "Budget mensuel UTC",
+    "noCapConfigured": "Pas de limite configurée",
+    "observed": "Observé",
+    "ofLimit": "{percent}% de la limite",
+    "paused": "En pause",
+    "pauseReasonSuffix": " · pause {reason}",
+    "projectPausedMessage": "L'exécution est mise en pause pour ce projet jusqu'à ce que le budget soit augmenté ou que l'incident soit ignoré.",
+    "remaining": "Restant",
+    "saving": "Enregistrement...",
+    "setBudget": "Définir le budget",
+    "softAlertAt": "Alerte douce à {percent}%",
+    "unlimited": "Illimité",
+    "updateBudget": "Mettre à jour le budget",
+    "validDollarAmountError": "Entrez un montant en dollars valide et non négatif.",
+    "warning": "Avertissement"
+  },
+  "budgetSidebarMarker": {
+    "critical": "Mis en pause par le budget",
+    "healthy": "Budget sain",
+    "warning": "Avertissement budgétaire"
+  },
+  "costs": {
+    "allBillers": "",
+    "allProviders": "Tous les fournisseurs",
+    "billers": {
+      "empty": ""
+    },
+    "budgets": {
+      "activeIncidents": "",
+      "activeIncidentsHeading": "",
+      "activeIncidentsHelp": "",
+      "activeIncidentsSubtitle": "",
+      "description": "",
+      "empty": "",
+      "pausedAgents": "",
+      "pausedAgentsSubtitle": "",
+      "pausedProjects": "",
+      "pausedProjectsSubtitle": "",
+      "pendingApprovals": "",
+      "pendingApprovalsSubtitle": "",
+      "title": ""
+    },
+    "byAgent": {
+      "description": "",
+      "empty": "",
+      "title": ""
+    },
+    "byProject": {
+      "description": "",
+      "empty": "",
+      "title": "",
+      "unattributed": ""
+    },
+    "custom": {
+      "selectDateRange": ""
+    },
+    "empty": {
+      "selectCompany": ""
+    },
+    "financeByBiller": {
+      "credits": "",
+      "debits": "",
+      "description": "",
+      "empty": "",
+      "estimated": "",
+      "eventKindCounts": "",
+      "net": "",
+      "title": ""
+    },
+    "financeByKind": {
+      "debitsValue": "",
+      "description": "",
+      "empty": "",
+      "eventBillerCounts": "",
+      "title": ""
+    },
+    "financeTimeline": {
+      "description": "",
+      "empty": "",
+      "emptyPeriod": "",
+      "estimated": "",
+      "invoiceValue": "",
+      "regionValue": "",
+      "tierValue": "",
+      "title": ""
+    },
+    "inferenceLedger": {
+      "budgetConsumed": "",
+      "budgetValue": "",
+      "description": "",
+      "title": "",
+      "unlimitedBudget": "",
+      "usage": ""
+    },
+    "metrics": {
+      "budget": "",
+      "budgetOpen": "",
+      "budgetPausedSubtitle": "",
+      "financeEvents": "",
+      "financeEventsSubtitle": "",
+      "financeNet": "",
+      "financeNetSubtitle": "",
+      "inferenceSpend": "",
+      "inferenceSpendSubtitle": "",
+      "noMonthlyCap": ""
+    },
+    "providers": {
+      "empty": ""
+    },
+    "range": {
+      "to": ""
+    },
+    "subtitle": "",
+    "tabs": {
+      "billers": "",
+      "budgets": "",
+      "finance": "",
+      "overview": "",
+      "providers": ""
+    },
+    "title": ""
+  },
+  "dashboard": {
+    "activeBudgetIncidents": "{count} incident{suffix} budgétaire{suffix} actif{suffix}",
+    "activeBudgetIncidents_one": "",
+    "activeBudgetIncidents_many": "",
+    "activeBudgetIncidents_other": "",
+    "agentMetricDescription": "{running} en cours, {paused} en pause, {errors} en erreur",
+    "agentsEnabled": "Agents activés",
+    "awaitingBoardReview": "En attente de revue du tableau",
+    "budgetIncidentDetails": "{agents} agents en pause · {projects} projets en pause · {approvals} approbations budgétaires en attente",
+    "createAgentHere": "Créez-en un ici",
+    "getStarted": "Commencer",
+    "issuesByPriority": "Tickets par priorité",
+    "issuesByStatus": "Tickets par statut",
+    "last14Days": "14 derniers jours",
+    "monthSpend": "Dépenses du mois",
+    "monthSpendBudget": "{percent}% du budget de {budget}",
+    "noAgents": "Vous n'avez aucun agent.",
+    "noTasksYet": "Aucune tâche pour le moment.",
+    "openBudgets": "Ouvrir les budgets",
+    "pendingApprovalDescription": "{count} dérogations budgétaires en attente de revue du tableau",
+    "pendingApprovalDescription_one": "",
+    "pendingApprovalDescription_many": "",
+    "pendingApprovalDescription_other": "",
+    "pendingApprovals": "Approbations en attente",
+    "recentActivity": "Activité récente",
+    "recentTasks": "Tâches récentes",
+    "runActivity": "Activité des exécutions",
+    "selectCompany": "Créez ou sélectionnez une entreprise pour voir le tableau de bord.",
+    "successRate": "Taux de réussite",
+    "taskMetricDescription": "{open} ouverts, {blocked} bloqués",
+    "tasksInProgress": "Tâches en cours",
+    "unlimitedBudget": "Budget illimité",
+    "welcome": "Bienvenue dans Paperclip. Configurez votre première entreprise et votre premier agent pour commencer."
+  },
+  "inbox": {
+    "groupWorkspace": "Espace de travail",
+    "otherResults": "Autres résultats",
+    "undoArchiveFailed": "Impossible d'annuler l'archivage de la boite de reception"
+  },
+  "liveRunWidget": {
+    "activeRecent": "Actives / récentes",
+    "createCompany": "Créez une entreprise pour voir les exécutions en direct.",
+    "description": "Les exécutions actives d'abord, puis les exécutions terminées les plus récentes.",
+    "noRuns": "Aucune exécution active ou récente.",
+    "selectCompany": "Sélectionnez une entreprise pour voir les exécutions en direct.",
+    "showingUpTo": "Affichage jusqu'à {limit}",
+    "title": "Exécutions en direct"
+  },
+  "myIssues": {
+    "empty": "Aucun ticket ne vous concerne pour le moment.",
+    "pageTitle": "Mes tickets",
+    "selectCompany": "Sélectionnez une entreprise pour voir vos tickets."
+  },
+  "nav": {
+    "activity": "Activité",
+    "company": "Entreprise",
+    "costs": "Coûts",
+    "dashboard": "Tableau de bord",
+    "goals": "Objectifs",
+    "inbox": "Boîte de réception",
+    "issues": "Tickets",
+    "newIssue": "Nouveau ticket",
+    "org": "Organigramme",
+    "routines": "Routines",
+    "selectCompany": "Sélectionner une entreprise",
+    "skills": "Compétences",
+    "work": "Travail"
+  }
+}
