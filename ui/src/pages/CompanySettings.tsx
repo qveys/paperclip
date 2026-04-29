@@ -27,6 +27,7 @@ import {
   HintIcon,
   adapterLabels,
 } from "../components/agent-config-primitives";
+import { useTranslation } from "react-i18next";
 
 type AgentSnippetInput = {
   onboardingTextUrl: string;
@@ -159,17 +160,19 @@ function summarizeSandboxConfig(config: Record<string, unknown>): string | null 
 }
 
 function SupportMark({ supported }: { supported: boolean }) {
+  const { t } = useTranslation();
   return supported ? (
     <span className="inline-flex items-center gap-1 text-green-700 dark:text-green-400">
       <Check className="h-3 w-3" />
-      Yes
+      {t("companySettings.environment.support.yes", { defaultValue: "Yes" })}
     </span>
   ) : (
-    <span className="text-muted-foreground">No</span>
+    <span className="text-muted-foreground">{t("companySettings.environment.support.no", { defaultValue: "No" })}</span>
   );
 }
 
 export function CompanySettings() {
+  const { t } = useTranslation();
   const {
     companies,
     selectedCompany,
@@ -302,7 +305,9 @@ export function CompanySettings() {
     },
     onError: (err) => {
       setInviteError(
-        err instanceof Error ? err.message : "Failed to create invite"
+        err instanceof Error
+          ? err.message
+          : t("companySettings.invites.failedToCreateInvite", { defaultValue: "Failed to create invite" })
       );
     }
   });
@@ -348,15 +353,20 @@ export function CompanySettings() {
       setEditingEnvironmentId(null);
       setEnvironmentForm(createEmptyEnvironmentForm());
       pushToast({
-        title: editingEnvironmentId ? "Environment updated" : "Environment created",
-        body: `${environment.name} is ready.`,
+        title: editingEnvironmentId
+          ? t("companySettings.environment.toast.updated", { defaultValue: "Environment updated" })
+          : t("companySettings.environment.toast.created", { defaultValue: "Environment created" }),
+        body: t("companySettings.environment.toast.readyBody", {
+          defaultValue: "{{name}} is ready.",
+          name: environment.name,
+        }),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to save environment",
-        body: error instanceof Error ? error.message : "Environment save failed.",
+        title: t("companySettings.environment.toast.saveFailed", { defaultValue: "Failed to save environment" }),
+        body: error instanceof Error ? error.message : t("companySettings.environment.toast.saveFailedBody", { defaultValue: "Environment save failed." }),
         tone: "error",
       });
     },
@@ -370,7 +380,9 @@ export function CompanySettings() {
         [environmentId]: probe,
       }));
       pushToast({
-        title: probe.ok ? "Environment probe passed" : "Environment probe failed",
+        title: probe.ok
+          ? t("companySettings.environment.toast.probePassed", { defaultValue: "Environment probe passed" })
+          : t("companySettings.environment.toast.probeFailed", { defaultValue: "Environment probe failed" }),
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
@@ -382,13 +394,15 @@ export function CompanySettings() {
         [environmentId]: {
           ok: false,
           driver: failedEnvironment?.driver ?? "local",
-          summary: error instanceof Error ? error.message : "Environment probe failed.",
+          summary: error instanceof Error
+            ? error.message
+            : t("companySettings.environment.toast.probeFailedBody", { defaultValue: "Environment probe failed." }),
           details: null,
         },
       }));
       pushToast({
-        title: "Environment probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        title: t("companySettings.environment.toast.probeFailed", { defaultValue: "Environment probe failed" }),
+        body: error instanceof Error ? error.message : t("companySettings.environment.toast.probeFailedBody", { defaultValue: "Environment probe failed." }),
         tone: "error",
       });
     },
@@ -401,15 +415,17 @@ export function CompanySettings() {
     },
     onSuccess: (probe) => {
       pushToast({
-        title: probe.ok ? "Draft probe passed" : "Draft probe failed",
+        title: probe.ok
+          ? t("companySettings.environment.toast.draftProbePassed", { defaultValue: "Draft probe passed" })
+          : t("companySettings.environment.toast.draftProbeFailed", { defaultValue: "Draft probe failed" }),
         body: probe.summary,
         tone: probe.ok ? "success" : "error",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Draft probe failed",
-        body: error instanceof Error ? error.message : "Environment probe failed.",
+        title: t("companySettings.environment.toast.draftProbeFailed", { defaultValue: "Draft probe failed" }),
+        body: error instanceof Error ? error.message : t("companySettings.environment.toast.probeFailedBody", { defaultValue: "Environment probe failed." }),
         tone: "error",
       });
     },
@@ -460,15 +476,15 @@ export function CompanySettings() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: selectedCompany?.name ?? "Company", href: "/dashboard" },
-      { label: "Settings" }
+      { label: selectedCompany?.name ?? t("companySettings.breadcrumb.company", { defaultValue: "Company" }), href: "/dashboard" },
+      { label: t("companySettings.breadcrumb.settings", { defaultValue: "Settings" }) }
     ]);
-  }, [setBreadcrumbs, selectedCompany?.name]);
+  }, [setBreadcrumbs, selectedCompany?.name, t]);
 
   if (!selectedCompany) {
     return (
       <div className="text-sm text-muted-foreground">
-        No company selected. Select a company from the switcher above.
+        {t("companySettings.states.noCompanySelected", { defaultValue: "No company selected. Select a company from the switcher above." })}
       </div>
     );
   }
@@ -592,16 +608,19 @@ export function CompanySettings() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center gap-2">
         <Settings className="h-5 w-5 text-muted-foreground" />
-        <h1 className="text-lg font-semibold">Company Settings</h1>
+        <h1 className="text-lg font-semibold">{t("companySettings.title", { defaultValue: "Company Settings" })}</h1>
       </div>
 
       {/* General */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          General
+          {t("companySettings.sections.general", { defaultValue: "General" })}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
-          <Field label="Company name" hint="The display name for your company.">
+          <Field
+            label={t("companySettings.general.companyNameLabel", { defaultValue: "Company name" })}
+            hint={t("companySettings.general.companyNameHint", { defaultValue: "The display name for your company." })}
+          >
             <input
               className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
               type="text"
@@ -610,14 +629,14 @@ export function CompanySettings() {
             />
           </Field>
           <Field
-            label="Description"
-            hint="Optional description shown in the company profile."
+            label={t("companySettings.general.descriptionLabel", { defaultValue: "Description" })}
+            hint={t("companySettings.general.descriptionHint", { defaultValue: "Optional description shown in the company profile." })}
           >
             <input
               className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
               type="text"
               value={description}
-              placeholder="Optional company description"
+              placeholder={t("companySettings.general.descriptionPlaceholder", { defaultValue: "Optional company description" })}
               onChange={(e) => setDescription(e.target.value)}
             />
           </Field>
@@ -627,7 +646,7 @@ export function CompanySettings() {
       {/* Appearance */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Appearance
+          {t("companySettings.sections.appearance", { defaultValue: "Appearance" })}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <div className="flex items-start gap-4">
@@ -641,8 +660,8 @@ export function CompanySettings() {
             </div>
             <div className="flex-1 space-y-3">
               <Field
-                label="Logo"
-                hint="Upload a PNG, JPEG, WEBP, GIF, or SVG logo image."
+                label={t("companySettings.appearance.logoLabel", { defaultValue: "Logo" })}
+                hint={t("companySettings.appearance.logoHint", { defaultValue: "Upload a PNG, JPEG, WEBP, GIF, or SVG logo image." })}
               >
                 <div className="space-y-2">
                   <input
@@ -659,7 +678,9 @@ export function CompanySettings() {
                         onClick={handleClearLogo}
                         disabled={clearLogoMutation.isPending}
                       >
-                        {clearLogoMutation.isPending ? "Removing..." : "Remove logo"}
+                        {clearLogoMutation.isPending
+                          ? t("companySettings.appearance.removingLogo", { defaultValue: "Removing..." })
+                          : t("companySettings.appearance.removeLogo", { defaultValue: "Remove logo" })}
                       </Button>
                     </div>
                   )}
@@ -668,7 +689,7 @@ export function CompanySettings() {
                       {logoUploadError ??
                         (logoUploadMutation.error instanceof Error
                           ? logoUploadMutation.error.message
-                          : "Logo upload failed")}
+                          : t("companySettings.appearance.logoUploadFailed", { defaultValue: "Logo upload failed" }))}
                     </span>
                   )}
                   {clearLogoMutation.isError && (
@@ -677,13 +698,15 @@ export function CompanySettings() {
                     </span>
                   )}
                   {logoUploadMutation.isPending && (
-                    <span className="text-xs text-muted-foreground">Uploading logo...</span>
+                    <span className="text-xs text-muted-foreground">
+                      {t("companySettings.appearance.uploadingLogo", { defaultValue: "Uploading logo..." })}
+                    </span>
                   )}
                 </div>
               </Field>
               <Field
-                label="Brand color"
-                hint="Sets the hue for the company icon. Leave empty for auto-generated color."
+                label={t("companySettings.appearance.brandColorLabel", { defaultValue: "Brand color" })}
+                hint={t("companySettings.appearance.brandColorHint", { defaultValue: "Sets the hue for the company icon. Leave empty for auto-generated color." })}
               >
                 <div className="flex items-center gap-2">
                   <input
@@ -701,7 +724,7 @@ export function CompanySettings() {
                         setBrandColor(v);
                       }
                     }}
-                    placeholder="Auto"
+                    placeholder={t("companySettings.appearance.auto", { defaultValue: "Auto" })}
                     className="w-28 rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm font-mono outline-none"
                   />
                   {brandColor && (
@@ -711,7 +734,7 @@ export function CompanySettings() {
                       onClick={() => setBrandColor("")}
                       className="text-xs text-muted-foreground"
                     >
-                      Clear
+                      {t("companySettings.appearance.clear", { defaultValue: "Clear" })}
                     </Button>
                   )}
                 </div>
@@ -729,16 +752,18 @@ export function CompanySettings() {
             onClick={handleSaveGeneral}
             disabled={generalMutation.isPending || !companyName.trim()}
           >
-            {generalMutation.isPending ? "Saving..." : "Save changes"}
+            {generalMutation.isPending
+              ? t("companySettings.actions.saving", { defaultValue: "Saving..." })
+              : t("companySettings.actions.saveChanges", { defaultValue: "Save changes" })}
           </Button>
           {generalMutation.isSuccess && (
-            <span className="text-xs text-muted-foreground">Saved</span>
+            <span className="text-xs text-muted-foreground">{t("companySettings.states.saved", { defaultValue: "Saved" })}</span>
           )}
           {generalMutation.isError && (
             <span className="text-xs text-destructive">
               {generalMutation.error instanceof Error
                   ? generalMutation.error.message
-                  : "Failed to save"}
+                  : t("companySettings.errors.failedToSave", { defaultValue: "Failed to save" })}
             </span>
           )}
         </div>
@@ -747,25 +772,27 @@ export function CompanySettings() {
       {environmentsEnabled ? (
       <div className="space-y-4" data-testid="company-settings-environments-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Environments
+          {t("companySettings.sections.environments", { defaultValue: "Environments" })}
         </div>
         <div className="space-y-4 rounded-md border border-border px-4 py-4">
           <div className="rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-            Environment choices use the same adapter support matrix as agent defaults. SSH is always available for
-            remote-managed adapters, and sandbox environments appear only when a run-capable sandbox provider plugin is
-            installed.
+            {t("companySettings.environment.helpText", {
+              defaultValue: "Environment choices use the same adapter support matrix as agent defaults. SSH is always available for remote-managed adapters, and sandbox environments appear only when a run-capable sandbox provider plugin is installed.",
+            })}
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full min-w-[34rem] text-left text-xs">
-              <caption className="sr-only">Environment support by adapter</caption>
+              <caption className="sr-only">
+                {t("companySettings.environment.supportCaption", { defaultValue: "Environment support by adapter" })}
+              </caption>
               <thead className="border-b border-border text-muted-foreground">
                 <tr>
-                  <th className="py-2 pr-3 font-medium">Adapter</th>
-                  <th className="px-3 py-2 font-medium">Local</th>
-                  <th className="px-3 py-2 font-medium">SSH</th>
+                  <th className="py-2 pr-3 font-medium">{t("companySettings.environment.adapter", { defaultValue: "Adapter" })}</th>
+                  <th className="px-3 py-2 font-medium">{t("companySettings.environment.local", { defaultValue: "Local" })}</th>
+                  <th className="px-3 py-2 font-medium">{t("companySettings.environment.ssh", { defaultValue: "SSH" })}</th>
                   {sandboxSupportVisible ? (
-                    <th className="px-3 py-2 font-medium">Sandbox</th>
+                    <th className="px-3 py-2 font-medium">{t("companySettings.environment.sandbox", { defaultValue: "Sandbox" })}</th>
                   ) : null}
                 </tr>
               </thead>
@@ -800,7 +827,9 @@ export function CompanySettings() {
 
           <div className="space-y-3">
             {(environments ?? []).length === 0 ? (
-              <div className="text-sm text-muted-foreground">No environments saved for this company yet.</div>
+              <div className="text-sm text-muted-foreground">
+                {t("companySettings.environment.noneSaved", { defaultValue: "No environments saved for this company yet." })}
+              </div>
             ) : (
               (environments ?? []).map((environment) => {
                 const probe = probeResults[environment.id] ?? null;
@@ -820,22 +849,35 @@ export function CompanySettings() {
                         ) : null}
                         {environment.driver === "ssh" ? (
                           <div className="text-xs text-muted-foreground">
-                            {typeof environment.config.host === "string" ? environment.config.host : "SSH host"} ·{" "}
-                            {typeof environment.config.username === "string" ? environment.config.username : "user"}
+                            {typeof environment.config.host === "string"
+                              ? environment.config.host
+                              : t("companySettings.environment.sshHost", { defaultValue: "SSH host" })}{" "}
+                            ·{" "}
+                            {typeof environment.config.username === "string"
+                              ? environment.config.username
+                              : t("companySettings.environment.user", { defaultValue: "user" })}
                           </div>
                         ) : environment.driver === "sandbox" ? (
                           <div className="text-xs text-muted-foreground">
                             {(() => {
                               const provider =
-                                typeof environment.config.provider === "string" ? environment.config.provider : "sandbox";
+                                typeof environment.config.provider === "string"
+                                  ? environment.config.provider
+                                  : t("companySettings.environment.sandbox", { defaultValue: "sandbox" });
                               const displayName =
                                 environmentCapabilities?.sandboxProviders?.[provider]?.displayName ?? provider;
                               const summary = summarizeSandboxConfig(environment.config as Record<string, unknown>);
-                              return `${displayName} sandbox provider${summary ? ` · ${summary}` : ""}`;
+                              return t("companySettings.environment.sandboxProviderSummary", {
+                                defaultValue: "{{displayName}} sandbox provider{{suffix}}",
+                                displayName,
+                                suffix: summary ? ` · ${summary}` : "",
+                              });
                             })()}
                           </div>
                         ) : (
-                          <div className="text-xs text-muted-foreground">Runs on this Paperclip host.</div>
+                          <div className="text-xs text-muted-foreground">
+                            {t("companySettings.environment.runsOnHost", { defaultValue: "Runs on this Paperclip host." })}
+                          </div>
                         )}
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
@@ -847,10 +889,10 @@ export function CompanySettings() {
                             disabled={environmentProbeMutation.isPending}
                           >
                             {environmentProbeMutation.isPending
-                              ? "Testing..."
+                              ? t("companySettings.environment.testing", { defaultValue: "Testing..." })
                               : environment.driver === "ssh"
-                                ? "Test connection"
-                                : "Test provider"}
+                                ? t("companySettings.environment.testConnection", { defaultValue: "Test connection" })
+                                : t("companySettings.environment.testProvider", { defaultValue: "Test provider" })}
                           </Button>
                         ) : null}
                         <Button
@@ -858,7 +900,9 @@ export function CompanySettings() {
                           variant="ghost"
                           onClick={() => handleEditEnvironment(environment)}
                         >
-                          {isEditing ? "Editing" : "Edit"}
+                          {isEditing
+                            ? t("companySettings.environment.editing", { defaultValue: "Editing" })
+                            : t("companySettings.environment.edit", { defaultValue: "Edit" })}
                         </Button>
                       </div>
                     </div>
@@ -884,10 +928,15 @@ export function CompanySettings() {
 
           <div className="border-t border-border/60 pt-4">
             <div className="mb-3 text-sm font-medium">
-              {editingEnvironmentId ? "Edit environment" : "Add environment"}
+              {editingEnvironmentId
+                ? t("companySettings.environment.editEnvironment", { defaultValue: "Edit environment" })
+                : t("companySettings.environment.addEnvironment", { defaultValue: "Add environment" })}
             </div>
             <div className="space-y-3">
-              <Field label="Name" hint="Operator-facing name for this execution target.">
+              <Field
+                label={t("companySettings.environment.nameLabel", { defaultValue: "Name" })}
+                hint={t("companySettings.environment.nameHint", { defaultValue: "Operator-facing name for this execution target." })}
+              >
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -895,7 +944,10 @@ export function CompanySettings() {
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, name: e.target.value }))}
                 />
               </Field>
-              <Field label="Description" hint="Optional note about what this machine is for.">
+              <Field
+                label={t("companySettings.environment.descriptionLabel", { defaultValue: "Description" })}
+                hint={t("companySettings.environment.descriptionHint", { defaultValue: "Optional note about what this machine is for." })}
+              >
                 <input
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   type="text"
@@ -903,7 +955,10 @@ export function CompanySettings() {
                   onChange={(e) => setEnvironmentForm((current) => ({ ...current, description: e.target.value }))}
                 />
               </Field>
-              <Field label="Driver" hint="Local runs on this host. SSH stores a remote machine target. Sandbox stores plugin-backed provider config on the shared environment seam.">
+              <Field
+                label={t("companySettings.environment.driverLabel", { defaultValue: "Driver" })}
+                hint={t("companySettings.environment.driverHint", { defaultValue: "Local runs on this host. SSH stores a remote machine target. Sandbox stores plugin-backed provider config on the shared environment seam." })}
+              >
                 <select
                   className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                   value={environmentForm.driver}
@@ -932,17 +987,20 @@ export function CompanySettings() {
                             : "ssh",
                     }))}
                 >
-                  <option value="ssh">SSH</option>
+                  <option value="ssh">{t("companySettings.environment.ssh", { defaultValue: "SSH" })}</option>
                   {sandboxCreationEnabled || environmentForm.driver === "sandbox" ? (
-                    <option value="sandbox">Sandbox</option>
+                    <option value="sandbox">{t("companySettings.environment.sandbox", { defaultValue: "Sandbox" })}</option>
                   ) : null}
-                  <option value="local">Local</option>
+                  <option value="local">{t("companySettings.environment.local", { defaultValue: "Local" })}</option>
                 </select>
               </Field>
 
               {environmentForm.driver === "ssh" ? (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Host" hint="DNS name or IP address for the remote machine.">
+                  <Field
+                    label={t("companySettings.environment.ssh.hostLabel", { defaultValue: "Host" })}
+                    hint={t("companySettings.environment.ssh.hostHint", { defaultValue: "DNS name or IP address for the remote machine." })}
+                  >
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -950,7 +1008,10 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshHost: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Port" hint="Defaults to 22.">
+                  <Field
+                    label={t("companySettings.environment.ssh.portLabel", { defaultValue: "Port" })}
+                    hint={t("companySettings.environment.ssh.portHint", { defaultValue: "Defaults to 22." })}
+                  >
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="number"
@@ -960,7 +1021,10 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshPort: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Username" hint="SSH login user.">
+                  <Field
+                    label={t("companySettings.environment.ssh.usernameLabel", { defaultValue: "Username" })}
+                    hint={t("companySettings.environment.ssh.usernameHint", { defaultValue: "SSH login user." })}
+                  >
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -968,17 +1032,23 @@ export function CompanySettings() {
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshUsername: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Remote workspace path" hint="Absolute path that Paperclip will verify during SSH connection tests.">
+                  <Field
+                    label={t("companySettings.environment.ssh.remotePathLabel", { defaultValue: "Remote workspace path" })}
+                    hint={t("companySettings.environment.ssh.remotePathHint", { defaultValue: "Absolute path that Paperclip will verify during SSH connection tests." })}
+                  >
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
-                      placeholder="/Users/paperclip/workspace"
+                      placeholder={t("companySettings.environment.ssh.remotePathPlaceholder", { defaultValue: "/Users/paperclip/workspace" })}
                       value={environmentForm.sshRemoteWorkspacePath}
                       onChange={(e) =>
                         setEnvironmentForm((current) => ({ ...current, sshRemoteWorkspacePath: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Private key" hint="Optional PEM private key. Leave blank to rely on the server's SSH agent or default keychain.">
+                  <Field
+                    label={t("companySettings.environment.ssh.privateKeyLabel", { defaultValue: "Private key" })}
+                    hint={t("companySettings.environment.ssh.privateKeyHint", { defaultValue: "Optional PEM private key. Leave blank to rely on the server's SSH agent or default keychain." })}
+                  >
                     <div className="space-y-2">
                       <select
                         className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
@@ -990,7 +1060,7 @@ export function CompanySettings() {
                             sshPrivateKey: e.target.value ? "" : current.sshPrivateKey,
                           }))}
                       >
-                        <option value="">No saved secret</option>
+                        <option value="">{t("companySettings.environment.ssh.noSavedSecret", { defaultValue: "No saved secret" })}</option>
                         {(secrets ?? []).map((secret) => (
                           <option key={secret.id} value={secret.id}>{secret.name}</option>
                         ))}
@@ -1003,7 +1073,10 @@ export function CompanySettings() {
                       />
                     </div>
                   </Field>
-                  <Field label="Known hosts" hint="Optional known_hosts block used when strict host key checking is enabled.">
+                  <Field
+                    label={t("companySettings.environment.ssh.knownHostsLabel", { defaultValue: "Known hosts" })}
+                    hint={t("companySettings.environment.ssh.knownHostsHint", { defaultValue: "Optional known_hosts block used when strict host key checking is enabled." })}
+                  >
                     <textarea
                       className="h-32 w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-xs font-mono outline-none"
                       value={environmentForm.sshKnownHosts}
@@ -1012,8 +1085,8 @@ export function CompanySettings() {
                   </Field>
                   <div className="md:col-span-2">
                     <ToggleField
-                      label="Strict host key checking"
-                      hint="Keep this on unless you deliberately want probe-time host key acceptance disabled."
+                      label={t("companySettings.environment.ssh.strictHostKeyCheckingLabel", { defaultValue: "Strict host key checking" })}
+                      hint={t("companySettings.environment.ssh.strictHostKeyCheckingHint", { defaultValue: "Keep this on unless you deliberately want probe-time host key acceptance disabled." })}
                       checked={environmentForm.sshStrictHostKeyChecking}
                       onChange={(checked) =>
                         setEnvironmentForm((current) => ({ ...current, sshStrictHostKeyChecking: checked }))}
@@ -1024,7 +1097,10 @@ export function CompanySettings() {
 
               {environmentForm.driver === "sandbox" ? (
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Provider" hint="Installed run-capable sandbox provider plugins appear here.">
+                  <Field
+                    label={t("companySettings.environment.sandbox.providerLabel", { defaultValue: "Provider" })}
+                    hint={t("companySettings.environment.sandbox.providerHint", { defaultValue: "Installed run-capable sandbox provider plugins appear here." })}
+                  >
                     <select
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       value={environmentForm.sandboxProvider}
@@ -1066,7 +1142,9 @@ export function CompanySettings() {
                       />
                     ) : (
                       <div className="rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-                        This provider does not declare additional configuration fields.
+                        {t("companySettings.environment.sandbox.noAdditionalConfig", {
+                          defaultValue: "This provider does not declare additional configuration fields.",
+                        })}
                       </div>
                     )}
                   </div>
@@ -1081,11 +1159,11 @@ export function CompanySettings() {
                 >
                   {environmentMutation.isPending
                     ? editingEnvironmentId
-                      ? "Saving..."
-                      : "Creating..."
+                      ? t("companySettings.environment.actions.saving", { defaultValue: "Saving..." })
+                      : t("companySettings.environment.actions.creating", { defaultValue: "Creating..." })
                     : editingEnvironmentId
-                      ? "Save environment"
-                      : "Create environment"}
+                      ? t("companySettings.environment.actions.saveEnvironment", { defaultValue: "Save environment" })
+                      : t("companySettings.environment.actions.createEnvironment", { defaultValue: "Create environment" })}
                 </Button>
                 {editingEnvironmentId ? (
                   <Button
@@ -1094,7 +1172,7 @@ export function CompanySettings() {
                     onClick={handleCancelEnvironmentEdit}
                     disabled={environmentMutation.isPending}
                   >
-                    Cancel
+                    {t("companySettings.environment.actions.cancel", { defaultValue: "Cancel" })}
                   </Button>
                 ) : null}
                 {environmentForm.driver !== "local" ? (
@@ -1104,14 +1182,16 @@ export function CompanySettings() {
                     onClick={() => draftEnvironmentProbeMutation.mutate(environmentForm)}
                     disabled={draftEnvironmentProbeMutation.isPending || !environmentFormValid}
                   >
-                    {draftEnvironmentProbeMutation.isPending ? "Testing..." : "Test draft"}
+                    {draftEnvironmentProbeMutation.isPending
+                      ? t("companySettings.environment.actions.testing", { defaultValue: "Testing..." })
+                      : t("companySettings.environment.actions.testDraft", { defaultValue: "Test draft" })}
                   </Button>
                 ) : null}
                 {environmentMutation.isError ? (
                   <span className="text-xs text-destructive">
                     {environmentMutation.error instanceof Error
                       ? environmentMutation.error.message
-                      : "Failed to save environment"}
+                      : t("companySettings.environment.errors.failedToSave", { defaultValue: "Failed to save environment" })}
                   </span>
                 ) : null}
                 {draftEnvironmentProbeMutation.data ? (
@@ -1129,12 +1209,12 @@ export function CompanySettings() {
       {/* Hiring */}
       <div className="space-y-4" data-testid="company-settings-team-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Hiring
+          {t("companySettings.sections.hiring", { defaultValue: "Hiring" })}
         </div>
         <div className="rounded-md border border-border px-4 py-3">
           <ToggleField
-            label="Require board approval for new hires"
-            hint="New agent hires stay pending until approved by board."
+            label={t("companySettings.hiring.requireApprovalLabel", { defaultValue: "Require board approval for new hires" })}
+            hint={t("companySettings.hiring.requireApprovalHint", { defaultValue: "New agent hires stay pending until approved by board." })}
             checked={!!selectedCompany.requireBoardApprovalForNewAgents}
             onChange={(v) => settingsMutation.mutate(v)}
             toggleTestId="company-settings-team-approval-toggle"
@@ -1145,14 +1225,14 @@ export function CompanySettings() {
       {/* Invites */}
       <div className="space-y-4" data-testid="company-settings-invites-section">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Invites
+          {t("companySettings.sections.invites", { defaultValue: "Invites" })}
         </div>
         <div className="space-y-3 rounded-md border border-border px-4 py-4">
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-muted-foreground">
-              Generate an OpenClaw agent invite snippet.
+              {t("companySettings.invites.generateHint", { defaultValue: "Generate an OpenClaw agent invite snippet." })}
             </span>
-            <HintIcon text="Creates a short-lived OpenClaw agent invite and renders a copy-ready prompt." />
+            <HintIcon text={t("companySettings.invites.generateHintTooltip", { defaultValue: "Creates a short-lived OpenClaw agent invite and renders a copy-ready prompt." })} />
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button
@@ -1162,8 +1242,8 @@ export function CompanySettings() {
               disabled={inviteMutation.isPending}
             >
               {inviteMutation.isPending
-                ? "Generating..."
-                : "Generate OpenClaw Invite Prompt"}
+                ? t("companySettings.invites.generating", { defaultValue: "Generating..." })
+                : t("companySettings.invites.generatePrompt", { defaultValue: "Generate OpenClaw Invite Prompt" })}
             </Button>
           </div>
           {inviteError && (
@@ -1176,7 +1256,7 @@ export function CompanySettings() {
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="text-xs text-muted-foreground">
-                  OpenClaw Invite Prompt
+                  {t("companySettings.invites.promptTitle", { defaultValue: "OpenClaw Invite Prompt" })}
                 </div>
                 {snippetCopied && (
                   <span
@@ -1184,7 +1264,7 @@ export function CompanySettings() {
                     className="flex items-center gap-1 text-xs text-green-600 animate-pulse"
                   >
                     <Check className="h-3 w-3" />
-                    Copied
+                    {t("companySettings.invites.copied", { defaultValue: "Copied" })}
                   </span>
                 )}
               </div>
@@ -1211,7 +1291,9 @@ export function CompanySettings() {
                       }
                     }}
                   >
-                    {snippetCopied ? "Copied snippet" : "Copy snippet"}
+                    {snippetCopied
+                      ? t("companySettings.invites.copiedSnippet", { defaultValue: "Copied snippet" })
+                      : t("companySettings.invites.copySnippet", { defaultValue: "Copy snippet" })}
                   </Button>
                 </div>
               </div>
@@ -1223,24 +1305,29 @@ export function CompanySettings() {
       {/* Import / Export */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          Company Packages
+          {t("companySettings.sections.companyPackages", { defaultValue: "Company Packages" })}
         </div>
         <div className="rounded-md border border-border px-4 py-4">
           <p className="text-sm text-muted-foreground">
-            Import and export have moved to dedicated pages accessible from the{" "}
-            <a href="/org" className="underline hover:text-foreground">Org Chart</a> header.
+            {t("companySettings.companyPackages.movedNoticePrefix", {
+              defaultValue: "Import and export have moved to dedicated pages accessible from the ",
+            })}
+            <a href="/org" className="underline hover:text-foreground">
+              {t("companySettings.companyPackages.orgChart", { defaultValue: "Org Chart" })}
+            </a>
+            {t("companySettings.companyPackages.movedNoticeSuffix", { defaultValue: " header." })}
           </p>
           <div className="mt-3 flex items-center gap-2">
             <Button size="sm" variant="outline" asChild>
               <a href="/company/export">
                 <Download className="mr-1.5 h-3.5 w-3.5" />
-                Export
+                {t("companySettings.companyPackages.export", { defaultValue: "Export" })}
               </a>
             </Button>
             <Button size="sm" variant="outline" asChild>
               <a href="/company/import">
                 <Upload className="mr-1.5 h-3.5 w-3.5" />
-                Import
+                {t("companySettings.companyPackages.import", { defaultValue: "Import" })}
               </a>
             </Button>
           </div>
@@ -1250,12 +1337,13 @@ export function CompanySettings() {
       {/* Danger Zone */}
       <div className="space-y-4">
         <div className="text-xs font-medium text-destructive uppercase tracking-wide">
-          Danger Zone
+          {t("companySettings.sections.dangerZone", { defaultValue: "Danger Zone" })}
         </div>
         <div className="space-y-3 rounded-md border border-destructive/40 bg-destructive/5 px-4 py-4">
           <p className="text-sm text-muted-foreground">
-            Archive this company to hide it from the sidebar. This persists in
-            the database.
+            {t("companySettings.dangerZone.archiveHint", {
+              defaultValue: "Archive this company to hide it from the sidebar. This persists in the database.",
+            })}
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -1268,7 +1356,10 @@ export function CompanySettings() {
               onClick={() => {
                 if (!selectedCompanyId) return;
                 const confirmed = window.confirm(
-                  `Archive company "${selectedCompany.name}"? It will be hidden from the sidebar.`
+                  t("companySettings.dangerZone.archiveConfirm", {
+                    defaultValue: 'Archive company "{{name}}"? It will be hidden from the sidebar.',
+                    name: selectedCompany.name,
+                  })
                 );
                 if (!confirmed) return;
                 const nextCompanyId =
@@ -1284,16 +1375,16 @@ export function CompanySettings() {
               }}
             >
               {archiveMutation.isPending
-                ? "Archiving..."
+                ? t("companySettings.dangerZone.archiving", { defaultValue: "Archiving..." })
                 : selectedCompany.status === "archived"
-                ? "Already archived"
-                : "Archive company"}
+                ? t("companySettings.dangerZone.alreadyArchived", { defaultValue: "Already archived" })
+                : t("companySettings.dangerZone.archiveCompany", { defaultValue: "Archive company" })}
             </Button>
             {archiveMutation.isError && (
               <span className="text-xs text-destructive">
                 {archiveMutation.error instanceof Error
                   ? archiveMutation.error.message
-                  : "Failed to archive company"}
+                  : t("companySettings.dangerZone.failedToArchive", { defaultValue: "Failed to archive company" })}
               </span>
             )}
           </div>
