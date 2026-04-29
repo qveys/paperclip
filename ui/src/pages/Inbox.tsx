@@ -98,7 +98,10 @@ const INBOX_HEARTBEAT_RUN_LIMIT = 200;
 const INBOX_ISSUE_LIST_LIMIT = 500;
 import { Input } from "@/components/ui/input";
 import { PageTabBar } from "../components/PageTabBar";
-import i18n from "@/i18n";
+// Note: utility helpers below (`runFailureMessage`, `formatJoinRequestInboxLabel`)
+// keep their fallback strings inlined rather than importing the prod i18n
+// singleton at module scope. The singleton pulls in HttpBackend +
+// LanguageDetector and would initialize during test imports.
 import type { Approval, HeartbeatRun, Issue, JoinRequest } from "@paperclipai/shared";
 import {
   ACTIONABLE_APPROVAL_STATUSES,
@@ -170,7 +173,7 @@ function firstNonEmptyLine(value: string | null | undefined): string | null {
 }
 
 function runFailureMessage(run: HeartbeatRun): string {
-  return firstNonEmptyLine(run.error) ?? firstNonEmptyLine(run.stderrExcerpt) ?? i18n.t("core:failedRunDefaultError");
+  return firstNonEmptyLine(run.error) ?? firstNonEmptyLine(run.stderrExcerpt) ?? "An unknown error occurred.";
 }
 
 function approvalStatusLabel(status: Approval["status"]): string {
@@ -220,7 +223,7 @@ export function formatJoinRequestInboxLabel(
   if (requesterEmail) return requesterEmail;
   if (requesterName) return requesterName;
   if (requesterId) return requesterId;
-  return i18n.t("core:humanJoinRequest");
+  return "Human join request";
 }
 
 
