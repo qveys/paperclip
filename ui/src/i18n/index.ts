@@ -22,15 +22,7 @@ i18n
     ns: [...NAMESPACES],
     defaultNS: "core",
     backend: {
-      backends: [
-        HttpBackend,
-        resourcesToBackend(
-          bundledResources as unknown as Record<
-            string,
-            Record<string, Record<string, unknown>>
-          >
-        ),
-      ],
+      backends: [HttpBackend, resourcesToBackend(bundledResources)],
       backendOptions: [
         {
           loadPath: `${WEBLATE_BASE}/{{ns}}/{{lng}}/file/?format=json`,
@@ -67,9 +59,9 @@ i18n
     },
   });
 
-if (typeof window !== "undefined") {
-  // Debug aid — exposed in dev so we can inspect language state from the
-  // browser console. Safe to leave in: it's just a reference to the singleton.
+if (isDev && typeof window !== "undefined") {
+  // Dev-only: exposes the i18next singleton on `window.__i18n` so language
+  // state can be inspected from the browser console. Stripped from prod builds.
   (window as unknown as { __i18n?: typeof i18n }).__i18n = i18n;
 }
 
