@@ -100,6 +100,8 @@ import {
   summarizeToolResult,
 } from "../lib/transcriptPresentation";
 import { cn, formatDateTime, formatShortDate } from "../lib/utils";
+import i18n from "@/i18n";
+import { useTranslation } from "react-i18next";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
@@ -350,17 +352,21 @@ function IssueAssigneePausedNotice({ agent }: { agent: Agent | null }) {
 
   const pauseDetail =
     agent.pauseReason === "budget"
-      ? "It was paused by a budget hard stop."
+      ? i18n.t("issues:issueChatThread.assigneePaused.budget", { defaultValue: "It was paused by a budget hard stop." })
       : agent.pauseReason === "system"
-        ? "It was paused by the system."
-        : "It was paused manually.";
+        ? i18n.t("issues:issueChatThread.assigneePaused.system", { defaultValue: "It was paused by the system." })
+        : i18n.t("issues:issueChatThread.assigneePaused.manual", { defaultValue: "It was paused manually." });
 
   return (
     <div className="mb-3 rounded-md border border-orange-300/70 bg-orange-50/90 px-3 py-2.5 text-sm text-orange-950 shadow-sm dark:border-orange-500/40 dark:bg-orange-500/10 dark:text-orange-100">
       <div className="flex items-start gap-2">
         <PauseCircle className="mt-0.5 h-4 w-4 shrink-0 text-orange-600 dark:text-orange-300" />
         <p className="min-w-0 leading-5">
-          <span className="font-medium">{agent.name}</span> is paused. New runs will not start until the agent is resumed. {pauseDetail}
+          {i18n.t("issues:issueChatThread.assigneePaused.message", {
+            defaultValue: "{{agentName}} is paused. New runs will not start until the agent is resumed. {{pauseDetail}}",
+            agentName: agent.name,
+            pauseDetail,
+          })}
         </p>
       </div>
     </div>
@@ -371,9 +377,9 @@ function fallbackAuthorLabel(message: ThreadMessage) {
   const custom = message.metadata?.custom as Record<string, unknown> | undefined;
   if (typeof custom?.["authorName"] === "string") return custom["authorName"];
   if (typeof custom?.["runAgentName"] === "string") return custom["runAgentName"];
-  if (message.role === "assistant") return "Agent";
-  if (message.role === "user") return "You";
-  return "System";
+  if (message.role === "assistant") return i18n.t("issues:issueChatThread.actor.agent", { defaultValue: "Agent" });
+  if (message.role === "user") return i18n.t("issues:issueChatThread.actor.you", { defaultValue: "You" });
+  return i18n.t("issues:issueChatThread.actor.system", { defaultValue: "System" });
 }
 
 function fallbackTextParts(message: ThreadMessage) {
@@ -415,7 +421,7 @@ function IssueChatFallbackThread({
           <div className="space-y-1">
             <p className="font-medium">Chat renderer hit an internal state error.</p>
             <p className="text-xs opacity-80">
-              Showing a safe fallback transcript instead of crashing the issues page.
+              {i18n.t("issues:issueChatThread.fallbackRenderer.help", { defaultValue: "Showing a safe fallback transcript instead of crashing the issues page." })}
             </p>
           </div>
         </div>
@@ -448,7 +454,7 @@ function IssueChatFallbackThread({
                   {lines.length > 0 ? lines.map((line, index) => (
                     <MarkdownBody key={`${message.id}:fallback:${index}`}>{line}</MarkdownBody>
                   )) : (
-                    <p className="text-sm text-muted-foreground">No message content.</p>
+                    <p className="text-sm text-muted-foreground">{i18n.t("issues:issueChatThread.fallbackRenderer.noContent", { defaultValue: "No message content." })}</p>
                   )}
                 </div>
               </div>
@@ -562,7 +568,7 @@ function IssueChatTextPart({ text, recessed }: { text: string; recessed?: boolea
 }
 
 function humanizeValue(value: string | null) {
-  if (!value) return "None";
+  if (!value) return i18n.t("issues:issueChatThread.values.none", { defaultValue: "None" });
   return value.replace(/_/g, " ");
 }
 
@@ -576,9 +582,10 @@ function formatTimelineAssigneeLabel(
     return agentMap?.get(assignee.agentId)?.name ?? assignee.agentId.slice(0, 8);
   }
   if (assignee.userId) {
-    return formatAssigneeUserLabel(assignee.userId, currentUserId, userLabelMap) ?? "Board";
+    return formatAssigneeUserLabel(assignee.userId, currentUserId, userLabelMap)
+      ?? i18n.t("issues:issueChatThread.actor.board", { defaultValue: "Board" });
   }
-  return "Unassigned";
+  return i18n.t("issues:issueChatThread.actor.unassigned", { defaultValue: "Unassigned" });
 }
 
 function initialsForName(name: string) {
@@ -601,9 +608,9 @@ function formatInteractionActorLabel(args: {
   if (userId) {
     return userLabelMap?.get(userId)
       ?? formatAssigneeUserLabel(userId, currentUserId, userLabelMap)
-      ?? "Board";
+      ?? i18n.t("issues:issueChatThread.actor.board", { defaultValue: "Board" });
   }
-  return "System";
+  return i18n.t("issues:issueChatThread.actor.system", { defaultValue: "System" });
 }
 
 export function resolveIssueChatHumanAuthor(args: {
@@ -617,7 +624,11 @@ export function resolveIssueChatHumanAuthor(args: {
   const isCurrentUser = Boolean(authorUserId && currentUserId && authorUserId === currentUserId);
   const resolvedAuthorName = profile?.label?.trim()
     || authorName?.trim()
-    || (authorUserId === "local-board" ? "Board" : (isCurrentUser ? "You" : "User"));
+    || (authorUserId === "local-board"
+      ? i18n.t("issues:issueChatThread.actor.board", { defaultValue: "Board" })
+      : (isCurrentUser
+        ? i18n.t("issues:issueChatThread.actor.you", { defaultValue: "You" })
+        : i18n.t("issues:issueChatThread.actor.user", { defaultValue: "User" })));
 
   return {
     isCurrentUser,
@@ -725,15 +736,15 @@ function IssueChatChainOfThought({
   let headerVerb: string;
   let headerSuffix: string | null = null;
   if (isActive) {
-    headerVerb = "Working";
+    headerVerb = i18n.t("issues:issueChatThread.cot.working", { defaultValue: "Working" });
     if (liveElapsed) headerSuffix = `for ${liveElapsed}`;
   } else if (segmentTiming) {
     const durationMs = segmentTiming.endMs - segmentTiming.startMs;
     const durationText = formatDurationWords(durationMs);
-    headerVerb = "Worked";
+    headerVerb = i18n.t("issues:issueChatThread.cot.worked", { defaultValue: "Worked" });
     if (durationText) headerSuffix = `for ${durationText}`;
   } else {
-    headerVerb = "Worked";
+    headerVerb = i18n.t("issues:issueChatThread.cot.worked", { defaultValue: "Worked" });
   }
 
   const toolSummary = toolCountSummary(toolParts);
@@ -915,8 +926,8 @@ function CopyablePreBlock({ children, className }: { children: string; className
           "absolute right-1.5 top-1.5 inline-flex h-6 w-6 items-center justify-center rounded-md bg-background/80 text-muted-foreground opacity-0 backdrop-blur-sm transition-opacity hover:text-foreground group-hover/pre:opacity-100",
           copied && "opacity-100",
         )}
-        title="Copy"
-        aria-label="Copy"
+        title={i18n.t("issues:issueChatThread.actions.copy", { defaultValue: "Copy" })}
+        aria-label={i18n.t("issues:issueChatThread.actions.copy", { defaultValue: "Copy" })}
         onClick={() => {
           void navigator.clipboard.writeText(children).then(() => {
             setCopied(true);
@@ -1204,7 +1215,9 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
                 disabled={interruptingQueuedRunId === queueTargetRunId}
                 onClick={() => void onInterruptQueued(queueTargetRunId)}
               >
-                {interruptingQueuedRunId === queueTargetRunId ? "Interrupting..." : "Interrupt"}
+                {interruptingQueuedRunId === queueTargetRunId
+                  ? i18n.t("issues:issueChatThread.queue.interrupting", { defaultValue: "Interrupting..." })
+                  : i18n.t("issues:issueChatThread.queue.interrupt", { defaultValue: "Interrupt" })}
               </Button>
             ) : null}
             {onCancelQueued ? (
@@ -1214,7 +1227,7 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
                 className="h-6 border-amber-300 px-2 text-[11px] text-amber-900 hover:bg-amber-100/80 hover:text-amber-950 dark:border-amber-500/40 dark:text-amber-100 dark:hover:bg-amber-500/10"
                 onClick={() => onCancelQueued(commentId)}
               >
-                Cancel
+                {i18n.t("issues:issueChatThread.actions.cancel", { defaultValue: "Cancel" })}
               </Button>
             ) : null}
           </div>
@@ -1226,7 +1239,7 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
 
       {pending ? (
         <div className={cn("mt-1 flex px-1 text-[11px] text-muted-foreground", isCurrentUser ? "justify-end" : "justify-start")}>
-          Sending...
+          {i18n.t("issues:issueChatThread.status.sending", { defaultValue: "Sending..." })}
         </div>
       ) : (
         <div
@@ -1251,8 +1264,8 @@ function IssueChatUserMessage({ message }: { message: ThreadMessage }) {
           <button
             type="button"
             className="inline-flex h-6 w-6 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-            title="Copy message"
-            aria-label="Copy message"
+            title={i18n.t("issues:issueChatThread.actions.copyMessage", { defaultValue: "Copy message" })}
+            aria-label={i18n.t("issues:issueChatThread.actions.copyMessage", { defaultValue: "Copy message" })}
             onClick={() => {
               const text = message.content
                 .filter((p): p is { type: "text"; text: string } => p.type === "text")
@@ -1307,7 +1320,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
     ? custom.authorName
     : typeof custom.runAgentName === "string"
       ? custom.runAgentName
-      : "Agent";
+      : i18n.t("issues:issueChatThread.actor.agent", { defaultValue: "Agent" });
   const authorAgentId = typeof custom.authorAgentId === "string" ? custom.authorAgentId : null;
   const runId = typeof custom.runId === "string" ? custom.runId : null;
   const runAgentId = typeof custom.runAgentId === "string" ? custom.runAgentId : null;
@@ -1392,13 +1405,13 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
               <span className="text-sm font-medium text-foreground">{authorName}</span>
               {followUpRequested ? (
                 <Badge variant="outline" className="text-[10px] uppercase tracking-[0.14em]">
-                  Follow-up
+                  {i18n.t("issues:issueChatThread.labels.followUp", { defaultValue: "Follow-up" })}
                 </Badge>
               ) : null}
               {isRunning ? (
                 <span className="inline-flex items-center gap-1 rounded-full border border-cyan-400/40 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-cyan-700 dark:text-cyan-200">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  Running
+                  {i18n.t("issues:issueChatThread.status.running", { defaultValue: "Running" })}
                 </span>
               ) : null}
             </div>
@@ -1438,8 +1451,8 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                 <button
                   type="button"
                   className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                  title="Copy message"
-                  aria-label="Copy message"
+                  title={i18n.t("issues:issueChatThread.actions.copyMessage", { defaultValue: "Copy message" })}
+                  aria-label={i18n.t("issues:issueChatThread.actions.copyMessage", { defaultValue: "Copy message" })}
                   onClick={() => {
                     void navigator.clipboard.writeText(copyText).then(() => {
                       setCopied(true);
@@ -1476,8 +1489,8 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                       variant="ghost"
                       size="icon-xs"
                       className="text-muted-foreground hover:text-foreground"
-                      title="More actions"
-                      aria-label="More actions"
+                      title={i18n.t("issues:issueChatThread.actions.moreActions", { defaultValue: "More actions" })}
+                      aria-label={i18n.t("issues:issueChatThread.actions.moreActions", { defaultValue: "More actions" })}
                     >
                       <MoreHorizontal className="h-3.5 w-3.5" />
                     </Button>
@@ -1489,7 +1502,7 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                       }}
                     >
                       <Copy className="mr-2 h-3.5 w-3.5" />
-                      Copy message
+                      {i18n.t("issues:issueChatThread.actions.copyMessage", { defaultValue: "Copy message" })}
                     </DropdownMenuItem>
                     {canStopRun && onStopRun && runId ? (
                       <DropdownMenuItem
@@ -1500,14 +1513,16 @@ function IssueChatAssistantMessage({ message }: { message: ThreadMessage }) {
                         }}
                       >
                         <Square className="mr-2 h-3.5 w-3.5 fill-current" />
-                        {stoppingRunId === runId ? "Stopping…" : "Stop run"}
+                        {stoppingRunId === runId
+                          ? i18n.t("issues:issueChatThread.actions.stopping", { defaultValue: "Stopping…" })
+                          : i18n.t("issues:issueChatThread.actions.stopRun", { defaultValue: "Stop run" })}
                       </DropdownMenuItem>
                     ) : null}
                     {runHref ? (
                       <DropdownMenuItem asChild>
                         <Link to={runHref} target="_blank" rel="noreferrer noopener">
                           <Search className="mr-2 h-3.5 w-3.5" />
-                          View run
+                          {i18n.t("issues:issueChatThread.actions.viewRun", { defaultValue: "View run" })}
                         </Link>
                       </DropdownMenuItem>
                     ) : null}
@@ -1612,8 +1627,8 @@ function IssueChatFeedbackButtons({
             ? "text-green-600 dark:text-green-400"
             : "text-muted-foreground hover:bg-accent hover:text-foreground",
         )}
-        title="Helpful"
-        aria-label="Helpful"
+        title={i18n.t("issues:issueChatThread.feedback.helpful", { defaultValue: "Helpful" })}
+        aria-label={i18n.t("issues:issueChatThread.feedback.helpful", { defaultValue: "Helpful" })}
         onClick={handleThumbsUp}
       >
         <ThumbsUp className="h-3.5 w-3.5" />
@@ -1629,19 +1644,19 @@ function IssueChatFeedbackButtons({
                 ? "text-amber-600 dark:text-amber-400"
                 : "text-muted-foreground hover:bg-accent hover:text-foreground",
             )}
-            title="Needs work"
-            aria-label="Needs work"
+            title={i18n.t("issues:issueChatThread.feedback.needsWork", { defaultValue: "Needs work" })}
+            aria-label={i18n.t("issues:issueChatThread.feedback.needsWork", { defaultValue: "Needs work" })}
             onClick={handleThumbsDown}
           >
             <ThumbsDown className="h-3.5 w-3.5" />
           </button>
         </PopoverTrigger>
         <PopoverContent side="top" align="start" className="w-80 p-3">
-          <div className="mb-2 text-sm font-medium">What could have been better?</div>
+          <div className="mb-2 text-sm font-medium">{i18n.t("issues:issueChatThread.feedback.whatCouldBeBetter", { defaultValue: "What could have been better?" })}</div>
           <Textarea
             value={downvoteReason}
             onChange={(event) => setDownvoteReason(event.target.value)}
-            placeholder="Add a short note"
+            placeholder={i18n.t("issues:issueChatThread.feedback.addShortNote", { defaultValue: "Add a short note" })}
             className="min-h-20 resize-y bg-background text-sm"
             disabled={isSaving}
           />
@@ -1656,7 +1671,7 @@ function IssueChatFeedbackButtons({
                 setDownvoteReason("");
               }}
             >
-              Dismiss
+              {i18n.t("issues:issueChatThread.actions.dismiss", { defaultValue: "Dismiss" })}
             </Button>
             <Button
               type="button"
@@ -1664,7 +1679,9 @@ function IssueChatFeedbackButtons({
               disabled={isSaving || !downvoteReason.trim()}
               onClick={handleSubmitReason}
             >
-              {isSaving ? "Saving..." : "Save note"}
+              {isSaving
+                ? i18n.t("issues:issueChatThread.status.saving", { defaultValue: "Saving..." })
+                : i18n.t("issues:issueChatThread.feedback.saveNote", { defaultValue: "Save note" })}
             </Button>
           </div>
         </PopoverContent>
@@ -1681,14 +1698,13 @@ function IssueChatFeedbackButtons({
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save your feedback sharing preference</DialogTitle>
+            <DialogTitle>{i18n.t("issues:issueChatThread.feedback.sharingDialog.title", { defaultValue: "Save your feedback sharing preference" })}</DialogTitle>
             <DialogDescription>
-              Choose whether voted AI outputs can be shared with Paperclip Labs. This
-              answer becomes the default for future thumbs up and thumbs down votes.
+              {i18n.t("issues:issueChatThread.feedback.sharingDialog.description", { defaultValue: "Choose whether voted AI outputs can be shared with Paperclip Labs. This answer becomes the default for future thumbs up and thumbs down votes." })}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm text-muted-foreground">
-            <p>This vote is always saved locally.</p>
+            <p>{i18n.t("issues:issueChatThread.feedback.sharingDialog.localOnly", { defaultValue: "This vote is always saved locally." })}</p>
             <p>
               Choose <span className="font-medium text-foreground">Always allow</span> to share
               this vote and future voted AI outputs. Choose{" "}
@@ -1703,7 +1719,7 @@ function IssueChatFeedbackButtons({
                 rel="noreferrer"
                 className="inline-flex text-sm text-foreground underline underline-offset-4"
               >
-                Read our terms of service
+                {i18n.t("issues:issueChatThread.feedback.sharingDialog.readTerms", { defaultValue: "Read our terms of service" })}
               </a>
             ) : null}
           </div>
@@ -1720,7 +1736,9 @@ function IssueChatFeedbackButtons({
                 ).then(() => setPendingSharingDialog(null));
               }}
             >
-              {isSaving ? "Saving..." : "Don't allow"}
+              {isSaving
+                ? i18n.t("issues:issueChatThread.status.saving", { defaultValue: "Saving..." })
+                : i18n.t("issues:issueChatThread.feedback.sharingDialog.dontAllow", { defaultValue: "Don't allow" })}
             </Button>
             <Button
               type="button"
@@ -1733,7 +1751,9 @@ function IssueChatFeedbackButtons({
                 }).then(() => setPendingSharingDialog(null));
               }}
             >
-              {isSaving ? "Saving..." : "Always allow"}
+              {isSaving
+                ? i18n.t("issues:issueChatThread.status.saving", { defaultValue: "Saving..." })
+                : i18n.t("issues:issueChatThread.feedback.sharingDialog.alwaysAllow", { defaultValue: "Always allow" })}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1797,7 +1817,9 @@ function ExpiredRequestConfirmationActivity({
           onClick={() => setExpanded((current) => !current)}
         >
           <ChevronDown className={cn("h-3 w-3 transition-transform", expanded && "rotate-180")} />
-          {expanded ? "Hide confirmation" : "Expired confirmation"}
+          {expanded
+            ? i18n.t("issues:issueChatThread.interaction.hideConfirmation", { defaultValue: "Hide confirmation" })
+            : i18n.t("issues:issueChatThread.interaction.expiredConfirmation", { defaultValue: "Expired confirmation" })}
         </button>
       </div>
       {expanded ? (
@@ -1911,7 +1933,9 @@ function IssueChatSystemMessage({ message }: { message: ThreadMessage }) {
         <div className={cn("flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5 text-xs", isCurrentUser && "justify-end")}>
           <span className="font-medium text-foreground">{actorName}</span>
           <span className="text-muted-foreground">
-            {custom.followUpRequested === true ? "requested follow-up" : "updated this task"}
+            {custom.followUpRequested === true
+              ? i18n.t("issues:issueChatThread.timeline.requestedFollowUp", { defaultValue: "requested follow-up" })
+              : i18n.t("issues:issueChatThread.timeline.updatedTask", { defaultValue: "updated this task" })}
           </span>
           <a
             href={anchorId ? `#${anchorId}` : undefined}
@@ -2387,7 +2411,7 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
               size="icon-sm"
               onClick={() => attachInputRef.current?.click()}
               disabled={attaching}
-              title="Attach file"
+              title={i18n.t("issues:issueChatThread.actions.attachFile", { defaultValue: "Attach file" })}
             >
               <Paperclip className="h-4 w-4" />
             </Button>
@@ -2398,14 +2422,14 @@ const IssueChatComposer = forwardRef<IssueChatComposerHandle, IssueChatComposerP
           <InlineEntitySelector
             value={reassignTarget}
             options={reassignOptions}
-            placeholder="Assignee"
-            noneLabel="No assignee"
-            searchPlaceholder="Search assignees..."
-            emptyMessage="No assignees found."
+            placeholder={i18n.t("issues:issueChatThread.assignee.placeholder", { defaultValue: "Assignee" })}
+            noneLabel={i18n.t("issues:issueChatThread.assignee.none", { defaultValue: "No assignee" })}
+            searchPlaceholder={i18n.t("issues:issueChatThread.assignee.searchPlaceholder", { defaultValue: "Search assignees..." })}
+            emptyMessage={i18n.t("issues:issueChatThread.assignee.empty", { defaultValue: "No assignees found." })}
             onChange={setReassignTarget}
             className="h-8 text-xs"
             renderTriggerValue={(option) => {
-              if (!option) return <span className="text-muted-foreground">Assignee</span>;
+              if (!option) return <span className="text-muted-foreground">{i18n.t("issues:issueChatThread.assignee.placeholder", { defaultValue: "Assignee" })}</span>;
               const agentId = option.id.startsWith("agent:") ? option.id.slice("agent:".length) : null;
               const agent = agentId ? agentMap?.get(agentId) : null;
               return (
@@ -2492,6 +2516,7 @@ export function IssueChatThread({
   onSubmitInteractionAnswers,
   composerRef,
 }: IssueChatThreadProps) {
+  useTranslation("issues");
   const location = useLocation();
   const hasScrolledRef = useRef(false);
   const bottomAnchorRef = useRef<HTMLDivElement | null>(null);

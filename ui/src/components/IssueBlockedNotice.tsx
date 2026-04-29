@@ -1,5 +1,6 @@
 import type { IssueBlockerAttention, IssueRelationIssueSummary } from "@paperclipai/shared";
 import { AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { createIssueDetailPath } from "../lib/issueDetailBreadcrumb";
 import { IssueLinkQuicklook } from "./IssueLinkQuicklook";
 
@@ -12,9 +13,12 @@ export function IssueBlockedNotice({
   blockers: IssueRelationIssueSummary[];
   blockerAttention?: IssueBlockerAttention | null;
 }) {
+  const { t } = useTranslation("issues");
   if (blockers.length === 0 && issueStatus !== "blocked") return null;
 
-  const blockerLabel = blockers.length === 1 ? "the linked issue" : "the linked issues";
+  const blockerLabel = blockers.length === 1
+    ? t("issueBlockedNotice.blockerLabel.single", { defaultValue: "the linked issue" })
+    : t("issueBlockedNotice.blockerLabel.plural", { defaultValue: "the linked issues" });
   const terminalBlockers = blockers
     .flatMap((blocker) => blocker.terminalBlockers ?? [])
     .filter((blocker, index, all) => all.findIndex((candidate) => candidate.id === blocker.id) === index);
@@ -70,10 +74,34 @@ export function IssueBlockedNotice({
             {blockers.length > 0
               ? isStalled
                 ? stalledLeafBlockers.length > 1
-                  ? <>Work on this issue is blocked by {blockerLabel}, but the chain is stalled in review without a clear next step. Resolve the stalled reviews below or remove them as blockers.</>
-                  : <>Work on this issue is blocked by {blockerLabel}, but the chain is stalled in review without a clear next step. Resolve the stalled review below or remove it as a blocker.</>
-                : <>Work on this issue is blocked by {blockerLabel} until {blockers.length === 1 ? "it is" : "they are"} complete. Comments still wake the assignee for questions or triage.</>
-              : <>Work on this issue is blocked until it is moved back to todo. Comments still wake the assignee for questions or triage.</>}
+                  ? (
+                    <>
+                      {t("issueBlockedNotice.body.stalledPlural", {
+                        defaultValue: "Work on this issue is blocked by {{blockerLabel}}, but the chain is stalled in review without a clear next step. Resolve the stalled reviews below or remove them as blockers.",
+                        blockerLabel,
+                      })}
+                    </>
+                  )
+                  : (
+                    <>
+                      {t("issueBlockedNotice.body.stalledSingle", {
+                        defaultValue: "Work on this issue is blocked by {{blockerLabel}}, but the chain is stalled in review without a clear next step. Resolve the stalled review below or remove it as a blocker.",
+                        blockerLabel,
+                      })}
+                    </>
+                  )
+                : (
+                  <>
+                    {t("issueBlockedNotice.body.blockedBy", {
+                      defaultValue: "Work on this issue is blocked by {{blockerLabel}} until {{completionLabel}} complete. Comments still wake the assignee for questions or triage.",
+                      blockerLabel,
+                      completionLabel: blockers.length === 1
+                        ? t("issueBlockedNotice.completion.single", { defaultValue: "it is" })
+                        : t("issueBlockedNotice.completion.plural", { defaultValue: "they are" }),
+                    })}
+                  </>
+                )
+              : <>{t("issueBlockedNotice.body.blockedUntilTodo", { defaultValue: "Work on this issue is blocked until it is moved back to todo. Comments still wake the assignee for questions or triage." })}</>}
           </p>
           {blockers.length > 0 ? (
             <div className="flex flex-wrap gap-1.5">
@@ -83,14 +111,14 @@ export function IssueBlockedNotice({
           {showStalledRow ? (
             <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
               <span className="text-xs font-medium text-amber-800 dark:text-amber-200">
-                Stalled in review
+                  {t("issueBlockedNotice.labels.stalledInReview", { defaultValue: "Stalled in review" })}
               </span>
               {stalledLeafBlockers.map(renderBlockerChip)}
             </div>
           ) : terminalBlockers.length > 0 ? (
             <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
               <span className="text-xs font-medium text-amber-800 dark:text-amber-200">
-                Ultimately waiting on
+                  {t("issueBlockedNotice.labels.ultimatelyWaitingOn", { defaultValue: "Ultimately waiting on" })}
               </span>
               {terminalBlockers.map(renderBlockerChip)}
             </div>

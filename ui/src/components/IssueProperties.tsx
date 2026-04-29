@@ -14,6 +14,7 @@ import { resolveIssueFilterWorkspaceId } from "../lib/issue-filters";
 import { queryKeys } from "../lib/queryKeys";
 import { buildCompanyUserInlineOptions, buildCompanyUserLabelMap } from "../lib/company-members";
 import { useProjectOrder } from "../hooks/useProjectOrder";
+import { useTranslation } from "react-i18next";
 import {
   getRecentAssigneeIds,
   getRecentAssigneeSelectionIds,
@@ -37,6 +38,7 @@ import { User, Hexagon, ArrowUpRight, Tag, Plus, GitBranch, FolderOpen, Check, E
 import { AgentIcon } from "./AgentIconPicker";
 
 function TruncatedCopyable({ value, icon: Icon }: { value: string; icon: React.ComponentType<{ className?: string }> }) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timerRef.current), []);
@@ -56,7 +58,9 @@ function TruncatedCopyable({ value, icon: Icon }: { value: string; icon: React.C
         type="button"
         className="text-sm font-mono min-w-0 break-all text-left cursor-pointer hover:text-foreground transition-colors"
         onClick={handleCopy}
-        title={copied ? "Copied!" : "Click to copy"}
+        title={copied
+          ? t("issueProperties.copied", { defaultValue: "Copied!" })
+          : t("issueProperties.clickToCopy", { defaultValue: "Click to copy" })}
       >
         {value}
       </button>
@@ -204,6 +208,7 @@ export function IssueProperties({
   onUpdate,
   inline,
 }: IssuePropertiesProps) {
+  const { t } = useTranslation();
   const { selectedCompanyId } = useCompany();
   const queryClient = useQueryClient();
   const companyId = issue.companyId ?? selectedCompanyId;
@@ -415,16 +420,16 @@ export function IssueProperties({
       return agentName(value.slice("agent:".length)) ?? value.slice("agent:".length, "agent:".length + 8);
     }
     if (value.startsWith("user:")) {
-      return userLabel(value.slice("user:".length)) ?? "User";
+      return userLabel(value.slice("user:".length)) ?? t("issueProperties.user", { defaultValue: "User" });
     }
     return value;
   };
   const reviewerTrigger = reviewerValues.length > 0
     ? <span className="text-sm break-words min-w-0">{reviewerValues.map((value) => executionParticipantLabel(value)).join(", ")}</span>
-    : <span className="text-sm text-muted-foreground">None</span>;
+    : <span className="text-sm text-muted-foreground">{t("issueProperties.none", { defaultValue: "None" })}</span>;
   const approverTrigger = approverValues.length > 0
     ? <span className="text-sm break-words min-w-0">{approverValues.map((value) => executionParticipantLabel(value)).join(", ")}</span>
-    : <span className="text-sm text-muted-foreground">None</span>;
+    : <span className="text-sm text-muted-foreground">{t("issueProperties.none", { defaultValue: "None" })}</span>;
   const nextRunnableExecutionStage = (() => {
     if (issue.executionState?.status === "changes_requested" && issue.executionState.currentStageType) {
       return issue.executionState.currentStageType;
@@ -441,13 +446,17 @@ export function IssueProperties({
         className="inline-flex items-center rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
         onClick={() => onUpdate({ status: "in_review" })}
       >
-        {stageType === "review" ? "Run review now" : "Run approval now"}
+        {stageType === "review"
+          ? t("issueProperties.runReviewNow", { defaultValue: "Run review now" })
+          : t("issueProperties.runApprovalNow", { defaultValue: "Run approval now" })}
       </button>
     </PropertyRow>
   );
   const currentExecutionLabel = (() => {
     if (!issue.executionState?.currentStageType) return null;
-    const stageLabel = issue.executionState.currentStageType === "review" ? "Review" : "Approval";
+    const stageLabel = issue.executionState.currentStageType === "review"
+      ? t("issueProperties.review", { defaultValue: "Review" })
+      : t("issueProperties.approval", { defaultValue: "Approval" });
     const participant = issue.executionState.currentParticipant;
     const participantLabel = participant
       ? (participant.type === "agent"
@@ -455,9 +464,17 @@ export function IssueProperties({
         : userLabel(participant.userId ?? null))
       : null;
     if (issue.executionState.status === "changes_requested") {
-      return `${stageLabel} requested changes${participantLabel ? ` by ${participantLabel}` : ""}`;
+      return t("issueProperties.executionRequestedChanges", {
+        defaultValue: "{{stageLabel}} requested changes{{participantSuffix}}",
+        stageLabel,
+        participantSuffix: participantLabel ? ` ${t("issueProperties.by", { defaultValue: "by" })} ${participantLabel}` : "",
+      });
     }
-    return `${stageLabel} pending${participantLabel ? ` with ${participantLabel}` : ""}`;
+    return t("issueProperties.executionPending", {
+      defaultValue: "{{stageLabel}} pending{{participantSuffix}}",
+      stageLabel,
+      participantSuffix: participantLabel ? ` ${t("issueProperties.with", { defaultValue: "with" })} ${participantLabel}` : "",
+    });
   })();
   const selectedIssueLabels = useMemo(() => {
     const selectedIds = issue.labelIds ?? [];
@@ -494,7 +511,7 @@ export function IssueProperties({
   ) : (
     <>
       <Tag className="h-3.5 w-3.5 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">No labels</span>
+      <span className="text-sm text-muted-foreground">{t("issueProperties.noLabels", { defaultValue: "No labels" })}</span>
     </>
   );
   const labelsExtra = (issue.labelIds ?? []).length > 0 ? (
@@ -502,8 +519,8 @@ export function IssueProperties({
       type="button"
       className="inline-flex items-center justify-center h-5 w-5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground"
       onClick={() => setLabelsOpen(true)}
-      aria-label="Add label"
-      title="Add label"
+      aria-label={t("issueProperties.addLabel", { defaultValue: "Add label" })}
+      title={t("issueProperties.addLabel", { defaultValue: "Add label" })}
     >
       <Plus className="h-3 w-3" />
     </button>
@@ -513,7 +530,7 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder="Search labels..."
+        placeholder={t("issueProperties.searchLabels", { defaultValue: "Search labels..." })}
         value={labelSearch}
         onChange={(e) => setLabelSearch(e.target.value)}
         autoFocus={!inline}
@@ -552,7 +569,7 @@ export function IssueProperties({
           />
           <input
             className="flex-1 px-2 py-1.5 text-xs bg-transparent outline-none rounded placeholder:text-muted-foreground/50"
-            placeholder="New label"
+            placeholder={t("issueProperties.newLabel", { defaultValue: "New label" })}
             value={newLabelName}
             onChange={(e) => setNewLabelName(e.target.value)}
           />
@@ -568,7 +585,9 @@ export function IssueProperties({
           }
         >
           <Plus className="h-3 w-3" />
-          {createLabel.isPending ? "Creating…" : "Create label"}
+          {createLabel.isPending
+            ? t("issueProperties.creatingLabel", { defaultValue: "Creating..." })
+            : t("issueProperties.createLabel", { defaultValue: "Create label" })}
         </button>
       </div>
     </>
@@ -584,19 +603,24 @@ export function IssueProperties({
   ) : (
     <>
       <User className="h-3.5 w-3.5 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">Unassigned</span>
+      <span className="text-sm text-muted-foreground">{t("issueProperties.unassigned", { defaultValue: "Unassigned" })}</span>
     </>
   );
 
   const assigneePickerOptions = orderItemsBySelectedAndRecent(
     [
-      { id: "", kind: "none" as const, label: "No assignee", searchText: "" },
+      {
+        id: "",
+        kind: "none" as const,
+        label: t("issueProperties.noAssignee", { defaultValue: "No assignee" }),
+        searchText: "",
+      },
       ...(currentUserId
         ? [{
             id: `user:${currentUserId}`,
             kind: "user" as const,
             userId: currentUserId,
-            label: "Assign to me",
+            label: t("issueProperties.assignToMe", { defaultValue: "Assign to me" }),
             searchText: userLabel(currentUserId) ?? "",
           }]
         : []),
@@ -605,7 +629,9 @@ export function IssueProperties({
             id: `user:${issue.createdByUserId}`,
             kind: "user" as const,
             userId: issue.createdByUserId,
-            label: creatorUserLabel ? `Assign to ${creatorUserLabel}` : "Assign to requester",
+            label: creatorUserLabel
+              ? t("issueProperties.assignToUser", { defaultValue: "Assign to {{user}}", user: creatorUserLabel })
+              : t("issueProperties.assignToRequester", { defaultValue: "Assign to requester" }),
             searchText: creatorUserLabel ?? "requester",
           }]
         : []),
@@ -632,7 +658,7 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder="Search assignees..."
+        placeholder={t("issueProperties.searchAssignees", { defaultValue: "Search assignees..." })}
         value={assigneeSearch}
         onChange={(e) => setAssigneeSearch(e.target.value)}
         autoFocus={!inline}
@@ -686,7 +712,12 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder={`Search ${stageType === "review" ? "reviewers" : "approvers"}...`}
+        placeholder={t("issueProperties.searchParticipants", {
+          defaultValue: "Search {{role}}...",
+          role: stageType === "review"
+            ? t("issueProperties.reviewers", { defaultValue: "reviewers" })
+            : t("issueProperties.approvers", { defaultValue: "approvers" }),
+        })}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         autoFocus={!inline}
@@ -699,7 +730,12 @@ export function IssueProperties({
           )}
           onClick={onClear}
         >
-          No {stageType === "review" ? "reviewers" : "approvers"}
+          {t("issueProperties.noParticipants", {
+            defaultValue: "No {{role}}",
+            role: stageType === "review"
+              ? t("issueProperties.reviewers", { defaultValue: "reviewers" })
+              : t("issueProperties.approvers", { defaultValue: "approvers" }),
+          })}
         </button>
         {currentUserId && (
           <button
@@ -710,7 +746,7 @@ export function IssueProperties({
             onClick={() => toggleExecutionParticipant(stageType, `user:${currentUserId}`)}
           >
             <User className="h-3 w-3 shrink-0 text-muted-foreground" />
-            Assign to me
+            {t("issueProperties.assignToMe", { defaultValue: "Assign to me" })}
           </button>
         )}
         {issue.createdByUserId && issue.createdByUserId !== currentUserId && (
@@ -722,7 +758,7 @@ export function IssueProperties({
             onClick={() => toggleExecutionParticipant(stageType, `user:${issue.createdByUserId}`)}
           >
             <User className="h-3 w-3 shrink-0 text-muted-foreground" />
-            {creatorUserLabel ? creatorUserLabel : "Requester"}
+            {creatorUserLabel ? creatorUserLabel : t("issueProperties.requester", { defaultValue: "Requester" })}
           </button>
         )}
         {otherUserOptions
@@ -779,12 +815,17 @@ export function IssueProperties({
   ) : (
     <>
       <Hexagon className="h-3.5 w-3.5 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">No project</span>
+      <span className="text-sm text-muted-foreground">{t("issueProperties.noProject", { defaultValue: "No project" })}</span>
     </>
   );
   const projectPickerOptions = orderItemsBySelectedAndRecent(
     [
-      { id: "", kind: "none" as const, name: "No project", color: null as string | null },
+      {
+        id: "",
+        kind: "none" as const,
+        name: t("issueProperties.noProject", { defaultValue: "No project" }),
+        color: null as string | null,
+      },
       ...orderedProjects.map((project) => ({
         id: project.id,
         kind: "project" as const,
@@ -801,7 +842,7 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder="Search projects..."
+        placeholder={t("issueProperties.searchProjects", { defaultValue: "Search projects..." })}
         value={projectSearch}
         onChange={(e) => setProjectSearch(e.target.value)}
         autoFocus={!inline}
@@ -891,7 +932,7 @@ export function IssueProperties({
       {parentTitle}
     </span>
   ) : (
-    <span className="text-sm text-muted-foreground">No parent</span>
+    <span className="text-sm text-muted-foreground">{t("issueProperties.noParent", { defaultValue: "No parent" })}</span>
   );
   const parentLink = issue.parentId ? (
     <Link
@@ -922,7 +963,7 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder="Search issues..."
+        placeholder={t("issueProperties.searchIssues", { defaultValue: "Search issues..." })}
         value={parentSearch}
         onChange={(e) => setParentSearch(e.target.value)}
         autoFocus={!inline}
@@ -938,7 +979,7 @@ export function IssueProperties({
             setParentOpen(false);
           }}
         >
-          No parent
+          {t("issueProperties.noParent", { defaultValue: "No parent" })}
         </button>
         {parentOptions.map((candidate) => (
           <button
@@ -990,7 +1031,7 @@ export function IssueProperties({
     <>
       <input
         className="w-full px-2 py-1.5 text-xs bg-transparent outline-none border-b border-border mb-1 placeholder:text-muted-foreground/50"
-        placeholder="Search issues..."
+        placeholder={t("issueProperties.searchIssues", { defaultValue: "Search issues..." })}
         value={blockedBySearch}
         onChange={(e) => setBlockedBySearch(e.target.value)}
         autoFocus={!inline}
@@ -1003,7 +1044,7 @@ export function IssueProperties({
           )}
           onClick={() => onUpdate({ blockedByIssueIds: [] })}
         >
-          No blockers
+          {t("issueProperties.noBlockers", { defaultValue: "No blockers" })}
         </button>
         {blockerOptions.map((candidate) => {
           const selected = blockedByIds.includes(candidate.id);
@@ -1034,14 +1075,14 @@ export function IssueProperties({
       onClick={onClick}
     >
       <Plus className="h-3 w-3" />
-      Add blocker
+      {t("issueProperties.addBlocker", { defaultValue: "Add blocker" })}
     </button>
   );
 
   return (
     <div className="space-y-4">
       <div className="space-y-1">
-        <PropertyRow label="Status">
+        <PropertyRow label={t("issueProperties.status", { defaultValue: "Status" })}>
           <StatusIcon
             status={issue.status}
             blockerAttention={issue.blockerAttention}
@@ -1050,7 +1091,7 @@ export function IssueProperties({
           />
         </PropertyRow>
 
-        <PropertyRow label="Priority">
+        <PropertyRow label={t("issueProperties.priority", { defaultValue: "Priority" })}>
           <PriorityIcon
             priority={issue.priority}
             onChange={(priority) => onUpdate({ priority })}
@@ -1060,7 +1101,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Labels"
+          label={t("issueProperties.labels", { defaultValue: "Labels" })}
           open={labelsOpen}
           onOpenChange={(open) => { setLabelsOpen(open); if (!open) setLabelSearch(""); }}
           triggerContent={labelsTrigger}
@@ -1073,7 +1114,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Assignee"
+          label={t("issueProperties.assignee", { defaultValue: "Assignee" })}
           open={assigneeOpen}
           onOpenChange={(open) => { setAssigneeOpen(open); if (!open) setAssigneeSearch(""); }}
           triggerContent={assigneeTrigger}
@@ -1093,7 +1134,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Project"
+          label={t("issueProperties.project", { defaultValue: "Project" })}
           open={projectOpen}
           onOpenChange={(open) => { setProjectOpen(open); if (!open) setProjectSearch(""); }}
           triggerContent={projectTrigger}
@@ -1114,7 +1155,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Parent"
+          label={t("issueProperties.parent", { defaultValue: "Parent" })}
           open={parentOpen}
           onOpenChange={(open) => {
             setParentOpen(open);
@@ -1130,7 +1171,7 @@ export function IssueProperties({
 
         {inline ? (
           <div>
-            <PropertyRow label="Blocked by">
+            <PropertyRow label={t("issueProperties.blockedBy", { defaultValue: "Blocked by" })}>
               {(issue.blockedBy ?? []).map((relation) => (
                 <IssueReferencePill key={relation.id} issue={relation} />
               ))}
@@ -1143,7 +1184,7 @@ export function IssueProperties({
             )}
           </div>
         ) : (
-          <PropertyRow label="Blocked by">
+          <PropertyRow label={t("issueProperties.blockedBy", { defaultValue: "Blocked by" })}>
             {(issue.blockedBy ?? []).map((relation) => (
               <IssueReferencePill key={relation.id} issue={relation} />
             ))}
@@ -1164,7 +1205,7 @@ export function IssueProperties({
           </PropertyRow>
         )}
 
-        <PropertyRow label="Blocking">
+        <PropertyRow label={t("issueProperties.blocking", { defaultValue: "Blocking" })}>
           {blockingIssues.length > 0 ? (
             <div className="flex flex-wrap gap-1">
               {blockingIssues.map((relation) => (
@@ -1174,7 +1215,7 @@ export function IssueProperties({
           ) : null}
         </PropertyRow>
 
-        <PropertyRow label="Sub-issues">
+        <PropertyRow label={t("issueProperties.subIssues", { defaultValue: "Sub-issues" })}>
           <div className="flex flex-wrap items-center gap-1.5">
             {childIssues.length > 0
               ? childIssues.map((child) => (
@@ -1188,14 +1229,14 @@ export function IssueProperties({
                 onClick={onAddSubIssue}
               >
                 <Plus className="h-3 w-3" />
-              Add sub-issue
+              {t("issueProperties.addSubIssue", { defaultValue: "Add sub-issue" })}
               </button>
             ) : null}
           </div>
         </PropertyRow>
 
         {relatedTasks.length > 0 ? (
-          <PropertyRow label="Related Tasks">
+          <PropertyRow label={t("issueProperties.relatedTasks", { defaultValue: "Related Tasks" })}>
             <div className="flex flex-wrap gap-1">
               {relatedTasks.map((related) => (
                 <IssueReferencePill key={related.id} issue={related} />
@@ -1206,7 +1247,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Reviewers"
+          label={t("issueProperties.reviewers", { defaultValue: "Reviewers" })}
           open={reviewersOpen}
           onOpenChange={(open) => { setReviewersOpen(open); if (!open) setReviewerSearch(""); }}
           triggerContent={reviewerTrigger}
@@ -1225,7 +1266,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Approvers"
+          label={t("issueProperties.approvers", { defaultValue: "Approvers" })}
           open={approversOpen}
           onOpenChange={(open) => { setApproversOpen(open); if (!open) setApproverSearch(""); }}
           triggerContent={approverTrigger}
@@ -1243,13 +1284,13 @@ export function IssueProperties({
         {nextRunnableExecutionStage === "approval" && approverValues.length > 0 ? runExecutionButton("approval") : null}
 
         {currentExecutionLabel && (
-          <PropertyRow label="Execution">
+          <PropertyRow label={t("issueProperties.execution", { defaultValue: "Execution" })}>
             <span className="text-sm">{currentExecutionLabel}</span>
           </PropertyRow>
         )}
 
         {issue.requestDepth > 0 && (
-          <PropertyRow label="Depth">
+          <PropertyRow label={t("issueProperties.depth", { defaultValue: "Depth" })}>
             <span className="text-sm font-mono">{issue.requestDepth}</span>
           </PropertyRow>
         )}
@@ -1260,7 +1301,7 @@ export function IssueProperties({
           <Separator />
           <div className="space-y-1">
             {liveWorkspaceService?.url && (
-              <PropertyRow label="Service">
+              <PropertyRow label={t("issueProperties.service", { defaultValue: "Service" })}>
                 <a
                   href={liveWorkspaceService.url}
                   target="_blank"
@@ -1273,29 +1314,29 @@ export function IssueProperties({
               </PropertyRow>
             )}
             {showWorkspaceDetailLink && issue.executionWorkspaceId && (
-              <PropertyRow label="Workspace">
+              <PropertyRow label={t("issueProperties.workspace", { defaultValue: "Workspace" })}>
                 <Link
                   to={`/execution-workspaces/${issue.executionWorkspaceId}`}
                   className="text-sm text-primary hover:underline inline-flex items-center gap-1"
                 >
-                  View workspace
+                  {t("issueProperties.viewWorkspace", { defaultValue: "View workspace" })}
                   <ExternalLink className="h-3 w-3" />
                 </Link>
               </PropertyRow>
             )}
             {workspaceFilterId && (
-              <PropertyRow label="Tasks">
+              <PropertyRow label={t("issueProperties.tasks", { defaultValue: "Tasks" })}>
                 <Link
                   to={issuesWorkspaceFilterHref(workspaceFilterId)}
                   className="text-sm text-primary hover:underline inline-flex items-center gap-1"
                 >
-                  View workspace tasks
+                  {t("issueProperties.viewWorkspaceTasks", { defaultValue: "View workspace tasks" })}
                   <ExternalLink className="h-3 w-3" />
                 </Link>
               </PropertyRow>
             )}
             {issue.currentExecutionWorkspace?.branchName && (
-              <PropertyRow label="Branch">
+              <PropertyRow label={t("issueProperties.branch", { defaultValue: "Branch" })}>
                 <TruncatedCopyable
                   value={issue.currentExecutionWorkspace.branchName}
                   icon={GitBranch}
@@ -1303,7 +1344,7 @@ export function IssueProperties({
               </PropertyRow>
             )}
             {issue.currentExecutionWorkspace?.cwd && (
-              <PropertyRow label="Folder">
+              <PropertyRow label={t("issueProperties.folder", { defaultValue: "Folder" })}>
                 <TruncatedCopyable
                   value={issue.currentExecutionWorkspace.cwd}
                   icon={FolderOpen}
@@ -1318,7 +1359,7 @@ export function IssueProperties({
 
       <div className="space-y-1">
         {(issue.createdByAgentId || issue.createdByUserId) && (
-          <PropertyRow label="Created by">
+          <PropertyRow label={t("issueProperties.createdBy", { defaultValue: "Created by" })}>
             {issue.createdByAgentId ? (
               <Link
                 to={`/agents/${issue.createdByAgentId}`}
@@ -1329,25 +1370,25 @@ export function IssueProperties({
             ) : (
               <>
                 <User className="h-3.5 w-3.5 text-muted-foreground" />
-                <span className="text-sm">{creatorUserLabel ?? "User"}</span>
+                <span className="text-sm">{creatorUserLabel ?? t("issueProperties.user", { defaultValue: "User" })}</span>
               </>
             )}
           </PropertyRow>
         )}
         {issue.startedAt && (
-          <PropertyRow label="Started">
+          <PropertyRow label={t("issueProperties.started", { defaultValue: "Started" })}>
             <span className="text-sm">{formatDate(issue.startedAt)}</span>
           </PropertyRow>
         )}
         {issue.completedAt && (
-          <PropertyRow label="Completed">
+          <PropertyRow label={t("issueProperties.completed", { defaultValue: "Completed" })}>
             <span className="text-sm">{formatDate(issue.completedAt)}</span>
           </PropertyRow>
         )}
-        <PropertyRow label="Created">
+        <PropertyRow label={t("issueProperties.created", { defaultValue: "Created" })}>
           <span className="text-sm">{formatDate(issue.createdAt)}</span>
         </PropertyRow>
-        <PropertyRow label="Updated">
+        <PropertyRow label={t("issueProperties.updated", { defaultValue: "Updated" })}>
           <span className="text-sm">{timeAgo(issue.updatedAt)}</span>
         </PropertyRow>
       </div>
