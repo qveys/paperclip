@@ -11,6 +11,19 @@ import enModals from "./locales/en/modals.json";
 import enPlugins from "./locales/en/plugins.json";
 import enProjects from "./locales/en/projects.json";
 import enSettings from "./locales/en/settings.json";
+import frAgents from "./locales/fr-FR/agents.json";
+import frAuth from "./locales/fr-FR/auth.json";
+import frCli from "./locales/fr-FR/cli.json";
+import frCommon from "./locales/fr-FR/common.json";
+import frCore from "./locales/fr-FR/core.json";
+import frDashboard from "./locales/fr-FR/dashboard.json";
+import frErrors from "./locales/fr-FR/errors.json";
+import frForms from "./locales/fr-FR/forms.json";
+import frIssues from "./locales/fr-FR/issues.json";
+import frModals from "./locales/fr-FR/modals.json";
+import frPlugins from "./locales/fr-FR/plugins.json";
+import frProjects from "./locales/fr-FR/projects.json";
+import frSettings from "./locales/fr-FR/settings.json";
 
 export const NAMESPACES = [
   "core",
@@ -30,7 +43,7 @@ export const NAMESPACES = [
 
 export type Namespace = (typeof NAMESPACES)[number];
 
-export const SUPPORTED_LANGUAGES = ["en"] as const;
+export const SUPPORTED_LANGUAGES = ["en", "fr-FR"] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
@@ -52,5 +65,20 @@ export const bundledResources: Record<
     common: enCommon,
     cli: enCli,
     projects: enProjects,
+  },
+  "fr-FR": {
+    core: frCore,
+    dashboard: frDashboard,
+    issues: frIssues,
+    agents: frAgents,
+    plugins: frPlugins,
+    settings: frSettings,
+    auth: frAuth,
+    errors: frErrors,
+    forms: frForms,
+    modals: frModals,
+    common: frCommon,
+    cli: frCli,
+    projects: frProjects,
   },
 };

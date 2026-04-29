@@ -1,0 +1,86 @@
+{
+  "joinRequests": {
+    "actions": {
+      "approve": "",
+      "reject": ""
+    },
+    "approvedToast": "",
+    "company": "",
+    "empty": "",
+    "filters": {
+      "requestType": "",
+      "status": ""
+    },
+    "inbox": "",
+    "inviteContext": "",
+    "inviteMetadataUnavailable": "",
+    "loadFailed": "",
+    "loading": "",
+    "permissionDenied": "",
+    "queueDescription": "",
+    "queueTitle": "",
+    "rejectedToast": "",
+    "requestDetails": "",
+    "selectCompany": "",
+    "sourceIp": "",
+    "status": {
+      "approved": "",
+      "pendingApproval": "",
+      "rejected": ""
+    },
+    "submittedAt": "",
+    "title": "",
+    "type": {
+      "agent": "",
+      "all": "",
+      "human": ""
+    },
+    "unknownAgent": "",
+    "unknownHuman": ""
+  },
+  "profile": {
+    "actions": {
+      "save": "Enregistrer le profil",
+      "saving": "Enregistrement…"
+    },
+    "avatar": {
+      "changePhoto": "Changer la photo",
+      "hintNoCompany": "Sélectionne une entreprise pour téléverser un avatar dans le stockage Paperclip.",
+      "hintWithCompany": "Clique sur l'avatar pour téléverser une nouvelle image.",
+      "remove": "Supprimer",
+      "storedIn": "Stocké dans le stockage de fichiers Paperclip pour {{companyName}}.",
+      "uploadPhoto": "Téléverser une photo"
+    },
+    "breadcrumbs": {
+      "instanceSettings": "Paramètres de l'instance",
+      "profile": "Profil"
+    },
+    "errors": {
+      "loadFailed": "Impossible de charger le profil.",
+      "removeAvatarFailed": "Impossible de supprimer l'avatar.",
+      "selectCompanyFirst": "Sélectionne une entreprise avant d'envoyer un avatar de profil.",
+      "updateFailed": "Impossible de mettre à jour le profil.",
+      "uploadAvatarFailed": "Impossible d'envoyer l'avatar."
+    },
+    "fields": {
+      "displayName": {
+        "helper": "Affiché dans le pied de la barre latérale et comme auteur des commentaires.",
+        "label": "Nom affiché",
+        "placeholder": "Board"
+      },
+      "email": {
+        "helper": "Ton adresse e-mail est gérée par ta session d'authentification et est en lecture seule ici.",
+        "label": "Adresse e-mail",
+        "noEmail": "Aucune adresse e-mail"
+      },
+      "language": {
+        "helper": "Enregistré uniquement sur ce navigateur — le changement prend effet immédiatement.",
+        "label": "Langue"
+      }
+    },
+    "loading": "Chargement du profil…",
+    "noEmail": "Aucune adresse e-mail",
+    "subtitle": "Contrôle l'apparence de ton compte dans la barre latérale et sur les autres surfaces du tableau.",
+    "title": "Profil"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "error": {
+    "forbidden": "Interdit",
+    "internal": "Erreur interne du serveur",
+    "notFound": "Introuvable",
+    "unauthorized": "Non autorisé",
+    "validation": "Erreur de validation"
+  },
+  "notFound": {
+    "breadcrumb": "",
+    "companyNotFound": "",
+    "goHome": "",
+    "noCompanyPrefixMatch": "",
+    "openDashboard": "",
+    "pageNotFound": "",
+    "pageTitle": "Page introuvable",
+    "requestedPath": "",
+    "routeMissing": ""
+  }
+}
