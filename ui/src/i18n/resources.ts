@@ -24,6 +24,19 @@ import frModals from "./locales/fr-FR/modals.json";
 import frPlugins from "./locales/fr-FR/plugins.json";
 import frProjects from "./locales/fr-FR/projects.json";
 import frSettings from "./locales/fr-FR/settings.json";
+import deAgents from "./locales/de-DE/agents.json";
+import deAuth from "./locales/de-DE/auth.json";
+import deCli from "./locales/de-DE/cli.json";
+import deCommon from "./locales/de-DE/common.json";
+import deCore from "./locales/de-DE/core.json";
+import deDashboard from "./locales/de-DE/dashboard.json";
+import deErrors from "./locales/de-DE/errors.json";
+import deForms from "./locales/de-DE/forms.json";
+import deIssues from "./locales/de-DE/issues.json";
+import deModals from "./locales/de-DE/modals.json";
+import dePlugins from "./locales/de-DE/plugins.json";
+import deProjects from "./locales/de-DE/projects.json";
+import deSettings from "./locales/de-DE/settings.json";
 
 export const NAMESPACES = [
   "core",
@@ -43,7 +56,7 @@ export const NAMESPACES = [
 
 export type Namespace = (typeof NAMESPACES)[number];
 
-export const SUPPORTED_LANGUAGES = ["en", "fr-FR"] as const;
+export const SUPPORTED_LANGUAGES = ["en", "fr-FR", "de-DE"] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
@@ -80,5 +93,20 @@ export const bundledResources: Record<
     common: frCommon,
     cli: frCli,
     projects: frProjects,
+  },
+  "de-DE": {
+    core: deCore,
+    dashboard: deDashboard,
+    issues: deIssues,
+    agents: deAgents,
+    plugins: dePlugins,
+    settings: deSettings,
+    auth: deAuth,
+    errors: deErrors,
+    forms: deForms,
+    modals: deModals,
+    common: deCommon,
+    cli: deCli,
+    projects: deProjects,
   },
 };

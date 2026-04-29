@@ -45,10 +45,10 @@ jobs:
       - name: Extract i18n keys
         run: pnpm --filter @paperclipai/ui exec i18next-cli extract --config i18next.config.ts
 
-      - name: Ensure extracted EN and fr-FR locales are committed
+      - name: Ensure extracted locales are committed
         run: |
-          if ! git diff --exit-code -- ui/src/i18n/locales/en/ ui/src/i18n/locales/fr-FR/ \
-            || [ -n "$(git ls-files --others --exclude-standard -- ui/src/i18n/locales/en/ ui/src/i18n/locales/fr-FR/)" ]; then
-            echo "::error::EN/fr-FR locale files changed after extraction. Run 'pnpm --filter @paperclipai/ui exec i18next-cli extract --config i18next.config.ts' locally and commit the updates."
+          if ! git diff --exit-code -- ui/src/i18n/locales/en/ ui/src/i18n/locales/fr-FR/ ui/src/i18n/locales/de-DE/ \
+            || [ -n "$(git ls-files --others --exclude-standard -- ui/src/i18n/locales/en/ ui/src/i18n/locales/fr-FR/ ui/src/i18n/locales/de-DE/)" ]; then
+            echo "::error::Locale files changed after extraction. Run 'pnpm --filter @paperclipai/ui exec i18next-cli extract --config i18next.config.ts' locally and commit the updates."
             exit 1
           fi
