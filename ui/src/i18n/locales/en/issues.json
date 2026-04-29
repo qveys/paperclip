@@ -1,0 +1,409 @@
+{
+  "approvals": {
+    "addCommentPlaceholder": "",
+    "approve": "Approve",
+    "approving": "Approving…",
+    "backToApprovals": "",
+    "boardCommenter": "",
+    "breadcrumb": "",
+    "budgetLine": "",
+    "budgetOverrideHint": "",
+    "card": {
+      "createdTime": "Created {{time}}",
+      "decisionNoteLabel": "Decision note:",
+      "requestedBy": "Requested by"
+    },
+    "comments_one": "",
+    "comments_other": "",
+    "confirmed": "",
+    "decisionNote": "",
+    "deleteDisapprovedAgent": "",
+    "deleteDisapprovedConfirm": "",
+    "errors": {
+      "approveFailed": "",
+      "approveFailedShort": "",
+      "commentFailed": "",
+      "deleteFailed": "",
+      "rejectFailed": "",
+      "rejectFailedShort": "",
+      "resubmitFailed": "",
+      "revisionRequestFailed": ""
+    },
+    "fallbackLabel": "Approval",
+    "fields": {
+      "adapter": "",
+      "capabilities": "",
+      "icon": "",
+      "metric": "",
+      "name": "",
+      "onApproval": "",
+      "proposedComment": "",
+      "recommendedAction": "",
+      "risks": "",
+      "role": "",
+      "scope": "",
+      "summary": "",
+      "title": "",
+      "window": ""
+    },
+    "linkedIssues": "",
+    "linkedIssuesHint": "",
+    "markResubmitted": "",
+    "noApprovals": "",
+    "noPending": "",
+    "notFound": "",
+    "openHiredAgent": "",
+    "postComment": "",
+    "posting": "",
+    "reject": "Reject",
+    "rejecting": "Rejecting…",
+    "requestedBy": "",
+    "requestingAgentNotified": "",
+    "requestRevision": "",
+    "reviewLinkedIssue": "",
+    "reviewLinkedIssues": "",
+    "seeFullRequest": "",
+    "selectCompanyFirst": "",
+    "status": {
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "revisionRequested": "Revision requested"
+    },
+    "tabAll": "",
+    "tabPending": "",
+    "types": {
+      "approveCeoStrategy": "CEO Strategy",
+      "budgetOverrideRequired": "Budget Override",
+      "hireAgent": "Hire Agent",
+      "requestBoardApproval": "Board Approval"
+    },
+    "viewDetails": ""
+  },
+  "goals": {
+    "breadcrumb": "",
+    "detail": {
+      "descriptionPlaceholder": "",
+      "errors": {
+        "noCompanySelected": ""
+      },
+      "fallbackTitle": "",
+      "noLinkedProjects": "",
+      "noSubGoals": "",
+      "projectsCount_one": "",
+      "projectsCount_other": "",
+      "showProperties": "",
+      "subGoalButton": "",
+      "subGoalsCount_one": "",
+      "subGoalsCount_other": ""
+    },
+    "empty": {
+      "action": "",
+      "message": ""
+    },
+    "newGoal": "",
+    "properties": {
+      "created": "Created",
+      "level": "Level",
+      "levelValues": {
+        "agent": "Agent",
+        "company": "Company",
+        "task": "Task",
+        "team": "Team"
+      },
+      "none": "None",
+      "owner": "Owner",
+      "parentGoal": "Parent goal",
+      "status": "Status",
+      "statusValues": {
+        "achieved": "Achieved",
+        "active": "Active",
+        "cancelled": "Cancelled",
+        "planned": "Planned"
+      },
+      "updated": "Updated"
+    },
+    "selectCompany": "",
+    "tree": {
+      "empty": ""
+    }
+  },
+  "interactionCard": {
+    "acceptDrafts": "Accept drafts",
+    "accepting": "Accepting...",
+    "acceptSelectedDrafts": "Accept selected drafts",
+    "allDraftsSelected": "All {{total}} draft {{label}} selected",
+    "answer": "Answer",
+    "askUserQuestions": "Ask user questions",
+    "cancelDecline": "Cancel decline",
+    "confirm": "Confirm",
+    "confirmationRequested": "Confirmation requested",
+    "confirming": "Confirming...",
+    "createdAll": "Created all {{createdCount}} draft {{createdLabel}}.",
+    "createdAndSkipped": "Created {{createdCount}} draft {{createdLabel}} and skipped {{skippedCount}} during review.",
+    "createdAt": "Created {{date}}",
+    "decline": "Decline",
+    "declineReasonPlaceholder": "Optional: tell the agent what you'd change.",
+    "declineReasonRequired": "A decline reason is required.",
+    "declineReasonRevisePlan": "Optional: what would you like revised?",
+    "defaultParent": "Default parent",
+    "issuePlural": "issues",
+    "issueSingular": "issue",
+    "manyDraftIssues": "{{count}} draft issues",
+    "manyQuestions_one": "{{count}} questions",
+    "manyQuestions_other": "{{count}} questions",
+    "noAnswerRecorded": "No answer recorded.",
+    "noReasonProvided": "No reason provided.",
+    "oneDraftIssue": "1 draft issue",
+    "oneQuestion": "1 question",
+    "optional": "Optional",
+    "pickMany": "Pick many",
+    "pickOne": "Pick",
+    "proposedBy": "proposed by {{name}}",
+    "questionN": "Question {{number}}",
+    "questionsForOperator": "Questions for the operator",
+    "reject": "Reject",
+    "rejectionReason": "Rejection reason",
+    "rejectPlaceholder": "Add a short reason for rejecting this suggestion",
+    "required": "Required",
+    "resetSelection": "Reset selection",
+    "resolutionSummary": "Resolution summary",
+    "resolvedBy": "Resolved by",
+    "saveRejection": "Save rejection",
+    "saving": "Saving...",
+    "someDraftsSelected": "{{selected}} of {{total}} draft {{label}} selected",
+    "submitAfterForm": "Submit once after you finish the full form.",
+    "submitAnswers": "Submit answers",
+    "submittedSummary": "Submitted summary",
+    "submitting": "Submitting...",
+    "suggestedTaskTree": "Suggested task tree",
+    "tryAgain": "Try again",
+    "wakesAssignee": "Wakes assignee",
+    "wakesOnConfirm": "Wakes on confirm",
+    "willBeSkipped_one": "{{count}} will be skipped if you accept this interaction.",
+    "willBeSkipped_other": "{{count}} will be skipped if you accept this interaction."
+  },
+  "issueBlockedNotice": {
+    "blockerLabel": {
+      "plural": "the linked issues",
+      "single": "the linked issue"
+    },
+    "body": {
+      "blockedBy": "Work on this issue is blocked by {{blockerLabel}} until {{completionLabel}} complete. Comments still wake the assignee for questions or triage.",
+      "blockedUntilTodo": "Work on this issue is blocked until it is moved back to todo. Comments still wake the assignee for questions or triage.",
+      "stalledPlural": "Work on this issue is blocked by {{blockerLabel}}, but the chain is stalled in review without a clear next step. Resolve the stalled reviews below or remove them as blockers.",
+      "stalledSingle": "Work on this issue is blocked by {{blockerLabel}}, but the chain is stalled in review without a clear next step. Resolve the stalled review below or remove it as a blocker."
+    },
+    "completion": {
+      "plural": "they are",
+      "single": "it is"
+    },
+    "labels": {
+      "stalledInReview": "Stalled in review",
+      "ultimatelyWaitingOn": "Ultimately waiting on"
+    }
+  },
+  "issueColumns": {
+    "actions": {
+      "columns": "Columns",
+      "columnsTitle": "Columns",
+      "resetDefaults": "Reset defaults",
+      "resetDefaultsHint": "status, id, updated"
+    },
+    "assignee": {
+      "unassigned": "Unassigned",
+      "userFallback": "User"
+    },
+    "descriptions": {
+      "assignee": "Assigned agent or board user.",
+      "id": "Ticket identifier like PAP-1009.",
+      "labels": "Issue labels and tags.",
+      "parent": "Parent issue identifier and title.",
+      "project": "Linked project pill with its color.",
+      "status": "Issue state chip on the left edge.",
+      "updated": "Latest visible activity time.",
+      "workspace": "Execution or project workspace used for the issue."
+    },
+    "labels": {
+      "assignee": "Assignee",
+      "id": "ID",
+      "parent": "Parent issue",
+      "project": "Project",
+      "status": "Status",
+      "tags": "Tags",
+      "updated": "Last updated",
+      "workspace": "Workspace"
+    },
+    "live": "Live",
+    "menu": {
+      "desktopIssueRows": "Desktop issue rows"
+    },
+    "parent": {
+      "subIssue": "Sub-issue"
+    },
+    "project": {
+      "none": "No project"
+    },
+    "workspace": {
+      "filterByWorkspace": "Filter by workspace"
+    }
+  },
+  "issueDocumentsSection": {
+    "actions": {
+      "cancel": "Cancel",
+      "collapseDocument": "Collapse {{key}} document",
+      "copied": "Copied",
+      "copyDocument": "Copy document",
+      "createDocument": "Create document",
+      "delete": "Delete",
+      "deleteDocument": "Delete document",
+      "documentActions": "Document actions",
+      "downloadDocument": "Download document",
+      "editDocument": "Edit document",
+      "expandDocument": "Expand {{key}} document",
+      "hideRemote": "Hide remote",
+      "keepMyDraft": "Keep my draft",
+      "new": "New",
+      "newDocument": "New document",
+      "overwriteRemote": "Overwrite remote",
+      "reloadRemote": "Reload remote",
+      "restoreRevision": "Restore this revision",
+      "returnToLatest": "Return to latest",
+      "reviewRemote": "Review remote",
+      "viewDiff": "View diff"
+    },
+    "confirmDelete": {
+      "message": "Delete this document? This cannot be undone."
+    },
+    "conflict": {
+      "help": "This document changed while you were editing. Your local draft is preserved and autosave is paused.",
+      "remoteRevision": "Remote revision {{revision}}"
+    },
+    "errors": {
+      "bodyRequired": "Document body cannot be empty",
+      "copyFailed": "Could not copy document",
+      "couldNotSave": "Could not save",
+      "deleteFailed": "Failed to delete document",
+      "keyBodyRequired": "Document key and body are required",
+      "keyFormatInvalid": "Document key must start with a letter or number and use only lowercase letters, numbers, -, or _.",
+      "remoteReloadFailed": "Document changed remotely and the latest version could not be loaded",
+      "restoreFailed": "Failed to restore document revision",
+      "saveFailed": "Failed to save document",
+      "saveOrCancelBeforeRevision": "Save or cancel your local changes before viewing an older revision."
+    },
+    "heading": {
+      "documents": "Documents"
+    },
+    "labels": {
+      "plan": "PLAN"
+    },
+    "placeholders": {
+      "documentKey": "Document key",
+      "markdownBody": "Markdown body",
+      "optionalTitle": "Optional title"
+    },
+    "revisions": {
+      "current": "Current",
+      "historicalPreviewHelp": "This is a historical preview. Restoring it creates a new latest revision and keeps history append-only.",
+      "history": "Revision history",
+      "loading": "Loading revisions...",
+      "noneYet": "No revisions yet",
+      "short": "rev {{revision}}",
+      "updatedAt": "updated {{time}}",
+      "viewing": "Viewing revision {{revision}}"
+    },
+    "status": {
+      "autosaving": "Autosaving...",
+      "deleting": "Deleting...",
+      "outOfDate": "Out of date",
+      "restoring": "Restoring...",
+      "saved": "Saved",
+      "saving": "Saving...",
+      "viewingHistoricalRevision": "Viewing historical revision"
+    },
+    "validation": {
+      "keyFormat": "Use lowercase letters, numbers, -, or _, and start with a letter or number."
+    }
+  },
+  "issueFiltersPopover": {
+    "actions": {
+      "clear": "Clear"
+    },
+    "assignee": {
+      "me": "Me",
+      "noAssignee": "No assignee"
+    },
+    "button": {
+      "filter": "Filter",
+      "filtersCount_one": "Filters: {{count}}",
+      "filtersCount_other": "Filters: {{count}}"
+    },
+    "creator": {
+      "noMatch": "No creators match.",
+      "remove": "Remove creator {{name}}",
+      "searchPlaceholder": "Search creators..."
+    },
+    "heading": {
+      "filters": "Filters"
+    },
+    "sections": {
+      "assignee": "Assignee",
+      "creator": "Creator",
+      "labels": "Labels",
+      "priority": "Priority",
+      "project": "Project",
+      "quickFilters": "Quick filters",
+      "status": "Status",
+      "visibility": "Visibility",
+      "workspace": "Workspace"
+    },
+    "visibility": {
+      "hideRoutineRuns": "Hide routine runs",
+      "liveRunsOnly": "Live runs only"
+    }
+  },
+  "issueLinkQuicklook": {
+    "unableToLoadPreview": "Unable to load issue preview."
+  },
+  "issueRow": {
+    "dismissFromInbox": "Dismiss from inbox",
+    "markAsRead": "Mark as read"
+  },
+  "pageTitle": "Issues",
+  "runLedger": {
+    "ariaLabel": "Issue run ledger",
+    "childSummaryActive": "{{active}} active, {{done}} done, {{cancelled}} cancelled",
+    "childSummaryTerminal": "all {{total}} terminal ({{done}} done, {{cancelled}} cancelled)",
+    "childWork": "Child work",
+    "continueMonitoring": "Continue monitoring",
+    "dismissedReason": "Dismissed from issue run ledger",
+    "elapsed": "Elapsed",
+    "exhausted": "Exhausted",
+    "extendedPeriod": "an extended period",
+    "historicalRunsWillAppear": "Historical runs without liveness metadata will appear here once linked to this issue.",
+    "lastUsefulAction": "Last useful action",
+    "latestRun": "Latest run",
+    "latestRunSilentFor": "Latest active run has been silent for",
+    "live": "live",
+    "markFalsePositive": "Mark false positive",
+    "moreChildren_one": "+{{count}} more",
+    "moreChildren_other": "+{{count}} more",
+    "nextAction": "Next action:",
+    "noRunsLinked": "No runs linked yet.",
+    "olderRunsNotShown_one": "{{count}} older runs not shown",
+    "olderRunsNotShown_other": "{{count}} older runs not shown",
+    "outputSilenceWarning": "Output silence watchdog warning",
+    "recoveryContext": "for recovery context.",
+    "retryOf": "Retry of",
+    "reviewIssue": "Review",
+    "snooze1h": "Snooze 1h",
+    "snoozedReason": "Snoozed from issue run ledger",
+    "staleRunAlert": "Stale-run watchdog alert",
+    "stop": "Stop",
+    "title": "Run ledger",
+    "unknown": "unknown",
+    "waitingFirstRun": "Waiting for the first run record.",
+    "watchdogDecisionNotRecorded": "Watchdog decision not recorded"
+  },
+  "selectCompany": "Select a company to view issues."
+}

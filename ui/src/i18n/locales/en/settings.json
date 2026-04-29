@@ -1,0 +1,154 @@
+{
+  "experimental.description": "Opt into features that are still being evaluated before they become default behavior.",
+  "experimental.isolatedAria": "Toggle isolated workspaces experimental setting",
+  "experimental.isolatedDescription": "Show execution workspace controls in project configuration and allow isolated workspace behavior for new and existing issue runs.",
+  "experimental.isolatedTitle": "Enable Isolated Workspaces",
+  "experimental.loadFailed": "Failed to load experimental settings.",
+  "experimental.loading": "Loading experimental settings...",
+  "experimental.restartAria": "Toggle guarded dev-server auto-restart",
+  "experimental.restartDescription": "In pnpm dev:once, wait for all queued and running local agent runs to finish, then restart the server automatically when backend changes or migrations make the current boot stale.",
+  "experimental.restartTitle": "Auto-Restart Dev Server When Idle",
+  "experimental.updateFailed": "Failed to update experimental settings.",
+  "general.backupDescription": "Configure how long to keep automatic database backups at each tier. Daily backups are kept in full, then thinned to one per week and one per month. Backups are compressed with gzip.",
+  "general.backupTitle": "Backup retention",
+  "general.censorAria": "Toggle username log censoring",
+  "general.censorDescription": "Hide the username segment in home-directory paths and similar operator-visible log output. Standalone username mentions outside of paths are not yet masked in the live transcript view. This is off by default.",
+  "general.censorTitle": "Censor username in logs",
+  "general.daily": "Daily",
+  "general.days": "{{count}} days",
+  "general.defaultLanguageDescription": "Set the fallback language used when a signed-in user has not chosen a personal language yet.",
+  "general.defaultLanguageTitle": "Default language",
+  "general.description": "Configure instance-wide defaults that affect how operator-visible logs are displayed.",
+  "general.feedbackAllow": "Always allow",
+  "general.feedbackAllowDescription": "Share voted AI outputs automatically.",
+  "general.feedbackDeny": "Don't allow",
+  "general.feedbackDenyDescription": "Keep voted AI outputs local only.",
+  "general.feedbackDescription": "Control whether thumbs up and thumbs down votes can send the voted AI output to Paperclip Labs. Votes are always saved locally.",
+  "general.feedbackDevHint": "To retest the first-use prompt in local dev, remove the feedbackDataSharingPreference key from the instance_settings.general JSON row for this instance, or set it back to \"prompt\". Unset and \"prompt\" both mean no default has been chosen yet.",
+  "general.feedbackPromptSaved": "No default is saved yet. The next thumbs up or thumbs down choice will ask once and then save the answer here.",
+  "general.feedbackTitle": "AI feedback sharing",
+  "general.loadFailed": "Failed to load general settings.",
+  "general.loading": "Loading general settings...",
+  "general.monthly": "Monthly",
+  "general.months": "{{count}} months",
+  "general.oneMonth": "1 month",
+  "general.oneWeek": "1 week",
+  "general.personalLanguageDescription": "Choose the language used for this account. In local trusted mode, the choice is saved in this browser only.",
+  "general.personalLanguageTitle": "Personal language",
+  "general.shortcutsAria": "Toggle keyboard shortcuts",
+  "general.shortcutsDescription": "Enable app keyboard shortcuts, including inbox navigation and global shortcuts like creating issues or toggling panels. This is off by default.",
+  "general.shortcutsTitle": "Keyboard shortcuts",
+  "general.signOutDescription": "Sign out of this Paperclip instance. You will be redirected to the login page.",
+  "general.signOutFailed": "Failed to sign out.",
+  "general.termsLink": "Read our terms of service",
+  "general.updateFailed": "Failed to update general settings.",
+  "general.weekly": "Weekly",
+  "general.weeks": "{{count}} weeks",
+  "heartbeats.active": "active",
+  "heartbeats.agentPlural": "agents",
+  "heartbeats.agentSingular": "agent",
+  "heartbeats.companyPlural": "companies",
+  "heartbeats.companySingular": "company",
+  "heartbeats.description": "Agents with a timer heartbeat enabled across all of your companies.",
+  "heartbeats.disableAll": "Disable All",
+  "heartbeats.disableAllFailed": "Failed to disable all heartbeats.",
+  "heartbeats.disableConfirm": "Disable timer heartbeats for all {{count}} enabled {{noun}}?",
+  "heartbeats.disabled": "disabled",
+  "heartbeats.disableManyFailed": "Failed to disable {{failed}} of {{total}} timer heartbeats. First error: {{detail}}",
+  "heartbeats.disableOneFailed": "Failed to disable 1 timer heartbeat: {{detail}}",
+  "heartbeats.disableTimer": "Disable Timer Heartbeat",
+  "heartbeats.disabling": "Disabling...",
+  "heartbeats.empty": "No scheduler heartbeats match the current criteria.",
+  "heartbeats.enableTimer": "Enable Timer Heartbeat",
+  "heartbeats.fullAgentConfig": "Full agent config",
+  "heartbeats.loadFailed": "Failed to load scheduler heartbeats.",
+  "heartbeats.loading": "Loading scheduler heartbeats...",
+  "heartbeats.never": "never",
+  "heartbeats.off": "Off",
+  "heartbeats.on": "On",
+  "heartbeats.title": "Scheduler Heartbeats",
+  "heartbeats.updateFailed": "Failed to update heartbeat.",
+  "joinRequests": {
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject"
+    },
+    "approvedToast": "Join request approved",
+    "company": "Company",
+    "empty": "No join requests match the current filters.",
+    "filters": {
+      "requestType": "Request type",
+      "status": "Status"
+    },
+    "inbox": "Inbox",
+    "inviteContext": "Invite context",
+    "inviteMetadataUnavailable": "Invite metadata unavailable",
+    "loadFailed": "Failed to load join requests.",
+    "loading": "Loading join requests...",
+    "permissionDenied": "You do not have permission to review join requests for this company.",
+    "queueDescription": "Review human and agent join requests outside the mixed inbox feed. This queue uses the same approval mutations as the inline inbox cards.",
+    "queueTitle": "Join Request Queue",
+    "rejectedToast": "Join request rejected",
+    "requestDetails": "Request details",
+    "selectCompany": "Select a company to review join requests.",
+    "sourceIp": "Source IP",
+    "status": {
+      "approved": "Approved",
+      "pendingApproval": "Pending approval",
+      "rejected": "Rejected"
+    },
+    "submittedAt": "Submitted at",
+    "title": "Join Requests",
+    "type": {
+      "agent": "Agent",
+      "all": "All",
+      "human": "Human"
+    },
+    "unknownAgent": "Unknown agent requester",
+    "unknownHuman": "Unknown human requester"
+  },
+  "profile": {
+    "actions": {
+      "save": "Save profile",
+      "saving": "Saving..."
+    },
+    "avatar": {
+      "changePhoto": "Change photo",
+      "hintNoCompany": "Select a company to upload and store your avatar.",
+      "hintWithCompany": "Profile photos are uploaded with your selected company context.",
+      "remove": "Remove photo",
+      "storedIn": "Stored in {{companyName}} assets.",
+      "uploadPhoto": "Upload photo"
+    },
+    "breadcrumbs": {
+      "instanceSettings": "Instance settings",
+      "profile": "Profile"
+    },
+    "errors": {
+      "loadFailed": "Failed to load profile settings.",
+      "removeAvatarFailed": "Failed to remove avatar.",
+      "selectCompanyFirst": "Select a company before uploading an avatar.",
+      "updateFailed": "Failed to update profile.",
+      "uploadAvatarFailed": "Failed to upload avatar."
+    },
+    "fields": {
+      "displayName": {
+        "helper": "This name appears in approvals, comments, and activity feeds.",
+        "label": "Display name",
+        "placeholder": "Board"
+      },
+      "email": {
+        "helper": "Email is managed by your account credentials.",
+        "label": "Email"
+      },
+      "language": {
+        "helper": "Choose your preferred interface language.",
+        "label": "Language"
+      }
+    },
+    "loading": "Loading profile settings...",
+    "noEmail": "No email on file",
+    "subtitle": "Manage your profile, avatar, and language preferences.",
+    "title": "Profile settings"
+  }
+}

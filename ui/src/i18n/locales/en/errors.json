@@ -1,0 +1,12 @@
+{
+  "notFound": {
+    "breadcrumb": "Not Found",
+    "companyNotFound": "Company not found",
+    "goHome": "Go home",
+    "noCompanyPrefixMatch": "No company matches prefix \"{{prefix}}\".",
+    "openDashboard": "Open dashboard",
+    "pageNotFound": "Page not found",
+    "requestedPath": "Requested path:",
+    "routeMissing": "This route does not exist."
+  }
+}
