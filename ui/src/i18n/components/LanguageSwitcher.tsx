@@ -7,6 +7,7 @@ const LOCALE_KEY = "paperclip.locale";
 const LANGUAGE_LABELS: Record<SupportedLanguage, { flag: string; native: string }> = {
   en: { flag: "🇬🇧", native: "English" },
   "fr-FR": { flag: "🇫🇷", native: "Français" },
+  "de-DE": { flag: "🇩🇪", native: "Deutsch" },
 };
 
 function readPersistedLng(): string | null {
