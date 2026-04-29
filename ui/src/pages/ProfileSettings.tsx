@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LanguageSwitcher } from "@/i18n/components/LanguageSwitcher";
 
 function deriveInitials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -267,6 +268,20 @@ export function ProfileSettings() {
             </Button>
           </div>
         </form>
+
+        {/*
+         * Language sits outside the profile <form> on purpose: LanguageSwitcher
+         * persists the choice to localStorage and applies it immediately, so
+         * grouping it with form fields that only commit on "Save profile"
+         * would mix two different save semantics.
+         */}
+        <div className="mt-6 space-y-2 border-t pt-6">
+          <Label htmlFor="profile-language">Language</Label>
+          <LanguageSwitcher id="profile-language" />
+          <p className="text-xs text-muted-foreground">
+            Saved on this browser and device.
+          </p>
+        </div>
       </section>
     </div>
   );
