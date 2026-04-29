@@ -325,8 +325,10 @@ export function FailedRunInboxRow({
                   </span>
                   {issue.title}
                 </>
+              ) : linkedAgentName ? (
+                t("failedRunWithAgent", { agent: linkedAgentName })
               ) : (
-                <>{t("failedRun")}{linkedAgentName ? ` — ${linkedAgentName}` : ""}</>
+                t("failedRun")
               )}
             </span>
             <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
