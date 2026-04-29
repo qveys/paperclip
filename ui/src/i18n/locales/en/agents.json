@@ -77,12 +77,12 @@
   "common": {
     "cancel": "Cancel"
   },
-  "count": "{count} agent{suffix}",
+  "count": "{{count}} agent{{suffix}}",
   "empty": "Create your first agent to get started.",
   "filters": "Filters",
   "listView": "List view",
   "live": "Live",
-  "liveWithCount": "Live ({count})",
+  "liveWithCount": "Live ({{count}})",
   "newAgent": "New Agent",
   "noHeartbeat": "—",
   "noMatch": "No agents match the selected filter.",

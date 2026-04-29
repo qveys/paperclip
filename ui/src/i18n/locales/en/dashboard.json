@@ -1,5 +1,5 @@
 {
-  "activeBudgetIncidents": "{count} active budget incident{suffix}",
+  "activeBudgetIncidents": "{{count}} active budget incident{{suffix}}",
   "activity": {
     "allTypes": "",
     "filterByType": "",
@@ -10,7 +10,7 @@
     "noIssues": "",
     "noRuns": ""
   },
-  "agentMetricDescription": "{running} running, {paused} paused, {errors} errors",
+  "agentMetricDescription": "{{running}} running, {{paused}} paused, {{errors}} errors",
   "agentsEnabled": "Agents Enabled",
   "awaitingBoardReview": "Awaiting board review",
   "budgetIncidentCard": {
@@ -23,7 +23,7 @@
     "raiseBudgetResume": "",
     "scopePausedMessage": ""
   },
-  "budgetIncidentDetails": "{agents} agents paused · {projects} projects paused · {approvals} pending budget approvals",
+  "budgetIncidentDetails": "{{agents}} agents paused · {{projects}} projects paused · {{approvals}} pending budget approvals",
   "budgetPolicyCard": {
     "budget": "",
     "budgetPlaceholder": "",
@@ -201,7 +201,7 @@
     "title": ""
   },
   "monthSpend": "Month Spend",
-  "monthSpendBudget": "{percent}% of {budget} budget",
+  "monthSpendBudget": "{{percent}}% of {{budget}} budget",
   "nav": {
     "activity": "",
     "costs": "",
@@ -210,14 +210,14 @@
   "noAgents": "You have no agents.",
   "noTasksYet": "No tasks yet.",
   "openBudgets": "Open budgets",
-  "pendingApprovalDescription": "{count} budget overrides awaiting board review",
+  "pendingApprovalDescription": "{{count}} budget overrides awaiting board review",
   "pendingApprovals": "Pending Approvals",
   "recentActivity": "Recent Activity",
   "recentTasks": "Recent Tasks",
   "runActivity": "Run Activity",
   "selectCompany": "Create or select a company to view the dashboard.",
   "successRate": "Success Rate",
-  "taskMetricDescription": "{open} open, {blocked} blocked",
+  "taskMetricDescription": "{{open}} open, {{blocked}} blocked",
   "tasksInProgress": "Tasks In Progress",
   "unlimitedBudget": "Unlimited budget",
   "welcome": "Welcome to Paperclip. Set up your first company and agent to get started."

@@ -1,3 +1,5 @@
+import type { Resource, ResourceLanguage } from "i18next";
+
 import enAgents from "./locales/en/agents.json";
 import enAuth from "./locales/en/auth.json";
 import enCli from "./locales/en/cli.json";
@@ -34,10 +36,9 @@ export const SUPPORTED_LANGUAGES = ["en"] as const;
 
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 
-export const bundledResources: Record<
-  SupportedLanguage,
-  Record<Namespace, unknown>
-> = {
+type LanguageCatalog = Record<Namespace, ResourceLanguage>;
+
+export const bundledResources = {
   en: {
     core: enCore,
     dashboard: enDashboard,
@@ -53,4 +54,4 @@ export const bundledResources: Record<
     cli: enCli,
     projects: enProjects,
   },
-};
+} as const satisfies Record<SupportedLanguage, LanguageCatalog> & Resource;
