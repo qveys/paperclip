@@ -226,16 +226,19 @@ export function SidebarAccountMenu({
                   setOpen(false);
                 }}
               />
-              <div className="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left">
+              <label
+                htmlFor="sidebar-language"
+                className="flex w-full cursor-pointer items-start gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-accent/60"
+              >
                 <span className="mt-0.5 rounded-lg border border-border bg-background/70 p-2 text-muted-foreground">
                   <Globe className="size-4" />
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-medium text-foreground">Language</span>
-                  <span className="block text-xs text-muted-foreground">Affects only your account.</span>
+                  <span className="block text-xs text-muted-foreground">Saved on this browser and device.</span>
                 </span>
-                <LanguageSwitcher />
-              </div>
+                <LanguageSwitcher id="sidebar-language" />
+              </label>
               {deploymentMode === "authenticated" ? (
                 <button
                   type="button"

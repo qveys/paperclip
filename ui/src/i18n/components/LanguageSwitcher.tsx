@@ -9,7 +9,16 @@ const LANGUAGE_LABELS: Record<SupportedLanguage, { flag: string; native: string 
   en: { flag: "🇬🇧", native: "English" },
 };
 
-export function LanguageSwitcher(): ReactElement {
+export interface LanguageSwitcherProps {
+  /**
+   * Optional id forwarded to the underlying <select>. Lets a sibling
+   * <Label htmlFor=...> programmatically associate with the control so
+   * clicking the label focuses it.
+   */
+  id?: string;
+}
+
+export function LanguageSwitcher({ id }: LanguageSwitcherProps = {}): ReactElement {
   const { t, i18n } = useTranslation();
   // i18n.resolvedLanguage is already validated against supportedLngs by the
   // LanguageDetector (which reads paperclip.locale from localStorage). Reading
@@ -44,6 +53,7 @@ export function LanguageSwitcher(): ReactElement {
 
   return (
     <select
+      id={id}
       aria-label={t("core:language", { defaultValue: "Language" })}
       value={current}
       onChange={onChange}

@@ -261,14 +261,6 @@ export function ProfileSettings() {
             </p>
           </div>
 
-          <div className="space-y-2 md:col-span-2">
-            <Label>Language</Label>
-            <LanguageSwitcher />
-            <p className="text-xs text-muted-foreground">
-              Affects only your account.
-            </p>
-          </div>
-
           <div className="md:col-span-2 flex justify-end">
             <Button type="submit" disabled={isSavingProfile || !name.trim()}>
               {updateMutation.isPending ? <LoaderCircle className="size-4 animate-spin" /> : <Save className="size-4" />}
@@ -276,6 +268,20 @@ export function ProfileSettings() {
             </Button>
           </div>
         </form>
+
+        {/*
+         * Language sits outside the profile <form> on purpose: LanguageSwitcher
+         * persists the choice to localStorage and applies it immediately, so
+         * grouping it with form fields that only commit on "Save profile"
+         * would mix two different save semantics.
+         */}
+        <div className="mt-6 space-y-2 border-t pt-6">
+          <Label htmlFor="profile-language">Language</Label>
+          <LanguageSwitcher id="profile-language" />
+          <p className="text-xs text-muted-foreground">
+            Saved on this browser and device.
+          </p>
+        </div>
       </section>
     </div>
   );
