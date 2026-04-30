@@ -28,7 +28,7 @@
   "invocationSource": "Invocation source (timer | assignment | on_demand | automation)",
   "localInstanceId": "Local instance id (default: default)",
   "onboardDescription": "Interactive first-run setup wizard",
-  "openApprovalUrl": "Open this URL in your browser to approve CLI access:\n{url}",
+  "openApprovalUrl": "Open this URL in your browser to approve CLI access:\n{{url}}",
   "outputRawJson": "Output raw JSON where applicable",
   "pathToConfig": "Path to config file",
   "pathToContextFile": "Path to CLI context file",

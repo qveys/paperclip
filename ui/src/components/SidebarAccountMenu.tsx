@@ -232,7 +232,7 @@ export function SidebarAccountMenu({
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-medium text-foreground">Language</span>
-                  <span className="block text-xs text-muted-foreground">Affects only your account.</span>
+                  <span className="block text-xs text-muted-foreground">Saved on this browser and device.</span>
                 </span>
                 <LanguageSwitcher />
               </div>

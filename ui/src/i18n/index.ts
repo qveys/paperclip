@@ -67,9 +67,9 @@ i18n
     },
   });
 
-if (typeof window !== "undefined") {
-  // Debug aid — exposed in dev so we can inspect language state from the
-  // browser console. Safe to leave in: it's just a reference to the singleton.
+if (isDev && typeof window !== "undefined") {
+  // Dev-only: inspect language state from the browser console. Stripped from
+  // production bundles so internals don't leak to end users.
   (window as unknown as { __i18n?: typeof i18n }).__i18n = i18n;
 }
 
