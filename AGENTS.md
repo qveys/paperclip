@@ -164,6 +164,8 @@ Run the browser suites only when your change touches them or when you are explic
 
 For normal issue work, run the smallest relevant verification first. Do not default to repo-wide typecheck/build/test on every heartbeat when a narrower check is enough to prove the change.
 
+For open-ended exploration ("how does X work", "where is Y defined", multi-file investigation), delegate to a fork sub-agent rather than reading/grepping broadly in the main context — keep only the synthesized answer, not the raw file contents, in the primary conversation. Reserve direct Read/Grep for small, already-scoped lookups.
+
 Run this full check before claiming repo work done in a PR-ready hand-off, or when the change scope is broad enough that targeted checks are not sufficient:
 
 ```sh
