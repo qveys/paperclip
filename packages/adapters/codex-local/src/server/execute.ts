@@ -44,6 +44,7 @@ import {
   renderTemplate,
   renderPaperclipWakePrompt,
   isPaperclipRecoveryWakePayload,
+  selectPaperclipTaskMarkdown,
   stringifyPaperclipWakePayload,
   DEFAULT_PAPERCLIP_AGENT_PROMPT_TEMPLATE,
   joinPromptSections,
@@ -1094,7 +1095,13 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       !sessionId && bootstrapPromptTemplate.trim().length > 0
         ? renderTemplate(bootstrapPromptTemplate, templateData).trim()
         : "";
-    const wakePrompt = renderPaperclipWakePrompt(context.paperclipWake, { resumedSession: Boolean(sessionId) });
+    const taskContextNote = selectPaperclipTaskMarkdown(context, { resumedSession: Boolean(sessionId) });
+    const wakePrompt = renderPaperclipWakePrompt(context.paperclipWake, {
+      resumedSession: Boolean(sessionId),
+      // The task-context markdown is the authoritative brief on this lane; keep
+      // the wake prompt's description copy out so the prompt carries it once.
+      suppressIssueDescription: taskContextNote.length > 0,
+    });
     const shouldUseResumeDeltaPrompt = Boolean(sessionId) && wakePrompt.length > 0;
     const promptInstructionsPrefix = shouldUseResumeDeltaPrompt ? "" : instructionsPrefix;
     instructionsChars = promptInstructionsPrefix.length;
@@ -1177,6 +1184,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       wakePrompt,
       codexFallbackHandoffNote,
       sessionHandoffNote,
+      taskContextNote,
       renderedPrompt,
     ]);
     const promptMetrics = {
@@ -1185,6 +1193,7 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
       bootstrapPromptChars: renderedBootstrapPrompt.length,
       wakePromptChars: wakePrompt.length,
       sessionHandoffChars: sessionHandoffNote.length,
+      taskContextChars: taskContextNote.length,
       heartbeatPromptChars: renderedPrompt.length,
     };
 
