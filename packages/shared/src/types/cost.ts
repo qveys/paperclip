@@ -27,6 +27,10 @@ export interface CostSummary {
   spendCents: number;
   budgetCents: number;
   utilizationPercent: number;
+  inputTokens: number;
+  cachedInputTokens: number;
+  /** cachedInputTokens / (inputTokens + cachedInputTokens), as a percentage (0-100) */
+  cacheHitRatePercent: number;
 }
 
 export interface IssueCostSummary {
@@ -57,6 +61,8 @@ export interface CostByAgent {
   subscriptionCachedInputTokens: number;
   subscriptionInputTokens: number;
   subscriptionOutputTokens: number;
+  /** cachedInputTokens / (inputTokens + cachedInputTokens), as a percentage (0-100) */
+  cacheHitRatePercent: number;
 }
 
 export interface CostByProviderModel {
