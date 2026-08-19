@@ -680,6 +680,11 @@ export function Costs() {
                         <div className="mt-1 text-lg font-medium tabular-nums">
                           {formatTokens(inferenceTokenTotal)}
                         </div>
+                        {spendData && spendData.summary.inputTokens + spendData.summary.cachedInputTokens > 0 ? (
+                          <div className="mt-1 text-xs text-muted-foreground">
+                            {spendData.summary.cacheHitRatePercent}% cache hit rate
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                     {spendData?.summary.budgetCents && spendData.summary.budgetCents > 0 ? (
@@ -750,6 +755,11 @@ export function Costs() {
                                 <div className="text-xs text-muted-foreground">
                                   in {formatTokens(row.inputTokens + row.cachedInputTokens)} · out {formatTokens(row.outputTokens)}
                                 </div>
+                                {row.inputTokens + row.cachedInputTokens > 0 ? (
+                                  <div className="text-xs text-muted-foreground">
+                                    {row.cacheHitRatePercent}% cache hit rate
+                                  </div>
+                                ) : null}
                                 {(row.apiRunCount > 0 || row.subscriptionRunCount > 0) ? (
                                   <div className="text-xs text-muted-foreground">
                                     {row.apiRunCount > 0 ? `${row.apiRunCount} api` : "0 api"}
