@@ -18,6 +18,20 @@ function sumAsNumber(column: typeof costEvents.costCents | typeof costEvents.inp
   return sql<number>`coalesce(sum(${column}), 0)::double precision`;
 }
 
+/**
+ * Cache hit-rate: share of prompt input tokens served from the provider's
+ * prompt cache (cachedInputTokens) rather than billed at full price
+ * (inputTokens). Both counters are additive/disjoint on cost_events (see
+ * packages/adapters/*\/src/server/parse.ts), so total input tokens is their
+ * sum. Returns a percentage rounded to 2 decimals; 0 when there is no input
+ * token activity, to avoid a division by zero.
+ */
+function cacheHitRatePercent(cachedInputTokens: number, inputTokens: number): number {
+  const total = cachedInputTokens + inputTokens;
+  if (total <= 0) return 0;
+  return Number(((cachedInputTokens / total) * 100).toFixed(2));
+}
+
 function currentUtcMonthWindow(now = new Date()) {
   const year = now.getUTCFullYear();
   const month = now.getUTCMonth();
@@ -115,14 +129,18 @@ export function costService(db: Db, budgetHooks: BudgetServiceHooks = {}) {
       if (range?.from) conditions.push(gte(costEvents.occurredAt, range.from));
       if (range?.to) conditions.push(lte(costEvents.occurredAt, range.to));
 
-      const [{ total }] = await db
+      const [row] = await db
         .select({
           total: sumAsNumber(costEvents.costCents),
+          inputTokens: sumAsNumber(costEvents.inputTokens),
+          cachedInputTokens: sumAsNumber(costEvents.cachedInputTokens),
         })
         .from(costEvents)
         .where(and(...conditions));
 
-      const spendCents = Number(total);
+      const spendCents = Number(row?.total ?? 0);
+      const inputTokens = Number(row?.inputTokens ?? 0);
+      const cachedInputTokens = Number(row?.cachedInputTokens ?? 0);
       const utilization =
         company.budgetMonthlyCents > 0
           ? (spendCents / company.budgetMonthlyCents) * 100
@@ -133,6 +151,9 @@ export function costService(db: Db, budgetHooks: BudgetServiceHooks = {}) {
         spendCents,
         budgetCents: company.budgetMonthlyCents,
         utilizationPercent: Number(utilization.toFixed(2)),
+        inputTokens,
+        cachedInputTokens,
+        cacheHitRatePercent: cacheHitRatePercent(cachedInputTokens, inputTokens),
       };
     },
 
@@ -282,7 +303,7 @@ export function costService(db: Db, budgetHooks: BudgetServiceHooks = {}) {
       if (range?.from) conditions.push(gte(costEvents.occurredAt, range.from));
       if (range?.to) conditions.push(lte(costEvents.occurredAt, range.to));
 
-      return db
+      const rows = await db
         .select({
           agentId: costEvents.agentId,
           agentName: agents.name,
@@ -307,6 +328,11 @@ export function costService(db: Db, budgetHooks: BudgetServiceHooks = {}) {
         .where(and(...conditions))
         .groupBy(costEvents.agentId, agents.name, agents.status)
         .orderBy(desc(sumAsNumber(costEvents.costCents)));
+
+      return rows.map((row) => ({
+        ...row,
+        cacheHitRatePercent: cacheHitRatePercent(row.cachedInputTokens, row.inputTokens),
+      }));
     },
 
     byProvider: async (companyId: string, range?: CostDateRange) => {
