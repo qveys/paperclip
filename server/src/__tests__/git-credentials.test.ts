@@ -16,6 +16,37 @@ import {
 
 const fakeDb = null as unknown as Db;
 
+// Freshly generated for this test file only (never used anywhere else) — just needs to be a
+// syntactically valid RSA private key so `createSign` can produce a real JWT signature.
+const FAKE_RSA_PRIVATE_KEY = `-----BEGIN PRIVATE KEY-----
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDrrWH7rM6X/NcS
+poBQn2cZt4KbDaCP8kezzvt7w0jrJQcgmlYR/Pg7/7Q8Fen06/qpWks2cnUmb7ox
+6snxw1QWsMOiZYhlIKf6f3Oh2DgSwLdFbA3llzZuvo6vPsfP5KOE24Qkf8jSc7cc
+ZKVeCItbgYPkVczfo38CzEmQTY1nAQpAMkEuOX7ip3ZgwRuz6arXjM4VZLf3V3t2
+AT2/wkfgPDz8Cce5KSy9HtlHZzrHKcQ07Wh2iF7hCVT4GGtKq+sJ9lKXT4Zsytpb
+pNcH7NCUHGjKVuYKH0Yh6chlpBabXBrM80Fo7W5tIa6VjX8c4yW/T/oATCT+daVW
+xTHMmVP9AgMBAAECggEACGxMCKd8WmFZb40dfRWfjZqPsiSZuI456f8nVZzxazms
+j6DrvmW/g0qJoygdtUo0WPOCX72EZiqjiZbQ4oLajmyvyf9sP+My/bh8N5U3iDBp
+EMscqvI+2Mki5rhS30/h+4Hexlm4RLPO8agFYtNtWc5WYCKvzba+GoatsU0+chAD
+PvZ13W8f3g3lRQRKW7oAtjAlJ6sEYWdkKbX1i/qChusdP7SNrRTB0tvAWW6REjE0
++la2mfPauFy/WIDrDSXcJgNw6HDLQ98YE8TeKz5XGw/au1oRPuTWilZQVpLkZEjY
+vCEAzNgGwUfEcuK/ZagyyJOW19YvM5OHz7x7fZ/ThQKBgQD/ZgC90QV/Fh5WXhA7
+XqwW37WA6uWx2FYcDK6pcupNh7pMbz/bRldKWDxyckJ0TwNQoKm+2NKzs8RH0Rr7
+x9Vl5uYtnI/BDZ5u5fcu20c21RWBDpmdCmGWnN2zadH0AroCn+TlEciaJDJK9i69
+PQklTrfSsqMcVVcPA617WKkckwKBgQDsO30Vwxj4Yxdh7OFA1EMaq0AbsgYT/tFj
+vgXx5M7XWB6Z/NuydmOiqsfXDJXmm9RkRI/eNDCK7ktQKax02/47RFqInEA+y8Oc
+ZjlX618gWrfHJAeARucwuke2nUFIVWPu1cwdj9Zop6WvGqx+wzDX8hGf3AeXFsWw
+AnrZSWC3LwKBgB6XbztNUCU61wNtXPBflKlgvnLksAKvcREHC9zMIPiMa2pAYRu4
+vzfufb8PpJod5L3BoNN1UTepLreTenHyK8N69tM7z5RGN1X9QbBhH5SXzW2Z/Bht
+Z+cMfxnAcR+TPAiYcmhlyut7rnKALnUIXJIVbbtVHmiEaFsqC5ucsRT1AoGABQvg
+SC66wdOcFENzLGdcZ51w6SaMarDu2CqfBePVZ1RCkxeLuew9hKQRUM68BQkfKGUu
+jZif0Nf2U+gP/w8UB0AWjwSHes/vhc/JOc+VYKOPeXmTj3H0Tl4sWgJR+rGYSOnY
+SmlgMywhpfPz62FQEcziA4A3yUp7Pp9O8IVYw5ECgYEAm72KRWQR/4Qev9g1XuJG
+s0umzOFsZXv/e8MnEj9HtqNpRB5ZtKjVp8DSQHpBLIm0GM+Pej8JeKadpU8eXjAu
+JhpG8rQBmgI4vjM0L99/QuhphLLpDQOpww4OPUjxvpEBfY6BhsxWTR5FXKGRE4rY
+K39c5gZrHEYEUmYbnDKZckc=
+-----END PRIVATE KEY-----`;
+
 function buildSecretsFake(byName: Record<string, string | Error>) {
   const getByName = vi.fn(async (_companyId: string, name: string) => {
     if (!(name in byName)) return null;
@@ -183,6 +214,116 @@ describe("createGitRemoteAuthProvider", () => {
     expect(invocation?.env[GIT_CREDENTIAL_TOKEN_ENV_KEY]).toBe("agent-b-legacy-token");
     expect(db.select).toHaveBeenCalledTimes(2);
   });
+
+  const githubAppEnv = {
+    GITHUB_APP_ID: "3946016",
+    GITHUB_APP_INSTALLATION_ID: "137591757",
+    GITHUB_APP_PRIVATE_KEY_FILE: "/fake/key.pem",
+  };
+
+  it("mints a GitHub App installation token when no company secret exists, ranked between secrets and env", async () => {
+    const requestApi = vi.fn(async (input: { method: string; url: string; jwt: string }) => {
+      expect(input.url).toBe("https://api.github.com/app/installations/137591757/access_tokens");
+      expect(input.method).toBe("POST");
+      return { status: 201, body: { token: "ghs_minted", expires_at: "2099-01-01T00:00:00Z" } };
+    });
+    const provider = createGitRemoteAuthProvider(fakeDb, "company-1", undefined, {
+      secrets: buildSecretsFake({}),
+      env: { ...githubAppEnv, GITHUB_TOKEN: "env-token-should-be-unused" },
+      githubApp: {
+        readPrivateKey: async (filePath) => {
+          expect(filePath).toBe("/fake/key.pem");
+          return FAKE_RSA_PRIVATE_KEY;
+        },
+        requestApi,
+        cache: new Map(),
+        now: () => Date.parse("2026-01-01T00:00:00Z"),
+      },
+    });
+    const invocation = await provider(githubUrl);
+    expect(invocation?.env[GIT_CREDENTIAL_TOKEN_ENV_KEY]).toBe("ghs_minted");
+    expect(invocation?.source).toBe("github_app");
+    expect(invocation?.secretName).toBeNull();
+    expect(requestApi).toHaveBeenCalledTimes(1);
+  });
+
+  it("auto-derives the installation id from GITHUB_APP_ACCOUNT when no installation id is pinned", async () => {
+    const requestApi = vi.fn(async (input: { method: string; url: string; jwt: string }) => {
+      if (input.url === "https://api.github.com/app/installations") {
+        return {
+          status: 200,
+          body: [
+            { id: 111, account: { login: "someone-else" } },
+            { id: 222, account: { login: "qveys" } },
+          ],
+        };
+      }
+      expect(input.url).toBe("https://api.github.com/app/installations/222/access_tokens");
+      return { status: 201, body: { token: "ghs_auto", expires_at: "2099-01-01T00:00:00Z" } };
+    });
+    const provider = createGitRemoteAuthProvider(fakeDb, "company-1", undefined, {
+      secrets: buildSecretsFake({}),
+      env: {
+        GITHUB_APP_ID: "3946016",
+        GITHUB_APP_PRIVATE_KEY_FILE: "/fake/key.pem",
+        GITHUB_APP_ACCOUNT: "qveys",
+      },
+      githubApp: {
+        readPrivateKey: async () => FAKE_RSA_PRIVATE_KEY,
+        requestApi,
+        cache: new Map(),
+        now: () => Date.parse("2026-01-01T00:00:00Z"),
+      },
+    });
+    const invocation = await provider(githubUrl);
+    expect(invocation?.env[GIT_CREDENTIAL_TOKEN_ENV_KEY]).toBe("ghs_auto");
+    expect(requestApi).toHaveBeenCalledTimes(2);
+  });
+
+  it("reuses a cached GitHub App token until it nears expiry", async () => {
+    const cache = new Map([
+      ["3946016:137591757", { token: "ghs_cached", expiresAtMs: Date.parse("2026-01-01T01:00:00Z") }],
+    ]);
+    const requestApi = vi.fn();
+    const provider = createGitRemoteAuthProvider(fakeDb, "company-1", undefined, {
+      secrets: buildSecretsFake({}),
+      env: githubAppEnv,
+      githubApp: {
+        readPrivateKey: async () => FAKE_RSA_PRIVATE_KEY,
+        requestApi,
+        cache,
+        now: () => Date.parse("2026-01-01T00:00:00Z"),
+      },
+    });
+    const invocation = await provider(githubUrl);
+    expect(invocation?.env[GIT_CREDENTIAL_TOKEN_ENV_KEY]).toBe("ghs_cached");
+    expect(requestApi).not.toHaveBeenCalled();
+  });
+
+  it("falls through to the server env when the GitHub App key cannot be read", async () => {
+    const provider = createGitRemoteAuthProvider(fakeDb, "company-1", undefined, {
+      secrets: buildSecretsFake({}),
+      env: { ...githubAppEnv, GITHUB_TOKEN: "env-fallback" },
+      githubApp: {
+        readPrivateKey: async () => {
+          throw new Error("ENOENT");
+        },
+        cache: new Map(),
+      },
+    });
+    const invocation = await provider(githubUrl);
+    expect(invocation?.source).toBe("server_env");
+    expect(invocation?.env[GIT_CREDENTIAL_TOKEN_ENV_KEY]).toBe("env-fallback");
+  });
+
+  it("is a no-op (falls through) when GitHub App env vars are absent", async () => {
+    const provider = createGitRemoteAuthProvider(fakeDb, "company-1", undefined, {
+      secrets: buildSecretsFake({}),
+      env: { GITHUB_TOKEN: "env-only" },
+    });
+    const invocation = await provider(githubUrl);
+    expect(invocation?.source).toBe("server_env");
+  });
 });
 
 describe("buildGitAuthInvocation", () => {
@@ -322,6 +463,13 @@ describe("describeGitAuthFailure", () => {
       error: "fatal: Authentication failed",
       used: { source: "server_env", secretName: null },
     })).toContain("server-environment GitHub credential");
+  });
+
+  it("names the GitHub App when a minted installation credential was used", () => {
+    expect(describeGitAuthFailure({
+      error: "fatal: Authentication failed",
+      used: { source: "github_app", secretName: null },
+    })).toContain("GitHub App installation credential");
   });
 
   it("points at Settings → Secrets for auth-looking failures without a credential", () => {

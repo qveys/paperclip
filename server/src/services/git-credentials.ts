@@ -1,3 +1,7 @@
+import { execFile as execFileCallback } from "node:child_process";
+import { createSign } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { promisify } from "node:util";
 import {
   companySecrets,
   heartbeatRuns,
@@ -14,12 +18,17 @@ import { isGitHubDotCom } from "./github-fetch.js";
 import { secretService } from "./secrets.js";
 import { toolAccessService } from "./tool-access.js";
 
+const execFile = promisify(execFileCallback);
+
 /**
  * Server-side git credentials for managed project checkouts and execution-workspace base
- * refreshes. Operators store a GitHub token as a company secret under one of the well-known
- * names below (the same convention the GitHub external-object provider reads); this module
- * resolves it and turns it into a git invocation that authenticates clone/fetch against
- * github.com over HTTPS without ever placing the token in argv, URLs, or on disk.
+ * refreshes. Three credential tiers are tried in order: a company secret under one of the
+ * well-known names below (the same convention the GitHub external-object provider reads), a
+ * server-wide GitHub App installation token minted on demand from `GITHUB_APP_ID` +
+ * `GITHUB_APP_PRIVATE_KEY_FILE`, then the legacy server-process `GITHUB_TOKEN`/`GH_TOKEN` env
+ * vars. Whichever tier resolves, it turns the token into a git invocation that authenticates
+ * clone/fetch against github.com over HTTPS without ever placing the token in argv, URLs, or
+ * on disk.
  *
  * The provider factory is deliberately the single seam for future credential sources (for
  * example a brokered GitHub connection): swap the factory, keep every call site unchanged.
@@ -46,8 +55,8 @@ const GIT_CREDENTIAL_HELPER =
 
 export type GitCredential = {
   token: string;
-  source: "managed_connection" | "company_secret" | "server_env";
-  /** The company-secret name the token came from; null for a server-environment token. */
+  source: "managed_connection" | "company_secret" | "github_app" | "server_env";
+  /** The company-secret name the token came from; null for a non-secret-backed token. */
   secretName: string | null;
   githubIdentity?: { userId: string; login: string };
   identitySource?: "personal" | "dedicated";
@@ -182,10 +191,139 @@ export function describeGitAuthFailure(input: {
       ? `the ${input.used.secretName} company-secret GitHub credential`
       : input.used.source === "managed_connection"
         ? "the resolved GitHub connection"
-      : "the server-environment GitHub credential";
+        : input.used.source === "github_app"
+          ? "the GitHub App installation credential"
+          : "the server-environment GitHub credential";
     return `The operation authenticated with ${label}, which was rejected or lacks access to this repository.`;
   }
-  return "No GitHub credential is configured — add a GITHUB_TOKEN or GH_TOKEN company secret in Settings → Secrets, or configure a local checkout cwd for this project workspace.";
+  return "No GitHub credential is configured — add a GITHUB_TOKEN or GH_TOKEN company secret in Settings → Secrets, configure a server-wide GitHub App (GITHUB_APP_ID/GITHUB_APP_PRIVATE_KEY_FILE), or configure a local checkout cwd for this project workspace.";
+}
+
+function base64Url(input: string | Buffer): string {
+  return Buffer.from(input).toString("base64url");
+}
+
+/** Sign a short-lived (10-minute) GitHub App JWT per the App-auth spec (RS256, iss=app id). */
+function buildGitHubAppJwt(appId: string, privateKeyPem: string, nowMs: number): string {
+  const iat = Math.floor(nowMs / 1000) - 60; // clock-skew leeway
+  const exp = Math.floor(nowMs / 1000) + 540;
+  const header = base64Url(JSON.stringify({ alg: "RS256", typ: "JWT" }));
+  const payload = base64Url(JSON.stringify({ iat, exp, iss: appId }));
+  const signingInput = `${header}.${payload}`;
+  const signer = createSign("RSA-SHA256");
+  signer.update(signingInput);
+  signer.end();
+  return `${signingInput}.${base64Url(signer.sign(privateKeyPem))}`;
+}
+
+export type GitHubAppTokenCacheEntry = { token: string; expiresAtMs: number };
+
+/** Installation tokens live ~1h; a single process-wide cache avoids minting one per git call. */
+const defaultGitHubAppTokenCache = new Map<string, GitHubAppTokenCacheEntry>();
+const GITHUB_APP_TOKEN_SAFETY_MARGIN_MS = 5 * 60 * 1000;
+
+export type GitHubApiRequester = (input: {
+  method: "GET" | "POST";
+  url: string;
+  jwt: string;
+}) => Promise<{ status: number; body: unknown } | null>;
+
+// `sh -c` reads the JWT and URL from env vars ($GH_*), never argv — this container's egress is
+// proxy-only (Squid via HTTP_PROXY/HTTPS_PROXY), and curl honours those env vars automatically
+// where Node's undici-backed `fetch` does not, so a plain `fetch()` call here would silently
+// time out and every caller would just see "no credential available".
+const GITHUB_APP_API_SCRIPT =
+  `curl -sS --max-time 15 -X "$GH_METHOD" -H "Authorization: Bearer $GH_JWT" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" -w '\\n%{http_code}' "$GH_URL"`;
+
+async function defaultGitHubApiRequest(input: {
+  method: "GET" | "POST";
+  url: string;
+  jwt: string;
+}): Promise<{ status: number; body: unknown } | null> {
+  try {
+    const { stdout } = await execFile("sh", ["-c", GITHUB_APP_API_SCRIPT], {
+      env: { ...process.env, GH_METHOD: input.method, GH_JWT: input.jwt, GH_URL: input.url },
+      timeout: 20_000,
+      maxBuffer: 1_000_000,
+    });
+    const trimmed = stdout.trimEnd();
+    const lastNewline = trimmed.lastIndexOf("\n");
+    if (lastNewline === -1) return null;
+    const status = Number.parseInt(trimmed.slice(lastNewline + 1).trim(), 10);
+    if (!Number.isFinite(status)) return null;
+    const bodyText = trimmed.slice(0, lastNewline);
+    return { status, body: bodyText ? JSON.parse(bodyText) : null };
+  } catch {
+    return null;
+  }
+}
+
+type GitHubAppTokenDeps = {
+  env: NodeJS.ProcessEnv;
+  readPrivateKey: (filePath: string) => Promise<string>;
+  requestApi: GitHubApiRequester;
+  cache: Map<string, GitHubAppTokenCacheEntry>;
+  now: () => number;
+};
+
+function isSuccessStatus(status: number): boolean {
+  return status >= 200 && status < 300;
+}
+
+/**
+ * Mint (or reuse a cached) GitHub App installation access token from the server-wide App
+ * config: `GITHUB_APP_ID` + `GITHUB_APP_PRIVATE_KEY_FILE`, plus `GITHUB_APP_INSTALLATION_ID`
+ * (or `GITHUB_APP_ACCOUNT` to pick the right installation when the id isn't pinned). Every
+ * failure mode — missing config, unreadable key, a rejected API call — resolves to null rather
+ * than throwing, so the caller falls through to the next credential source instead of failing
+ * the git operation outright.
+ */
+async function mintGitHubAppInstallationToken(deps: GitHubAppTokenDeps): Promise<GitCredential | null> {
+  const appId = deps.env.GITHUB_APP_ID?.trim();
+  const keyFile = deps.env.GITHUB_APP_PRIVATE_KEY_FILE?.trim();
+  if (!appId || !keyFile) return null;
+
+  let installationId = deps.env.GITHUB_APP_INSTALLATION_ID?.trim() || "";
+  const account = deps.env.GITHUB_APP_ACCOUNT?.trim() || "";
+  const cacheKey = `${appId}:${installationId || account || "auto"}`;
+  const now = deps.now();
+  const cached = deps.cache.get(cacheKey);
+  if (cached && cached.expiresAtMs - GITHUB_APP_TOKEN_SAFETY_MARGIN_MS > now) {
+    return { token: cached.token, source: "github_app", secretName: null };
+  }
+
+  const privateKeyPem = await deps.readPrivateKey(keyFile).catch(() => null);
+  if (!privateKeyPem) return null;
+
+  const jwt = buildGitHubAppJwt(appId, privateKeyPem, now);
+
+  if (!installationId) {
+    const listRes = await deps.requestApi({
+      method: "GET",
+      url: "https://api.github.com/app/installations",
+      jwt,
+    });
+    if (!listRes || !isSuccessStatus(listRes.status)) return null;
+    const installations = listRes.body as Array<{ id: number; account?: { login?: string } | null }> | null;
+    const match = account
+      ? installations?.find((entry) => entry.account?.login?.toLowerCase() === account.toLowerCase())
+      : installations?.[0];
+    if (!match) return null;
+    installationId = String(match.id);
+  }
+
+  const tokenRes = await deps.requestApi({
+    method: "POST",
+    url: `https://api.github.com/app/installations/${installationId}/access_tokens`,
+    jwt,
+  });
+  if (!tokenRes || !isSuccessStatus(tokenRes.status)) return null;
+  const body = tokenRes.body as { token?: string; expires_at?: string } | null;
+  if (!body?.token) return null;
+
+  const expiresAtMs = body.expires_at ? Date.parse(body.expires_at) : now + 55 * 60 * 1000;
+  deps.cache.set(cacheKey, { token: body.token, expiresAtMs });
+  return { token: body.token, source: "github_app", secretName: null };
 }
 
 type SecretServiceLike = ReturnType<typeof secretService>;
@@ -201,11 +339,13 @@ type GitCredentialSecretsDeps = {
 
 /**
  * Build the credential provider for one run. Resolution order: the managed GitHub identity
- * resolver, then a company secret by well-known name, then the server process environment
- * (`GITHUB_TOKEN`/`GH_TOKEN`) for self-hosted operators. A configured managed identity fails
- * closed instead of falling through to legacy credentials. The lookup is memoized per
- * provider instance so one run performs at most one secret resolution (and writes at most
- * one audit event) no matter how many git operations it authenticates.
+ * resolver, then a company secret by well-known name, then a server-wide GitHub App
+ * installation token minted from `GITHUB_APP_ID`/`GITHUB_APP_PRIVATE_KEY_FILE` (a shared
+ * ambient identity for self-hosted operators who configured an App instead of a PAT), then
+ * the legacy server process env (`GITHUB_TOKEN`/`GH_TOKEN`), then null. A configured managed
+ * identity fails closed instead of falling through to legacy credentials. The lookup is
+ * memoized per provider instance so one run performs at most one resolution (and writes at
+ * most one company-secret audit event) no matter how many git operations it authenticates.
  */
 export function createGitRemoteAuthProvider(
   db: Db,
@@ -220,6 +360,12 @@ export function createGitRemoteAuthProvider(
     secrets?: GitCredentialSecretsDeps;
     env?: NodeJS.ProcessEnv;
     secretNames?: readonly string[];
+    githubApp?: {
+      readPrivateKey?: (filePath: string) => Promise<string>;
+      requestApi?: GitHubApiRequester;
+      cache?: Map<string, GitHubAppTokenCacheEntry>;
+      now?: () => number;
+    };
   },
 ): GitRemoteAuthProvider {
   const secrets: GitCredentialSecretsDeps = deps?.secrets ?? secretService(db);
@@ -258,6 +404,16 @@ export function createGitRemoteAuthProvider(
         .catch(() => "");
       if (token) return { token, source: "company_secret", secretName };
     }
+
+    const appCredential = await mintGitHubAppInstallationToken({
+      env,
+      readPrivateKey: deps?.githubApp?.readPrivateKey ?? ((filePath) => readFile(filePath, "utf8")),
+      requestApi: deps?.githubApp?.requestApi ?? defaultGitHubApiRequest,
+      cache: deps?.githubApp?.cache ?? defaultGitHubAppTokenCache,
+      now: deps?.githubApp?.now ?? Date.now,
+    }).catch(() => null);
+    if (appCredential) return appCredential;
+
     const envToken = env.GITHUB_TOKEN?.trim() || env.GH_TOKEN?.trim() || "";
     if (envToken) return { token: envToken, source: "server_env", secretName: null };
     return null;
