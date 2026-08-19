@@ -1,0 +1,43 @@
+services:
+  paperclip:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: paperclip:local
+    container_name: paperclip
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=internal
+      # Router principal (catch-all, priorité 1 par défaut)
+      - traefik.http.routers.${NAME:-paperclip}.rule=Host(`${NAME:-paperclip}.${HOST:-qveys.cloud}`)
+      - traefik.http.routers.${NAME:-paperclip}.entrypoints=web
+      - traefik.http.routers.${NAME:-paperclip}.service=${NAME:-paperclip}
+      - traefik.http.services.${NAME:-paperclip}.loadbalancer.server.port=${PORT:-3100}
+      # Router webhook GitHub (priorité 20, route vers le serveur interne port 3101)
+      # Cloudflare Access doit avoir un bypass "Bypass" pour ce path.
+      #- traefik.http.routers.${NAME:-paperclip}-wh.rule=Host(`${NAME:-paperclip}.${HOST:-qveys.cloud}`) && Path(`/webhooks/github`)
+      #- traefik.http.routers.${NAME:-paperclip}-wh.entrypoints=web
+      #- traefik.http.routers.${NAME:-paperclip}-wh.service=${NAME:-paperclip}-wh
+      #- traefik.http.services.${NAME:-paperclip}-wh.loadbalancer.server.port=3101
+    networks:
+      - internal
+    ports:
+      - "3100:3100"
+    restart: unless-stopped
+    volumes:
+      - paperclip-data:/app/data
+      # GitHub App private key (my-paperclip-company). Own copy under this project's own data/
+      # dir (gitignored) — not a reference into another deployment. Read-only directory mount,
+      # matching GITHUB_APP_PRIVATE_KEY_FILE in .env. Mounted as a directory, not a single file,
+      # to avoid the inode-swap-breaks-mount issue a single-file bind mount would have if the
+      # key is ever rotated in place.
+      - ./data/.config/github-app:/paperclip/.config/github-app:ro
+    env_file:
+      - .env
+
+networks:
+  internal:
+    external: true
+
+volumes:
+  paperclip-data:
