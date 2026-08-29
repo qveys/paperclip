@@ -138,13 +138,27 @@ WORKDIR /app
 RUN echo "cli-tools-epoch: ${CLI_TOOLS_CACHE_EPOCH}" \
   && npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai @google/gemini-cli@latest @moonshot-ai/kimi-code@latest \
   && apt-get update \
-  && apt-get install -y --no-install-recommends openssh-client jq \
+  && apt-get install -y --no-install-recommends openssh-client jq zstd \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir -p /paperclip \
   && chown node:node /paperclip
 
 COPY scripts/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Install custom paperclip tools, shims, entrypoints, adapters and build scripts to /opt/paperclip
+RUN mkdir -p /opt/paperclip/bin /opt/paperclip/lib /opt/paperclip/entrypoint.d /opt/paperclip/config /opt/paperclip/build.d
+COPY scripts/bin/ /opt/paperclip/bin/
+COPY scripts/lib/ /opt/paperclip/lib/
+COPY scripts/entrypoint.d/ /opt/paperclip/entrypoint.d/
+COPY scripts/config/ /opt/paperclip/config/
+COPY scripts/adapters/ /opt/paperclip/
+COPY scripts/build.d/ /opt/paperclip/build.d/
+RUN if [ -f /opt/paperclip/bin/git-shim.sh ]; then cp /opt/paperclip/bin/git-shim.sh /opt/paperclip/bin/git; fi && \
+    chmod +x /opt/paperclip/bin/* /opt/paperclip/entrypoint.d/*.sh /opt/paperclip/lib/*.sh /opt/paperclip/build.d/*.sh 2>/dev/null || true && \
+    /opt/paperclip/build.d/60-grok-cli.sh && \
+    /opt/paperclip/build.d/80-cursor-cli.sh && \
+    /opt/paperclip/build.d/90-ollama-cli.sh
 
 COPY --chown=node:node --from=build /app /app
 
@@ -170,7 +184,8 @@ ENV NODE_ENV=production \
   PAPERCLIP_DEPLOYMENT_MODE=authenticated \
   PAPERCLIP_DEPLOYMENT_EXPOSURE=private \
   OPENCODE_ALLOW_ALL_MODELS=true \
-  GEMINI_SANDBOX=false
+  GEMINI_SANDBOX=false \
+  PATH="/opt/paperclip/bin:${PATH}"
 
 EXPOSE 3100
 
