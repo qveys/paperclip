@@ -1,0 +1,192 @@
+/* PAPERCLIP-TOOLBAR-PATCH-v1 — MDXEditor toolbar styling adapted to Paperclip design system */
+
+/* Toolbar container — compact single-row with horizontal scroll */
+.paperclip-mdxeditor .mdxeditor-toolbar,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] {
+  background: var(--baseBg, var(--background));
+  border-bottom: 1px solid var(--border);
+  padding: 0.125rem 0.25rem;
+  gap: 0.0625rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  font-size: 0.75rem;
+  align-items: center;
+}
+.paperclip-mdxeditor .mdxeditor-toolbar::-webkit-scrollbar,
+.paperclip-mdxeditor [class*="_toolbarRoot_"]::-webkit-scrollbar { display: none; }
+
+/* Toolbar buttons — fixed square 24px box.
+ * IMPORTANT: the bulk of the toolbar (Bold/Italic/lists/…) are radix ToggleGroup
+ * items with class `_toolbarToggleItem_`, NOT `_toolbarButton_`. They MUST be in
+ * every selector below or they keep MDXEditor's defaults (24px icons, invisible
+ * hover/active). */
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"],
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"],
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_iconButton_"] {
+  border-radius: calc(var(--radius) - 4px);
+  width: 1.5rem;
+  height: 1.5rem;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s, color 0.1s;
+  flex-shrink: 0;
+}
+
+/* SVG icons forced to 16x16 (MDXEditor's Material icons are intrinsically 24x24
+ * and the bundle sets no size, only `_toolbarRoot_ svg { color }`). We scope to
+ * the toolbar root so EVERY icon — toggle items included — is resized, and beat
+ * MDXEditor's (0,1,1) `_toolbarRoot_ svg` rule with (0,2,1).
+ * These icons are `fill="currentColor"` (verified in the bundle), so their colour
+ * is driven by `color`, NOT `fill` — set `color` (with `fill` as a belt-and-braces
+ * fallback) everywhere, otherwise icon-colour overrides silently no-op. */
+.paperclip-mdxeditor [class*="_toolbarRoot_"] svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  fill: var(--muted-foreground);
+}
+
+/* Hover — subtle, theme-aware accent (was hardcoded #fff/#000 = invisible). In the
+ * light theme --accent is near-white and --accent-foreground near-black, i.e. a
+ * dark icon on a light hover background, as requested. */
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"]:hover,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"]:hover,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_iconButton_"]:hover {
+  background: var(--accent);
+  color: var(--accent-foreground);
+}
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"]:hover svg,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"]:hover svg,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_iconButton_"]:hover svg {
+  color: var(--accent-foreground);
+  fill: var(--accent-foreground);
+}
+
+/* Active / pressed / selected — strong primary fill so the toggled state is
+ * clearly distinct from hover and visible in both themes. Covers MDXEditor's
+ * `[data-state=on]` and `:active`, plus aria/data-active for safety. */
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"][data-state='on'],
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"][data-active='true'],
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"][aria-checked='true'],
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"]:active,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"][data-state='on'],
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"][data-active='true'],
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"][aria-checked='true'],
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"]:active {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"][data-state='on'] svg,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"][data-active='true'] svg,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"][aria-checked='true'] svg,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButton_"]:active svg,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"][data-state='on'] svg,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"][data-active='true'] svg,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"][aria-checked='true'] svg,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarToggleItem_"]:active svg {
+  color: var(--primary-foreground);
+  fill: var(--primary-foreground);
+}
+
+/* Group of groups — nowrap single row */
+.paperclip-mdxeditor [class*="_toolbarGroupOfGroups_"] {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.0625rem;
+  align-items: center;
+}
+
+/* Separator between button groups */
+.paperclip-mdxeditor [class*="_separator_"] {
+  background: var(--border);
+  margin: 0.125rem 0.1875rem;
+  width: 1px;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+/* Block type / language select */
+.paperclip-mdxeditor .mdxeditor-toolbar [class*="_toolbarButtonSelectTrigger_"],
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButtonSelectTrigger_"] {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 4px);
+  color: var(--foreground);
+  font-size: 0.6875rem;
+  height: 1.5rem;
+  padding: 0 0.375rem;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.paperclip-mdxeditor .mdxeditor-toolbar [class*="_toolbarButtonSelectTrigger_"]:hover,
+.paperclip-mdxeditor [class*="_toolbarRoot_"] [class*="_toolbarButtonSelectTrigger_"]:hover {
+  background: var(--accent);
+}
+
+/* Select popover */
+.paperclip-mdxeditor [class*="_selectContent_"] {
+  background: var(--popover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  z-index: 9999;
+}
+
+.paperclip-mdxeditor [class*="_selectItem_"]:hover,
+.paperclip-mdxeditor [class*="_selectItem_"][data-highlighted] {
+  background: var(--accent);
+  outline: none;
+}
+
+/* Borderless variant: toolbar at bottom */
+.paperclip-mdxeditor--borderless .mdxeditor-toolbar,
+.paperclip-mdxeditor--borderless [class*="_toolbarRoot_"] {
+  border-top: 1px solid var(--border);
+  border-bottom: none;
+  margin-top: 0.375rem;
+  order: 99;
+}
+
+/* Diff / source toggle wrapper */
+.paperclip-mdxeditor [class*="_diffSourceWrapper_"] {
+  border-top: 1px solid var(--border);
+  padding: 0.5rem;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8125rem;
+}
+
+/* CodeMirror in code block mode */
+.paperclip-mdxeditor [class*="_codeMirrorWrapper_"] {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+/* Admonition / directive blocks */
+.paperclip-mdxeditor [class*="_admonition_"] {
+  border-left: 4px solid var(--primary);
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--accent);
+  padding: 0.5rem 0.75rem;
+  margin: 0.5rem 0;
+}
+
+/* Frontmatter block */
+.paperclip-mdxeditor [class*="_frontmatter_"] {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.8125rem;
+}
