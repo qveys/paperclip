@@ -37,11 +37,16 @@ fi
 
 export PATH="/opt/paperclip/bin:${PATH}"
 
-# Bridges between /paperclip and /app/data for plugins and adapters
-if [ -d /paperclip/.paperclip ]; then
-    mkdir -p /app/data
-    [ -e /app/data/.paperclip ] || ln -sfn /paperclip/.paperclip /app/data/.paperclip
-    [ -e /app/data/adapter-plugins ] || ln -sfn /paperclip/adapter-plugins /app/data/adapter-plugins
+# Bidirectional bridges between /paperclip and /app/data for plugins and adapters
+mkdir -p /paperclip /app/data
+[ -d /app/data/.paperclip ] && [ ! -d /paperclip/.paperclip ] && ln -sfn /app/data/.paperclip /paperclip/.paperclip
+[ -d /paperclip/.paperclip ] && [ ! -d /app/data/.paperclip ] && ln -sfn /paperclip/.paperclip /app/data/.paperclip
+[ -d /paperclip/adapter-plugins ] && [ ! -d /app/data/adapter-plugins ] && ln -sfn /paperclip/adapter-plugins /app/data/adapter-plugins
+[ -d /app/data/adapter-plugins ] && [ ! -d /paperclip/adapter-plugins ] && ln -sfn /app/data/adapter-plugins /paperclip/adapter-plugins
+
+if [ -d /app/packages/plugins/examples/plugin-file-browser-example ]; then
+    mkdir -p /app/packages/plugins/examples/plugin-file-browser-example/node_modules/@paperclipai
+    ln -sfn /app/packages/plugins/sdk /app/packages/plugins/examples/plugin-file-browser-example/node_modules/@paperclipai/plugin-sdk 2>/dev/null || true
 fi
 
 if [ -d /app/server/node_modules/@paperclipai ]; then

@@ -110,6 +110,8 @@ RUN find packages/paperclip-runner/runner packages/paperclip-runner/protocol -ty
   && touch -d @0 packages/paperclip-runner/rust-toolchain.toml
 RUN pnpm --filter @paperclipai/ui build
 RUN pnpm --filter @paperclipai/plugin-sdk build
+RUN pnpm --filter @paperclipai/plugin-workspace-diff build
+RUN pnpm --filter @paperclipai/plugin-llm-wiki build
 # The server build runs scripts/write-build-stamp.mjs, which stamps the built
 # commit into dist/build-info.json. The build context has no .git, so the
 # script reads PAPERCLIP_BUILD_COMMIT instead. Docker exposes an ARG to the
