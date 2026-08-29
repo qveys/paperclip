@@ -30,11 +30,6 @@ if [ "$(id -g node)" -ne "$PGID" ]; then
     usermod -g "$PGID" node
 fi
 
-home_dir="${PAPERCLIP_HOME:-/paperclip}"
-if [ -d "$home_dir" ] && [ -n "$(find "$home_dir" \( ! -user node -o ! -group node \) -print -quit 2>/dev/null)" ]; then
-    chown -R node:node /paperclip /app/data 2>/dev/null || true
-fi
-
 export PATH="/opt/paperclip/bin:${PATH}"
 
 # Bidirectional bridges between /paperclip and /app/data for plugins and adapters
@@ -77,5 +72,8 @@ fi
 if [ -f /opt/paperclip/lib/zombie-safe-spawn.js ]; then
     export NODE_OPTIONS="${NODE_OPTIONS:-} --require /opt/paperclip/lib/zombie-safe-spawn.js"
 fi
+
+# Ensure all files created during entrypoint setup are writable by node
+chown -R node:node /paperclip /app/data 2>/dev/null || true
 
 exec gosu node "$@"
