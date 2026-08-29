@@ -1,0 +1,17 @@
+{
+  "name": "@paperclip-custom/adapter-qveys-agent-router",
+  "version": "0.1.2",
+  "description": "Paperclip adapter that delegates execution to qveys-agent-router.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    },
+    "./ui-parser": "./ui-parser.cjs"
+  },
+  "paperclip": {
+    "adapterUiParser": "1.0"
+  }
+}

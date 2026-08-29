@@ -1,0 +1,13 @@
+{
+  "name": "@paperclip-custom/adapter-hermes-local",
+  "version": "0.1.0",
+  "description": "Paperclip external adapter wrapping hermes-paperclip-adapter, defaulting hermesCommand to hermes-remote (docker exec shim).",
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    }
+  }
+}

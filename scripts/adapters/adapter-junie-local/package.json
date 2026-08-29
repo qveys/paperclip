@@ -1,0 +1,13 @@
+{
+  "name": "@paperclip-custom/adapter-junie-local",
+  "version": "0.1.0",
+  "description": "Paperclip external adapter for the JetBrains Junie CLI (local).",
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    }
+  }
+}

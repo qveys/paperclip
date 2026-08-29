@@ -1,0 +1,91 @@
+server:
+  host: 127.0.0.1
+  port: 3188
+  stickyTtlMs: 21600000
+classifier:
+  minConfidence: 0.65
+  llmFallback: false
+omniroute:
+  baseUrl: https://omniroute.quentinveys.be/v1
+  endpoints:
+    chatCompletions: /chat/completions
+    responses: /responses
+  profiles:
+    free: auto/best-free
+    cheap: auto/cheap
+    fast: auto/fast
+    coding: auto/coding
+    reasoning: auto/reasoning
+    quality: auto/smart
+runtimes:
+  hermes_gateway:
+    command: /opt/paperclip/bin/hermes-remote
+    args: []
+    stdin: true
+  junie:
+    command: junie
+    args: ["--model", "custom:omniroute-${profile}"]
+    stdin: true
+  antigravity:
+    command: agy
+    args: ["--print", "${prompt}", "--add-dir", "."]
+    stdin: false
+  cursor:
+    command: cursor-agent
+    args: ["--print", "--model", "${omni_model}"]
+    stdin: true
+  grok:
+    command: grok
+    args: ["--model", "${omni_model}"]
+    stdin: true
+  ollama:
+    command: ollama
+    args: ["run", "${omni_model}", "${prompt}"]
+    stdin: false
+  claude:
+    command: claude
+    args: ["-p", "--output-format", "stream-json", "--verbose", "--dangerously-skip-permissions", "--effort", "${effort}", "--model", "${omni_model}"]
+    stdin: true
+  codex:
+    command: codex
+    args: ["exec", "--json", "--skip-git-repo-check", "--dangerously-bypass-approvals-and-sandbox", "--model", "${omni_model}", "-c", "mcp_servers.paperclip.command=\"/opt/paperclip/qveys-agent-router/paperclip-mcp-stdio.sh\"", "-c", "mcp_servers.paperclip.env_vars=[\"PAPERCLIP_API_KEY\",\"PAPERCLIP_COMPANY_ID\",\"PAPERCLIP_BASE_URL\"]"]
+    stdin: true
+  gemini:
+    command: gemini
+    args: ["-p", "${prompt}", "--model", "${omni_model}"]
+    stdin: false
+routing:
+  default:
+    category: chat
+    runtime: claude
+    profile: fast
+    fallback: [codex, gemini, cursor, grok]
+  categories:
+    coding:
+      runtime: claude
+      profile: coding
+      fallback: [cursor, junie, antigravity, codex, hermes_gateway, gemini, grok, ollama]
+    creative:
+      runtime: claude
+      profile: quality
+      fallback: [gemini, grok, junie, claude, cursor, antigravity, ollama]
+    analysis:
+      runtime: claude
+      profile: reasoning
+      fallback: [codex, junie, antigravity, claude, cursor, grok, ollama]
+    vision:
+      runtime: claude
+      profile: quality
+      fallback: [claude, junie, codex, cursor, antigravity, ollama]
+    summarization:
+      runtime: claude
+      profile: cheap
+      fallback: [grok, junie, gemini, codex, cursor, antigravity, ollama]
+    background:
+      runtime: claude
+      profile: free
+      fallback: [hermes_gateway, gemini]
+    chat:
+      runtime: claude
+      profile: fast
+      fallback: [grok, junie, gemini, codex, cursor, antigravity, ollama]

@@ -1,0 +1,13 @@
+{
+  "name": "@paperclip-custom/adapter-antigravity-local",
+  "version": "0.1.0",
+  "description": "Paperclip external adapter for the Antigravity CLI (agy) running locally.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": {
+      "import": "./index.js"
+    }
+  }
+}
