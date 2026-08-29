@@ -292,3 +292,23 @@ applyPatch({
   ],
 });
 NODE
+
+# Passe 6 : support symlinks dans runWorker entrypoint check
+WORKER_FILE="$WORKER" PC_PATCH_LIB="$PC_PATCH_LIB" node <<'NODE' || { pc_warn "symlink entrypoint patch failed — continuing startup"; exit 0; }
+const { applyPatch } = require(process.env.PC_PATCH_LIB);
+const file = process.env.WORKER_FILE;
+const MARKER = 'PC_COMPANY_WIZARD_SYMLINK_RESOLVE_v1';
+
+applyPatch({
+  file,
+  marker: MARKER,
+  mode: 'soft',
+  edits: [
+    {
+      label: 'resolve-symlinks-in-entrypoint-check',
+      anchor: '  if (thisFile === entryPath) {',
+      replacement: '  if (thisFile === entryPath || (fs.existsSync(thisFile) && fs.existsSync(entryPath) && fs.realpathSync(thisFile) === fs.realpathSync(entryPath))) { // ' + MARKER,
+    },
+  ],
+});
+NODE
