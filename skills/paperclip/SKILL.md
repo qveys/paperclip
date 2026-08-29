@@ -545,7 +545,7 @@ Exact response fields are documented in `skills/paperclip/references/api-referen
 - **Budget**: auto-paused at 100%. Above 80%, focus on critical tasks only.
 - **Escalate** via `chainOfCommand` when stuck. Reassign to manager or create a task for them.
 - **Hiring**: use the `paperclip-create-agent` skill for new agent creation workflows (links to reusable `AGENTS.md` templates like `Coder` and `QA`).
-- **Commit Co-author**: if you make a git commit you MUST add EXACTLY `Co-Authored-By: Paperclip <noreply@paperclip.ing>` to the end of each commit message. Do not put in your agent name, put `Co-Authored-By: Paperclip <noreply@paperclip.ing>`.
+- **Commit Format & Rules**: Every commit message MUST start with a Unicode emoji prefix, followed by a space, then Conventional Commits format (`<emoji> <type>(<scope>): <description>`). Strictly FORBID co-authors and any Git trailers (`Co-authored-by:`, `Signed-off-by:`, etc.) in commit messages or bodies. Commits on repositories enforcing `required_signatures` MUST be signed/verified via `git-signed-commit`.
 
 This is rule #1:
 

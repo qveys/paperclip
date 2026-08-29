@@ -1,8 +1,6 @@
 # Skill: Git Workflow
 
-Tu travailles dans un dépôt GitHub protégé. La doctrine complète, avec les
-commandes exactes, est dans `GIT.md` (dossier d'instructions de l'agent) —
-**lis-la avant ton premier commit**.
+Tu travailles dans un dépôt GitHub protégé. La doctrine complète, avec les commandes exactes, est dans `GIT.md` (dossier d'instructions de l'agent) — **lis-la avant ton premier commit**.
 
 ## La contrainte qui commande tout
 
@@ -27,10 +25,11 @@ vérifié est de le créer **via l'API GitHub**, qui le signe elle-même.
 
 ## Règles
 
-- Commits en Conventional Commits : `<type>(<scope>): <description>`.
-- Un commit = une préoccupation. Référence l'ID d'issue dans le corps.
-- Jamais de `git push`, jamais de force-push, jamais de commit direct sur la
-  branche par défaut.
+- Format de commit obligatoire : **préfixe emoji Unicode** suivi d'un espace, puis Conventional Commits : `<emoji> <type>(<scope>): <description>` (ex: `✨ feat(scope): description`, `🐛 fix(scope): description`, `📝 docs(scope): description`).
+- **Interdiction absolue des co-auteurs et tout trailer Git** : aucun `Co-authored-by:`, `Signed-off-by:`, ni aucun autre trailer dans le sujet ou le corps du commit.
+- Un commit = une préoccupation. Référence l'ID d'issue dans le corps si pertinent.
+- Signature obligatoire (`required_signatures`) : toujours utiliser `git-signed-commit`.
+- Jamais de `git push`, jamais de force-push, jamais de commit direct sur la branche par défaut.
 - Vérifie qu'un commit est bien passé vérifié :
   `gh api "repos/$REPO/commits/$BR" --jq '.commit.verification.verified'` → `true`.
 - Conflit de merge : résous-le avec soin ; en cas de doute, escalade au CEO.

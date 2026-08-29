@@ -58,7 +58,7 @@ Publie par l'API GitHub, qui signe le commit pour toi :
   # git-signed-commit lit le WORKING TREE, pas les commits locaux :
   git log --oneline "origin/$BR..HEAD" | grep -q . && git reset --soft "origin/$BR"
   git add -A
-  git-signed-commit -m "type(scope): sujet"
+  git-signed-commit -m "✨ feat(scope): sujet"
   git fetch origin "$BR" && git reset --hard "origin/$BR"
 
 Détail complet : instructions/GIT.md

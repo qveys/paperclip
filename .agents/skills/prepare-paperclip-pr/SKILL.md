@@ -26,8 +26,9 @@ each one).
 * Make **logical commits** of all uncommitted changes before anything else.
   Do not stash and forget; do not leave files behind. If commits are missing,
   make them.
-* Commit messages must end with exactly:
-  `Co-Authored-By: Paperclip <noreply@paperclip.ing>`
+* Commit messages must start with a Unicode emoji prefix, followed by a space, then Conventional Commits format (`<emoji> <type>(<scope>): <description>`).
+* Strictly forbid co-authors and any Git trailers (`Co-authored-by:`, `Signed-off-by:`, etc.) in commit messages or bodies.
+* Ensure commits are signed/verified (via `git-signed-commit` on repositories enforcing `required_signatures`).
 
 ## 2. Get changes cleanly on top of master
 

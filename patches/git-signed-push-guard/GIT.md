@@ -6,6 +6,8 @@
 - Cet environnement ne contient **aucune clé de signature** (pas de `~/.ssh`, pas de `gpg`) : un `git commit` local sort **toujours** non signé.
 - Le seul moyen de produire un commit vérifié est le helper **`git-signed-commit`**, qui crée le commit **via l'API GitHub** — c'est GitHub qui le signe, avec l'identité de la GitHub App.
 - **`git push` est interdit** et techniquement bloqué : il échouera avec un message te renvoyant ici.
+- **Format de commit obligatoire** : tout message de commit doit **toujours commencer par un préfixe emoji Unicode**, suivi d'un espace, puis du format Conventional Commits (`<emoji> <type>(<scope>): <description>`).
+- **Interdiction stricte des co-auteurs et trailers Git** : aucun co-auteur (`Co-authored-by:`, etc.) ni aucun trailer Git (`Signed-off-by:`, etc.) ne doit figurer dans le sujet ou le corps du commit.
 
 ## 2. Publier du travail — la séquence complète
 
@@ -25,11 +27,10 @@ gh api "repos/$REPO/branches/$BR" >/dev/null 2>&1 || \
 git log --oneline "origin/$BR..HEAD" | grep -q . && git reset --soft "origin/$BR"
 
 git add -A
-git-signed-commit -m "type(scope): sujet
+git-signed-commit -m "✨ feat(scope): sujet
 
-Corps optionnel.
-
-Co-Authored-By: Paperclip <noreply@paperclip.ing>"
+Corps optionnel expliquant le changement.
+Ne jamais inclure de trailer (aucun Co-authored-by, Signed-off-by, etc.)."
 
 # 2.3 — Réaligner le worktree local sur le commit signé qui vient d'être créé.
 git fetch origin "$BR" && git reset --hard "origin/$BR"
@@ -59,6 +60,8 @@ curl -sS -X PATCH "$PAPERCLIP_BASE_URL/issues/$PAPERCLIP_TASK_ID" \
 
 ## 4. Interdits
 
+- **Pas de co-auteurs ni de trailers Git** (`Co-authored-by:`, `Signed-off-by:`, etc.) sous aucune forme dans les messages ou corps de commit.
+- **Pas de messages sans emoji Unicode** : chaque commit doit obligatoirement respecter `<emoji> <type>(<scope>): <description>`.
 - Pas de `git push`, sous aucune forme (ni `--force`, ni `--tags`, ni push de branche).
 - Pas de commit ni de PR mergée directement sur la branche par défaut : tout passe par une PR.
 - Pas de secrets en clair dans un commit, un message ou une PR.
@@ -78,7 +81,7 @@ OID=$(gh api "repos/$REPO/branches/$BR" --jq .commit.sha)
 # puis 'gh api graphql' avec la mutation createCommitOnBranch :
 #   input: { branch:{repositoryNameWithOwner, branchName}, expectedHeadOid: $OID,
 #            message:{headline, body},
-#            fileChanges:{ additions:[{path, contents:<base64>}], deletions:[{path}] } }
+#            fileChanges:{ additions: [{path, contents:<base64>}], deletions:[{path}] } }
 ```
 
 Si même cette voie échoue, **escalade** — ne contourne pas la règle de signature et ne laisse pas une PR en `BLOCKED` sans le signaler.
