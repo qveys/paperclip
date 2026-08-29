@@ -1,0 +1,23 @@
+{
+  "_comment": "Per-agent GitHub App registry, keyed on PAPERCLIP_AGENT_ID (the UUID injected in each agent's runtime env). Consumed by scripts/bin/github-app-token.sh (App selection at mint time) and scripts/entrypoint.d/51-github-app-agents.sh (key.pem materialization at boot). NON-SECRET: app_id / installation_id / account / slug are safe to commit; the private keys live base64-encoded in .env.enc (SOPS) under the var named by key_env, and are written to key_file at boot. An agent absent from this map keeps minting the global my-paperclip-company App. Fill in the <PLACEHOLDER> values after creating each App via scripts/ops/create-agent-github-app.js.",
+  "agents": {
+    "b4625965-e4b2-48fb-b08c-19ad0b370c4e": {
+      "_agent": "SoloSpark 💼 CEO",
+      "app_id": "<APP_ID_CEO>",
+      "installation_id": "<INST_ID_CEO>",
+      "account": "<GITHUB_LOGIN>",
+      "slug": "<APP_SLUG_CEO>",
+      "key_file": "/paperclip/.config/github-app/agents/b4625965-e4b2-48fb-b08c-19ad0b370c4e/key.pem",
+      "key_env": "GITHUB_APP_KEY_SOLOSPARK_CEO_B64"
+    },
+    "006975a9-add6-41ff-bca5-368f8430f55a": {
+      "_agent": "SoloSpark 👷 Engineer",
+      "app_id": "<APP_ID_ENGINEER>",
+      "installation_id": "<INST_ID_ENGINEER>",
+      "account": "<GITHUB_LOGIN>",
+      "slug": "<APP_SLUG_ENGINEER>",
+      "key_file": "/paperclip/.config/github-app/agents/006975a9-add6-41ff-bca5-368f8430f55a/key.pem",
+      "key_env": "GITHUB_APP_KEY_SOLOSPARK_ENGINEER_B64"
+    }
+  }
+}

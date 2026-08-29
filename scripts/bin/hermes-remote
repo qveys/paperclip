@@ -1,0 +1,96 @@
+#!/usr/bin/env node
+// hermes-remote — route Paperclip vers l'API Hermes de macbook-openclaw.
+// Entrée: prompt sur stdin (ou args). Sortie: transcript Hermes sur stdout/stderr.
+
+const baseUrl = (process.env.HERMES_API_URL || "https://hermes-api.end-inconnu.ts.net").replace(/\/+$/, "");
+const apiKey = process.env.HERMES_API_KEY || process.env.API_SERVER_KEY || "";
+const timeoutMs = Number(process.env.HERMES_REMOTE_TIMEOUT_SECONDS || 7200) * 1000;
+const sessionId = process.env.PAPERCLIP_RUN_ID || process.env.PAPERCLIP_TASK_ID || process.env.PAPERCLIP_AGENT_ID || undefined;
+
+function readStdin() {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    process.stdin.setEncoding("utf8");
+    process.stdin.on("data", (chunk) => { data += chunk; });
+    process.stdin.on("end", () => resolve(data));
+    process.stdin.on("error", reject);
+  });
+}
+
+async function request(path, options = {}) {
+  const headers = { ...(options.headers || {}) };
+  if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
+  const res = await fetch(`${baseUrl}${path}`, { ...options, headers });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Hermes API ${res.status} ${res.statusText}: ${body.slice(0, 1000)}`);
+  }
+  return res;
+}
+
+function printEvent(event) {
+  if (!event || typeof event !== "object") return;
+  if (event.event === "message.delta" && event.delta) process.stdout.write(event.delta);
+  else if (event.event === "tool.started") process.stderr.write(`[hermes] tool.started ${event.tool || ""} ${event.preview || ""}\n`);
+  else if (event.event === "tool.completed") process.stderr.write(`[hermes] tool.completed ${event.tool || ""} error=${Boolean(event.error)}\n`);
+  else if (event.event === "reasoning.available" && event.text) process.stderr.write(`[hermes] reasoning ${event.text}\n`);
+  else if (event.event === "approval.request") process.stderr.write(`[hermes] approval.request ${JSON.stringify(event)}\n`);
+  else if (event.event === "run.failed") process.stderr.write(`[hermes] run.failed ${event.error || "unknown"}\n`);
+}
+
+async function main() {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const prompt = process.argv.slice(2).join(" ") || await readStdin();
+    if (!prompt.trim()) throw new Error("empty prompt");
+
+    const start = await request("/v1/runs", {
+      method: "POST",
+      signal: controller.signal,
+      headers: { "content-type": "application/json", ...(sessionId ? { "X-Hermes-Session-Key": sessionId } : {}) },
+      body: JSON.stringify({ input: prompt, session_id: sessionId }),
+    });
+    const { run_id: runId } = await start.json();
+    if (!runId) throw new Error("Hermes API did not return run_id");
+
+    const events = await request(`/v1/runs/${encodeURIComponent(runId)}/events`, { signal: controller.signal });
+    const reader = events.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let failed = false;
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const parts = buffer.split("\n\n");
+      buffer = parts.pop() || "";
+      for (const part of parts) {
+        for (const line of part.split("\n")) {
+          if (!line.startsWith("data:")) continue;
+          const event = JSON.parse(line.slice(5).trim());
+          printEvent(event);
+          if (event.event === "run.failed") failed = true;
+        }
+      }
+    }
+
+    const status = await request(`/v1/runs/${encodeURIComponent(runId)}`, { signal: controller.signal }).then((r) => r.json()).catch(() => null);
+    if (status?.status === "failed") {
+      process.stderr.write(`[hermes] failed ${status.error || "unknown"}\n`);
+      process.exitCode = 1;
+    } else if (failed) {
+      process.exitCode = 1;
+    } else if (status?.output) {
+      process.stdout.write(status.output);
+    }
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+main().catch((err) => {
+  process.stderr.write(`${err.message || err}\n`);
+  process.exit(1);
+});

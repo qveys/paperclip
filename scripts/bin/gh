@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# gh shim (paperclip agents) — sits ahead of /usr/bin/gh in PATH (/opt/paperclip/bin).
+# Authenticates every `gh` call with a fresh GitHub App installation token.
+# Fail-soft: if minting yields nothing, fall through to the ambient gh auth so a
+# misconfig degrades to "not logged in" rather than breaking the shell.
+t="$(/opt/paperclip/bin/github-app-token.sh 2>/dev/null || true)"
+[ -n "$t" ] && export GH_TOKEN="$t"
+exec /usr/bin/gh "$@"
