@@ -16,18 +16,10 @@ function loadPolicy() {
 }
 
 function resolvePg() {
-  const candidates = [
-    "/usr/local/lib/node_modules/paperclipai/node_modules/pg",
-    path.join(
-      process.env.NODE_PATH || "",
-      "paperclipai/node_modules/pg"
-    ),
-  ];
-  for (const c of candidates) {
-    try {
-      return require(c);
-    } catch (_) {}
-  }
+  // pg is declared in this patch's own package.json and installed into
+  // patches/agent-model-policy/node_modules at image build time. The previous
+  // hardcoded paths pointed at a global paperclipai install that no longer
+  // exists (paperclipai is a compiled binary now).
   return require("pg");
 }
 

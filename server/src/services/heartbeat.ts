@@ -2737,7 +2737,13 @@ async function isGitCheckout(cwd: string | null | undefined) {
   if (!normalized) return false;
   return execFile("git", ["rev-parse", "--show-toplevel"], { cwd: normalized })
     .then((result) => Boolean(readNonEmptyString(result.stdout)))
-    .catch(() => false);
+    .catch((error) => {
+      logger.warn(
+        { err: error, cwd: normalized },
+        "isGitCheckout: git rev-parse --show-toplevel failed",
+      );
+      return false;
+    });
 }
 
 function sameResolvedPath(

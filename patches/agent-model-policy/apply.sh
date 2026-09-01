@@ -10,8 +10,8 @@ log() { echo "[agent-model-policy] $*"; }
 wait_pg() {
   local i
   for i in $(seq 1 60); do
-    if node -e '
-      const pg=require("/usr/local/lib/node_modules/paperclipai/node_modules/pg");
+    if NODE_PATH="$DIR/node_modules" node -e '
+      const pg=require("pg");
       const c=new pg.Client({host:"127.0.0.1",port:54329,user:"paperclip",password:"paperclip",database:"paperclip"});
       c.connect().then(()=>c.query("select 1")).then(()=>{c.end(); process.exit(0)}).catch(()=>process.exit(1));
     ' 2>/dev/null; then
