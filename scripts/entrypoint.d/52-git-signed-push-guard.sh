@@ -19,7 +19,7 @@
 # Fail-soft : sort toujours 0.
 set -uo pipefail
 
-PAYLOAD=/paperclip/patches/git-signed-push-guard/apply.sh
+PAYLOAD=/app/patches/git-signed-push-guard/apply.sh
 
 if [ -x "$PAYLOAD" ]; then
   "$PAYLOAD" || echo "[52-git-signed-push-guard] payload en erreur — ignoré"

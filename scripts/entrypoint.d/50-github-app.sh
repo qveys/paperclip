@@ -26,7 +26,7 @@ chmod 600 "$PEM" 2>/dev/null || true
 # The leading empty value resets any inherited/earlier helper for this host.
 git config --global --unset-all 'credential.https://github.com.helper' 2>/dev/null || true
 git config --global --add    'credential.https://github.com.helper' ''
-git config --global --add    'credential.https://github.com.helper' '!/opt/paperclip/github-app-token.sh get'
+git config --global --add    'credential.https://github.com.helper' '!/opt/paperclip/bin/github-app-token.sh get'
 git config --global 'credential.https://github.com.useHttpPath' false 2>/dev/null || true
 
 # Commit identity = the App bot, so commits/pushes are attributed to the App.
