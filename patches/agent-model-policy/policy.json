@@ -1,0 +1,183 @@
+{
+  "version": 2,
+  "description": "Assign Omniroute paperclip/* models by agent role/title across all companies.",
+  "allowedModels": [
+    "paperclip/ceo",
+    "paperclip/cto",
+    "paperclip/security",
+    "paperclip/engineer",
+    "paperclip/architect",
+    "paperclip/code-reviewer",
+    "paperclip/designer",
+    "paperclip/ux",
+    "paperclip/pm",
+    "paperclip/cmo",
+    "paperclip/writer",
+    "paperclip/analyst",
+    "paperclip/qa",
+    "paperclip/operator",
+    "paperclip/triage"
+  ],
+  "defaults": {
+    "model": "paperclip/operator",
+    "maxTurnsPerRun": 40
+  },
+  "byRole": {
+    "ceo": {
+      "model": "paperclip/ceo",
+      "maxTurnsPerRun": 40
+    },
+    "cto": {
+      "model": "paperclip/cto",
+      "maxTurnsPerRun": 50
+    },
+    "engineer": {
+      "model": "paperclip/engineer",
+      "maxTurnsPerRun": 80
+    },
+    "designer": {
+      "model": "paperclip/designer",
+      "maxTurnsPerRun": 40
+    },
+    "pm": {
+      "model": "paperclip/pm",
+      "maxTurnsPerRun": 40
+    },
+    "qa": {
+      "model": "paperclip/qa",
+      "maxTurnsPerRun": 50
+    },
+    "security": {
+      "model": "paperclip/security",
+      "maxTurnsPerRun": 50
+    },
+    "cmo": {
+      "model": "paperclip/cmo",
+      "maxTurnsPerRun": 40
+    },
+    "researcher": {
+      "model": "paperclip/analyst",
+      "maxTurnsPerRun": 40
+    },
+    "general": {
+      "model": "paperclip/operator",
+      "maxTurnsPerRun": 40
+    },
+    "devops": {
+      "skip": true,
+      "reason": "openclaw/gateway"
+    }
+  },
+  "byTitlePattern": [
+    {
+      "match": "code\\s*review|reviewer",
+      "model": "paperclip/code-reviewer",
+      "maxTurnsPerRun": 50
+    },
+    {
+      "match": "architect",
+      "model": "paperclip/architect",
+      "maxTurnsPerRun": 60
+    },
+    {
+      "match": "triage",
+      "model": "paperclip/triage",
+      "maxTurnsPerRun": 30
+    },
+    {
+      "match": "tech\\s*writer|writer|\\bpaige\\b",
+      "model": "paperclip/writer",
+      "maxTurnsPerRun": 40
+    },
+    {
+      "match": "operator",
+      "model": "paperclip/operator",
+      "maxTurnsPerRun": 40
+    },
+    {
+      "match": "customer\\s*success",
+      "model": "paperclip/analyst",
+      "maxTurnsPerRun": 40
+    },
+    {
+      "match": "\\bux\\b|principal product designer",
+      "model": "paperclip/ux",
+      "maxTurnsPerRun": 40
+    },
+    {
+      "match": "ui\\s*designer",
+      "model": "paperclip/designer",
+      "maxTurnsPerRun": 40
+    },
+    {
+      "match": "security",
+      "model": "paperclip/security",
+      "maxTurnsPerRun": 50
+    },
+    {
+      "match": "analyst|analytics|research",
+      "model": "paperclip/analyst",
+      "maxTurnsPerRun": 40
+    },
+    {
+      "match": "product\\s*owner|product manager|\\bpm\\b",
+      "model": "paperclip/pm",
+      "maxTurnsPerRun": 40
+    },
+    {
+      "match": "orchestrat",
+      "skip": true,
+      "reason": "openclaw gateway"
+    },
+    {
+      "match": "\\bceo\\b|chief executive",
+      "model": "paperclip/ceo",
+      "maxTurnsPerRun": 40
+    },
+    {
+      "match": "\\bcto\\b|chief technology",
+      "model": "paperclip/cto",
+      "maxTurnsPerRun": 50
+    },
+    {
+      "match": "\\bqa\\b|quality",
+      "model": "paperclip/qa",
+      "maxTurnsPerRun": 50
+    },
+    {
+      "match": "\\bcmo\\b|marketing",
+      "model": "paperclip/cmo",
+      "maxTurnsPerRun": 40
+    },
+    {
+      "match": "engineer|developer",
+      "model": "paperclip/engineer",
+      "maxTurnsPerRun": 80
+    },
+    {
+      "match": "\\bdesigner\\b",
+      "model": "paperclip/designer",
+      "maxTurnsPerRun": 40
+    }
+  ],
+  "skipAdapters": [
+    "process",
+    "openclaw_gateway"
+  ],
+  "adapterModelFormat": {
+    "opencode_local": {
+      "prefix": "omniroute/"
+    },
+    "junie_local": {
+      "transform": "junie-custom"
+    }
+  },
+  "adapterOverrides": {
+    "process": {
+      "skip": true
+    },
+    "openclaw_gateway": {
+      "skip": true
+    }
+  }
+}
