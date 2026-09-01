@@ -743,6 +743,35 @@ describe("assertGitWorktreeBaseWorkspaceReady", () => {
     }
   });
 
+  it("allows isolated git worktrees when the resolved base is a bare repository", async () => {
+    // `git worktree add` runs fine from a bare repo; probing with --show-toplevel would
+    // reject it for having no work tree and send the issue to blocked.
+    const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-bare-base-"));
+    try {
+      await runGit(cwd, ["init", "--bare"]);
+      await expect(assertGitWorktreeBaseWorkspaceReady({
+        requestedExecutionWorkspaceMode: "isolated_workspace",
+        config: { workspaceStrategy: { type: "git_worktree" } },
+        issue: {
+          id: "issue-1",
+          identifier: "PAP-1",
+          projectId: "project-1",
+          projectWorkspaceId: "workspace-1",
+        },
+        base: {
+          baseCwd: cwd,
+          source: "project_primary",
+          projectId: "project-1",
+          workspaceId: "workspace-1",
+          repoUrl: "https://github.com/example/repo.git",
+          repoRef: "origin/master",
+        },
+      })).resolves.toBeUndefined();
+    } finally {
+      await fs.rm(cwd, { recursive: true, force: true });
+    }
+  });
+
   it("does not require git for shared project-primary workspaces", async () => {
     const cwd = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-shared-workspace-"));
     try {

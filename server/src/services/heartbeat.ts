@@ -2734,13 +2734,20 @@ async function hasGitMetadata(cwd: string | null | undefined) {
 
 async function isGitCheckout(cwd: string | null | undefined) {
   const normalized = readNonEmptyString(cwd);
-  if (!normalized) return false;
-  return execFile("git", ["rev-parse", "--show-toplevel"], { cwd: normalized })
+  if (!normalized) {
+    // Returning false silently here strands the issue in blocked with a message that
+    // names a path git was never asked about. Every false must leave a trace.
+    logger.warn({ cwd }, "isGitCheckout: no usable cwd");
+    return false;
+  }
+  // --git-dir, like workspace-runtime's isGitCheckout: --show-toplevel additionally
+  // requires a work tree, so it rejects a bare base that `git worktree add` accepts.
+  return execFile("git", ["rev-parse", "--git-dir"], { cwd: normalized })
     .then((result) => Boolean(readNonEmptyString(result.stdout)))
     .catch((error) => {
       logger.warn(
         { err: error, cwd: normalized },
-        "isGitCheckout: git rev-parse --show-toplevel failed",
+        "isGitCheckout: git rev-parse --git-dir failed",
       );
       return false;
     });
