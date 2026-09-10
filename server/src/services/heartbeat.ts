@@ -699,7 +699,16 @@ const MAX_INLINE_WAKE_COMMENT_BODY_CHARS = 4_000;
 const MAX_INLINE_WAKE_COMMENT_BODY_TOTAL_CHARS = 12_000;
 const MAX_INLINE_WAKE_ISSUE_DESCRIPTION_CHARS = 12_000;
 const MAX_AGENT_SESSION_MESSAGE_CHARS = 12_000;
-const execFile = promisify(execFileCallback);
+const execFilePromisified = promisify(execFileCallback);
+// MYH-162 — dans ce process, execFile perd son symbole util.promisify.custom : promisify()
+// résout alors stdout SEUL (une string) au lieu de { stdout, stderr }. Les appelants lisaient
+// result.stdout === undefined et concluaient à tort (isGitCheckout renvoyait false en silence,
+// sans passer par son .catch(), bloquant tous les agents git-sensibles). On normalise ici, une
+// seule fois, pour que tout appelant puisse lire .stdout quel que soit l'environnement.
+const execFile = ((...args: unknown[]) =>
+  (execFilePromisified as unknown as (...a: unknown[]) => Promise<unknown>)(...args).then(
+    (result) => (typeof result === "string" ? { stdout: result, stderr: "" } : result),
+  )) as unknown as typeof execFilePromisified;
 const EXECUTION_PATH_HEARTBEAT_RUN_STATUSES = [
   "queued",
   "running",

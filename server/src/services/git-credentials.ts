@@ -18,7 +18,16 @@ import { isGitHubDotCom } from "./github-fetch.js";
 import { secretService } from "./secrets.js";
 import { toolAccessService } from "./tool-access.js";
 
-const execFile = promisify(execFileCallback);
+const execFilePromisified = promisify(execFileCallback);
+// MYH-162 — dans ce process, execFile perd son symbole util.promisify.custom : promisify()
+// résout alors stdout SEUL (une string) au lieu de { stdout, stderr }. Les appelants lisaient
+// result.stdout === undefined et concluaient à tort (isGitCheckout renvoyait false en silence,
+// sans passer par son .catch(), bloquant tous les agents git-sensibles). On normalise ici, une
+// seule fois, pour que tout appelant puisse lire .stdout quel que soit l'environnement.
+const execFile = ((...args: unknown[]) =>
+  (execFilePromisified as unknown as (...a: unknown[]) => Promise<unknown>)(...args).then(
+    (result) => (typeof result === "string" ? { stdout: result, stderr: "" } : result),
+  )) as unknown as typeof execFilePromisified;
 
 /**
  * Server-side git credentials for managed project checkouts and execution-workspace base
