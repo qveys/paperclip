@@ -29,6 +29,7 @@ vi.mock("../middleware/logger.js", () => {
 import { logger } from "../middleware/logger.js";
 import {
   appendStderrExcerpt,
+  buildWorkerProcessEnv,
   createDuplexRouteSlotController,
   createPluginWorkerHandle,
   formatWorkerFailureMessage,
@@ -2403,5 +2404,39 @@ describe("plugin worker manager login pseudo-terminal pre-bind queue", () => {
     } finally {
       await handle.stop().catch(() => undefined);
     }
+  });
+});
+
+describe("buildWorkerProcessEnv", () => {
+  it("forwards the host proxy settings without leaking host secrets", () => {
+    const env = buildWorkerProcessEnv(
+      "test.plugin",
+      { PAPERCLIP_DEPLOYMENT_MODE: "docker" },
+      {
+        PATH: "/usr/local/bin",
+        HTTPS_PROXY: "http://squid:3128",
+        no_proxy: "localhost,127.0.0.1",
+        NODE_OPTIONS: "--use-env-proxy --max-old-space-size=4096",
+        DATABASE_URL: "postgres://host/secret",
+      } as NodeJS.ProcessEnv,
+    );
+
+    expect(env.HTTPS_PROXY).toBe("http://squid:3128");
+    expect(env.no_proxy).toBe("localhost,127.0.0.1");
+    // Only the proxy opt-in crosses, not the rest of NODE_OPTIONS.
+    expect(env.NODE_OPTIONS).toBe("--use-env-proxy");
+    expect(env.PAPERCLIP_PLUGIN_ID).toBe("test.plugin");
+    expect(env.PAPERCLIP_DEPLOYMENT_MODE).toBe("docker");
+    expect(env.DATABASE_URL).toBeUndefined();
+  });
+
+  it("omits proxy variables the host does not set", () => {
+    const env = buildWorkerProcessEnv("test.plugin", undefined, {
+      PATH: "/usr/local/bin",
+    } as NodeJS.ProcessEnv);
+
+    expect(env.HTTP_PROXY).toBeUndefined();
+    expect(env.NODE_OPTIONS).toBeUndefined();
+    expect(env.NODE_ENV).toBe("production");
   });
 });

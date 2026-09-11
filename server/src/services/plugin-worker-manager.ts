@@ -388,6 +388,61 @@ export function resolveRpcCallTimeoutMs(
 }
 
 /**
+ * Outbound proxy settings the worker inherits from the host process.
+ *
+ * A hardened deployment can run the server on a Docker network with no direct
+ * egress and no external DNS: everything outbound goes through the HTTP proxy
+ * named by these variables. Without them a worker's `fetch()` dies at DNS
+ * resolution, which surfaces as an opaque "cannot reach <service>" in every
+ * plugin declaring `http.outbound`. They name a proxy endpoint, not a secret.
+ */
+const PROXY_ENV_PASSTHROUGH = [
+  "HTTP_PROXY",
+  "http_proxy",
+  "HTTPS_PROXY",
+  "https_proxy",
+  "NO_PROXY",
+  "no_proxy",
+] as const;
+
+/** Node only honours the variables above when started with this flag. */
+const USE_ENV_PROXY_FLAG = "--use-env-proxy";
+
+/**
+ * Build the environment a plugin worker process runs with.
+ *
+ * Security: `process.env` is NOT spread in. Plugins receive only a minimal,
+ * controlled set, so host secrets (DATABASE_URL, internal API keys, …) never
+ * reach third-party plugin code.
+ */
+export function buildWorkerProcessEnv(
+  pluginId: string,
+  optionsEnv: Record<string, string> | undefined,
+  processEnv: NodeJS.ProcessEnv = process.env,
+): Record<string, string> {
+  const env: Record<string, string> = {
+    ...optionsEnv,
+    PATH: processEnv.PATH ?? "",
+    NODE_PATH: processEnv.NODE_PATH ?? "",
+    PAPERCLIP_PLUGIN_ID: pluginId,
+    NODE_ENV: processEnv.NODE_ENV ?? "production",
+    TZ: processEnv.TZ ?? "UTC",
+  };
+
+  for (const key of PROXY_ENV_PASSTHROUGH) {
+    const value = processEnv[key];
+    if (value && value.trim().length > 0) env[key] = value;
+  }
+  // Narrowed on purpose: the operator's other NODE_OPTIONS (loaders, heap
+  // tuning) stay out of the worker, only the proxy opt-in crosses.
+  if (processEnv.NODE_OPTIONS?.includes(USE_ENV_PROXY_FLAG)) {
+    env.NODE_OPTIONS = USE_ENV_PROXY_FLAG;
+  }
+
+  return env;
+}
+
+/**
  * Options for starting a worker process.
  */
 /**
@@ -2869,22 +2924,10 @@ export function createPluginWorkerHandle(
   // -----------------------------------------------------------------------
 
   function spawnProcess(): ChildProcess {
-    // Security: Do NOT spread process.env into the worker. Plugins should only
-    // receive a minimal, controlled environment to prevent leaking host
-    // secrets (like DATABASE_URL, internal API keys, etc.).
-    const workerEnv: Record<string, string> = {
-      ...options.env,
-      PATH: process.env.PATH ?? "",
-      NODE_PATH: process.env.NODE_PATH ?? "",
-      PAPERCLIP_PLUGIN_ID: pluginId,
-      NODE_ENV: process.env.NODE_ENV ?? "production",
-      TZ: process.env.TZ ?? "UTC",
-    };
-
     const child = fork(options.entrypointPath, [], {
       stdio: ["pipe", "pipe", "pipe", "ipc"],
       execArgv: options.execArgv ?? [],
-      env: workerEnv,
+      env: buildWorkerProcessEnv(pluginId, options.env),
       // Don't let the child keep the parent alive
       detached: false,
     });
