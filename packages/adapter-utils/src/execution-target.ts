@@ -1686,7 +1686,10 @@ printf '\0PAPERCLIP_GIT_CONTEXT_END\0'
     discovered.PAPERCLIP_RUNNER_NETWORK_ROOTS = JSON.stringify([...new Set(networkRoots)]);
   } else {
     const result = await promisify(execFile)(process.execPath, args, { cwd: input.cwd, timeout: 15_000, maxBuffer: 1024 * 1024 });
-    try { discovered = JSON.parse(result.stdout.split("\0")[1] ?? ""); }
+    try {
+      const rawStdout = typeof result === "string" ? result : result?.stdout;
+      discovered = JSON.parse(rawStdout?.split("\0")[1] ?? "");
+    }
     catch { throw new Error("Could not read execution-target Git context"); }
   }
   // Controller-derived roots and mode must not be replaced by agent bindings.

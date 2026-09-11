@@ -58,6 +58,10 @@ function setupZombieSafeSpawn() {
     }
     return proc;
   };
+  const util = require("util");
+  if (originalExecFile[util.promisify.custom]) {
+    childProcess.execFile[util.promisify.custom] = originalExecFile[util.promisify.custom];
+  }
 
   console.log('[zombie-safe-spawn] SIGCHLD handler installed — child processes will be auto-reaped');
 }
