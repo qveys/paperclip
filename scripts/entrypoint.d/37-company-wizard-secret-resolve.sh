@@ -45,6 +45,20 @@
 #      on aligne la création de l'issue bootstrap dessus, avec
 #      status:"todo" directement dans le POST (accepté par
 #      createIssueSchema) pour remplacer aussi le ctx.issues.update.
+#   6. symlinks dans le check d'entrypoint du worker.
+#   7. secrets résolus dans le scope de la company (le point 3 ne suffit
+#      plus) : plugin-secrets-handler exige un objet {type:"secret_ref"} ET un
+#      companyId, avec configPath pour trouver le binding. Le SDK bundlé ne
+#      transmet que { secretRef } -> on lui fait passer les options, le helper
+#      v3 envoie l'objet + companyId + configPath, et les actions lisent la
+#      config et résolvent avec params.companyId (injecté par l'hôte depuis la
+#      company sélectionnée dans l'UI). Sans invocationId, l'hôte admet l'appel
+#      via les scopes proactifs = companies où le plugin est configuré.
+#      validateConfig (bouton Test) ne reçoit AUCUNE company : un
+#      paperclipPassword en secret y est signalé en warning, pas testé.
+#   8. manifest : déclare la capacité "secrets.read-ref" (exigée par
+#      secrets.resolve). Le loader resynchronise manifestJson en base au
+#      démarrage quand le fichier diffère — pas d'étape d'approbation.
 #
 # Idempotent (marker par passe). Fail-SOFT : n'arrête jamais le démarrage.
 # Survit aux rebuild image / recreate / wipe volume / reinstall plugin.
@@ -308,6 +322,142 @@ applyPatch({
       label: 'resolve-symlinks-in-entrypoint-check',
       anchor: '  if (thisFile === entryPath) {',
       replacement: '  if (thisFile === entryPath || (fs.existsSync(thisFile) && fs.existsSync(entryPath) && fs.realpathSync(thisFile) === fs.realpathSync(entryPath))) { // ' + MARKER,
+    },
+  ],
+});
+NODE
+
+# Passe 7 : secrets résolus dans le scope de la company (voir l'en-tête, point 7).
+WORKER_FILE="$WORKER" PC_PATCH_LIB="$PC_PATCH_LIB" node <<'NODE' || { pc_warn "company-scoped secret patch failed — continuing startup"; exit 0; }
+const { applyPatch } = require(process.env.PC_PATCH_LIB);
+const file = process.env.WORKER_FILE;
+const MARKER = 'PC_COMPANY_WIZARD_SECRET_SCOPE_v3';
+const UUID = '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/';
+
+applyPatch({
+  file,
+  marker: MARKER,
+  mode: 'soft',
+  edits: [
+    {
+      label: 'sdk-secrets-resolve-options',
+      anchor:
+        '        async resolve(secretRef) {\n' +
+        '          return callHost("secrets.resolve", { secretRef });\n' +
+        '        }',
+      replacement:
+        '        async resolve(secretRef, opts) {\n' +
+        '          return callHost("secrets.resolve", { ...(opts ?? {}), secretRef }); // ' + MARKER + '\n' +
+        '        }',
+    },
+    {
+      label: 'sdk-config-get-company',
+      anchor:
+        '        async get() {\n' +
+        '          return callHost("config.get", {});\n' +
+        '        }',
+      replacement:
+        '        async get(companyId) {\n' +
+        '          return callHost("config.get", companyId ? { companyId } : {});\n' +
+        '        }',
+    },
+    {
+      label: 'is-secret-ref-helper',
+      anchor: 'var plugin = definePlugin({',
+      replacement:
+        'function __pcIsSecretRef(v) {\n' +
+        '  if (v && typeof v === "object") return v.type === "secret_ref";\n' +
+        '  return typeof v === "string" && ' + UUID + '.test(v.trim());\n' +
+        '}\n' +
+        'var plugin = definePlugin({',
+    },
+    {
+      label: 'helper-v3-company-scope',
+      anchor:
+        '    __pcResolveSecret = async (v) => {\n' +
+        '      if (!v) return "";\n' +
+        '      const s = typeof v === "string" ? v.trim() : "";\n' +
+        '      if (' + UUID + '.test(s)) return await ctx.secrets.resolve(s);\n' +
+        '      if (typeof v === "object" && v.type === "secret_ref") return await ctx.secrets.resolve(String(v.id ?? v.secretId ?? ""));\n' +
+        '      return typeof v === "string" ? v : "";\n' +
+        '    };',
+      replacement:
+        '    __pcResolveSecret = async (v, companyId, configPath) => {\n' +
+        '      if (!v) return "";\n' +
+        '      if (!__pcIsSecretRef(v)) return typeof v === "string" ? v : "";\n' +
+        '      if (!companyId) throw new Error(`${configPath} est un secret Paperclip : sélectionne une company pour lancer le wizard`);\n' +
+        '      const ref = typeof v === "object"\n' +
+        '        ? { type: "secret_ref", secretId: String(v.secretId ?? v.id ?? ""), version: v.version ?? "latest" }\n' +
+        '        : { type: "secret_ref", secretId: v.trim(), version: "latest" };\n' +
+        '      return await ctx.secrets.resolve(ref, { companyId, configPath });\n' +
+        '    }; // ' + MARKER + ' —',
+    },
+    {
+      label: 'check-auth-company',
+      anchor:
+        '    ctx.actions.register("check-auth", async () => {\n' +
+        '      const cfg = await ctx.config.get() ?? {};',
+      replacement:
+        '    ctx.actions.register("check-auth", async (params) => {\n' +
+        '      const cfg = await ctx.config.get(params?.companyId) ?? {};',
+    },
+    {
+      label: 'check-auth-password',
+      anchor: 'password: await __pcResolveSecret(cfg.paperclipPassword)',
+      replacement: 'password: await __pcResolveSecret(cfg.paperclipPassword, params?.companyId, "paperclipPassword")',
+    },
+    {
+      label: 'ai-chat-company',
+      anchor:
+        '        const cfg = await ctx.config.get() ?? {};\n' +
+        '        const apiKey = await __pcResolveSecret(cfg.anthropicApiKey);',
+      replacement:
+        '        const cfg = await ctx.config.get(params?.companyId) ?? {};\n' +
+        '        const apiKey = await __pcResolveSecret(cfg.anthropicApiKey, params?.companyId, "anthropicApiKey");',
+    },
+    {
+      label: 'start-provision-company',
+      anchor:
+        '        const cfg = await ctx.config.get() ?? {};\n' +
+        '        const paperclipUrl = cfg.paperclipUrl || process.env.PAPERCLIP_PUBLIC_URL || "http://localhost:3100";\n' +
+        '        const paperclipEmail = cfg.paperclipEmail || "";\n' +
+        '        const paperclipPassword = await __pcResolveSecret(cfg.paperclipPassword);',
+      replacement:
+        '        const cfg = await ctx.config.get(params?.companyId) ?? {};\n' +
+        '        const paperclipUrl = cfg.paperclipUrl || process.env.PAPERCLIP_PUBLIC_URL || "http://localhost:3100";\n' +
+        '        const paperclipEmail = cfg.paperclipEmail || "";\n' +
+        '        const paperclipPassword = await __pcResolveSecret(cfg.paperclipPassword, params?.companyId, "paperclipPassword");',
+    },
+    {
+      label: 'validate-config-no-company',
+      anchor: '  async onValidateConfig(config) {\n',
+      replacement:
+        '  async onValidateConfig(config) {\n' +
+        '    // validateConfig ne reçoit aucune company : un secret ne peut pas être résolu ici.\n' +
+        '    if (__pcIsSecretRef(config.paperclipPassword)) {\n' +
+        '      return { ok: true, warnings: ["paperclipPassword est un secret Paperclip : non vérifiable depuis Test, il sera vérifié au lancement du wizard."] };\n' +
+        '    }\n',
+    },
+  ],
+});
+NODE
+
+# Passe 8 : déclarer la capacité secrets.read-ref (voir l'en-tête, point 8).
+MANIFEST="$(dirname "$WORKER")/manifest.js"
+[ -f "$MANIFEST" ] || { pc_warn "manifest.js introuvable — capacité secrets.read-ref non ajoutée"; exit 0; }
+MANIFEST_FILE="$MANIFEST" PC_PATCH_LIB="$PC_PATCH_LIB" node <<'NODE' || { pc_warn "manifest capability patch failed — continuing startup"; exit 0; }
+const { applyPatch } = require(process.env.PC_PATCH_LIB);
+const MARKER = 'PC_COMPANY_WIZARD_READ_REF_v1';
+
+applyPatch({
+  file: process.env.MANIFEST_FILE,
+  marker: MARKER,
+  mode: 'soft',
+  edits: [
+    {
+      label: 'capability-secrets-read-ref',
+      anchor: '  capabilities: [\n',
+      replacement: '  capabilities: [\n    "secrets.read-ref", // ' + MARKER + '\n',
     },
   ],
 });
