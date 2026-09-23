@@ -11,6 +11,12 @@
 import Ajv, { type ErrorObject } from "ajv";
 import addFormats from "ajv-formats";
 import type { JsonSchema } from "@paperclipai/shared";
+import {
+  collectSecretRefPaths,
+  parseSecretRefBindingObject,
+  readConfigValueAtPath,
+  writeConfigValueAtPath,
+} from "./json-schema-secret-refs.js";
 
 export interface ConfigValidationResult {
   valid: boolean;
@@ -39,7 +45,16 @@ export function validateInstanceConfig(
   // hint only — UUID validation happens in the secrets handler at resolve time.
   ajv.addFormat("secret-ref", { validate: () => true });
   const validate = ajv.compile(schema);
-  const valid = validate(configJson);
+  // Secret pickers submit `{ type: "secret_ref", secretId, version }` binding
+  // objects for `format: "secret-ref"` fields, which plugins declare as
+  // `type: "string"`. Validate a copy with bindings collapsed to their secret
+  // id; the caller keeps persisting the binding objects unchanged.
+  let candidate = configJson;
+  for (const path of collectSecretRefPaths(schema as Record<string, unknown>)) {
+    const binding = parseSecretRefBindingObject(readConfigValueAtPath(candidate, path));
+    if (binding) candidate = writeConfigValueAtPath(candidate, path, binding.secretId);
+  }
+  const valid = validate(candidate);
 
   if (valid) {
     return { valid: true };
