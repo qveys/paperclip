@@ -161,6 +161,7 @@ RUN if [ -f /opt/paperclip/bin/git-shim.sh ]; then cp /opt/paperclip/bin/git-shi
     chmod +x /opt/paperclip/bin/* /opt/paperclip/entrypoint.d/*.sh /opt/paperclip/lib/*.sh /opt/paperclip/build.d/*.sh 2>/dev/null || true && \
     /opt/paperclip/build.d/60-grok-cli.sh && \
     /opt/paperclip/build.d/80-cursor-cli.sh && \
+    /opt/paperclip/build.d/85-antigravity-cli.sh && \
     /opt/paperclip/build.d/90-ollama-cli.sh
 
 COPY --chown=node:node --from=build /app /app
