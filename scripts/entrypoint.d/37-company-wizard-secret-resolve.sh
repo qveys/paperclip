@@ -59,6 +59,12 @@
 #   8. manifest : déclare la capacité "secrets.read-ref" (exigée par
 #      secrets.resolve). Le loader resynchronise manifestJson en base au
 #      démarrage quand le fichier diffère — pas d'étape d'approbation.
+#   9. rétroporte l'écho de paperclipInvocationId du SDK courant
+#      (worker-rpc-host.ts : AsyncLocalStorage). L'hôte rejette désormais
+#      tout appel worker→hôte SANS id quand une invocation est active
+#      (invalidInvocationScope) — y compris config.get sans companyId, que
+#      le point 5 croyait exempté. Symptôme : « Failed to load templates:
+#      Request failed: 502 » (getData templates -> config.get refusé).
 #
 # Idempotent (marker par passe). Fail-SOFT : n'arrête jamais le démarrage.
 # Survit aux rebuild image / recreate / wipe volume / reinstall plugin.
@@ -458,6 +464,53 @@ applyPatch({
       label: 'capability-secrets-read-ref',
       anchor: '  capabilities: [\n',
       replacement: '  capabilities: [\n    "secrets.read-ref", // ' + MARKER + '\n',
+    },
+  ],
+});
+NODE
+
+# Passe 9 : écho de paperclipInvocationId (voir l'en-tête, point 9).
+WORKER_FILE="$WORKER" PC_PATCH_LIB="$PC_PATCH_LIB" node <<'NODE' || { pc_warn "invocation-id patch failed — continuing startup"; exit 0; }
+const { applyPatch } = require(process.env.PC_PATCH_LIB);
+const MARKER = 'PC_COMPANY_WIZARD_INVOCATION_ID_v1';
+
+applyPatch({
+  file: process.env.WORKER_FILE,
+  marker: MARKER,
+  mode: 'soft',
+  edits: [
+    {
+      label: 'import-async-local-storage',
+      anchor: 'import { createInterface } from "node:readline";',
+      replacement:
+        'import { createInterface } from "node:readline";\n' +
+        'import { AsyncLocalStorage as __PcAsyncLocalStorage } from "node:async_hooks"; // ' + MARKER + '\n' +
+        'const __pcInvocationStorage = new __PcAsyncLocalStorage();',
+    },
+    {
+      label: 'call-host-echo-id',
+      anchor:
+        '        const request = createRequest(method, params, id);\n' +
+        '        sendMessage(request);',
+      replacement:
+        '        const __pcInv = __pcInvocationStorage.getStore();\n' +
+        '        const request = { ...createRequest(method, params, id), ...(__pcInv ? { paperclipInvocationId: __pcInv.id } : {}) };\n' +
+        '        sendMessage(request);',
+    },
+    {
+      label: 'notify-host-echo-id',
+      anchor: '      sendMessage(createNotification(method, params));',
+      replacement:
+        '      const __pcInv = __pcInvocationStorage.getStore();\n' +
+        '      sendMessage({ ...createNotification(method, params), ...(__pcInv ? { paperclipInvocationId: __pcInv.id } : {}) });',
+    },
+    {
+      label: 'host-request-run-in-invocation',
+      anchor: '      const result = await dispatchMethod(method, params);',
+      replacement:
+        '      const result = request.paperclipInvocation\n' +
+        '        ? await __pcInvocationStorage.run(request.paperclipInvocation, () => dispatchMethod(method, params))\n' +
+        '        : await dispatchMethod(method, params);',
     },
   ],
 });
