@@ -88,6 +88,11 @@ import {
   canonicalizeLocalPluginPath,
   isWithinBundledPluginRoot,
 } from "../services/plugin-install-guard.js";
+
+// Actions can wrap slow upstream calls (e.g. an LLM request in the company
+// wizard's ai-chat), which routinely exceed the 30s default worker RPC timeout.
+// Kept under Cloudflare's 100s proxy timeout so the client still gets our error.
+const PERFORM_ACTION_TIMEOUT_MS = 90_000;
 import { isCloudManagedInstance } from "../services/cloud-instance.js";
 import { getHiddenSettings } from "../services/settings-visibility.js";
 import { secretService } from "../services/secrets.js";
@@ -1539,6 +1544,7 @@ export function pluginRoutes(
           actorContext: performActionActorContext(req, companyId),
           renderEnvironment: body.renderEnvironment ?? null,
         },
+        PERFORM_ACTION_TIMEOUT_MS,
       );
       res.json({ data: result });
     } catch (err) {
@@ -1723,6 +1729,7 @@ export function pluginRoutes(
           actorContext: performActionActorContext(req, companyId),
           renderEnvironment: body?.renderEnvironment ?? null,
         },
+        PERFORM_ACTION_TIMEOUT_MS,
       );
       res.json({ data: result });
     } catch (err) {
