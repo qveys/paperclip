@@ -193,7 +193,7 @@ const support = externalDatabaseUrl
     });
     it("atomically terminalizes unsupported legacy recovery and preserves its owner", async () => {
       const source = await seed();
-      await db.update(heartbeatRuns).set({ runtimeMode: "legacy", status: "running" }).where(eq(heartbeatRuns.id, source.runId));
+      await db.update(heartbeatRuns).set({ runtimeMode: "legacy", status: "running", startedAt: new Date() }).where(eq(heartbeatRuns.id, source.runId));
       await db.update(issues).set({ executionRunId: source.runId, checkoutRunId: source.runId }).where(eq(issues.id, source.issueId));
       const [run] = await db.select().from(heartbeatRuns).where(eq(heartbeatRuns.id, source.runId));
       const results = await Promise.all([1, 2].map(() => terminalizeLegacyExecution({ db, run, status: "failed", fromStatuses: ["running"], patch: { errorCode: "provider_quota", finishedAt: new Date() } })));

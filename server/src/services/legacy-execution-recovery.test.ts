@@ -29,3 +29,13 @@ it("retains the hold until the provider actually acknowledges cancellation", () 
     ...stopped.resultJson, executionCancellation: { state: "requested" },
   } })).toBe(true);
 });
+it("never holds a run that was never started, even past the retry budget", () => {
+  const neverStarted = { runtimeMode: "legacy", status: "cancelled", errorCode: "issue_dependencies_blocked",
+    resultJson: {}, startedAt: null, processPid: null, scheduledRetryAttempt: 3 };
+  expect(legacyExecutionNeedsReconciliation(neverStarted)).toBe(false);
+  expect(legacyExecutionNeedsReconciliation({ ...neverStarted, status: "failed", errorCode: "execution_reconciliation_required" })).toBe(false);
+  // Any sign of a launched provider, or missing evidence, keeps the hold.
+  expect(legacyExecutionNeedsReconciliation({ ...neverStarted, startedAt: new Date() })).toBe(true);
+  expect(legacyExecutionNeedsReconciliation({ ...neverStarted, processPid: 4242 })).toBe(true);
+  expect(legacyExecutionNeedsReconciliation({ ...neverStarted, startedAt: undefined })).toBe(true);
+});
