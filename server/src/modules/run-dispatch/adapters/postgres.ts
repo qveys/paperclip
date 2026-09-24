@@ -804,6 +804,13 @@ export function createPostgresRunDispatchAdapter(
             timeoutConfigured: false,
             timeoutSource: "stale_queued_run_gate",
             timeoutFired: false,
+            // Same positive bootstrap evidence as heartbeat's queued-run cancel: a run
+            // stopped by this gate never reached a provider. Without it a later
+            // revisit reads it as a failed legacy run and mints a new no-replay hold,
+            // so the gate keeps re-blocking the task it just blocked.
+            ...(run.runtimeMode !== "native" && !run.startedAt && !run.processPid
+              ? { executionRecovery: { kind: "bootstrap", providerWorkStarted: false } }
+              : {}),
           },
           updatedAt: now,
         })

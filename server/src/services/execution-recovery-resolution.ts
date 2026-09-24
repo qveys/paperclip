@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import { persistActivity } from "./activity-log.js";
 import { appendHeartbeatRunEvent } from "./heartbeat-run-events.js";
 import { logger } from "../middleware/logger.js";
-import { and, eq, inArray, isNull, or, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, ne, or, sql } from "drizzle-orm";
 import {
   chatActions,
   environmentLeases,
@@ -188,6 +188,23 @@ export async function markExecutionReconciliation(
       and(
         eq(issueRecoveryActions.companyId, action.companyId),
         eq(issueRecoveryActions.id, action.id),
+      ),
+    );
+  // One reconciliation covers the task. Older no-replay holds on the same source
+  // would keep getExecutionBlocker() firing: the continuation gets cancelled and
+  // mints a fresh hold, so the task can never be reconciled. Keep them as history.
+  await db
+    .update(issueRecoveryActions)
+    .set({
+      evidence: sql`(${issueRecoveryActions.evidence} - 'automaticRecovery') || jsonb_build_object('supersededAutomaticRecovery', ${issueRecoveryActions.evidence}->'automaticRecovery')`,
+    })
+    .where(
+      and(
+        eq(issueRecoveryActions.companyId, action.companyId),
+        eq(issueRecoveryActions.sourceIssueId, action.sourceIssueId),
+        ne(issueRecoveryActions.id, action.id),
+        inArray(issueRecoveryActions.cause, [...EXECUTION_RECONCILIATION_CAUSES]),
+        sql`${issueRecoveryActions.evidence}->'automaticRecovery'->>'replay' = 'blocked'`,
       ),
     );
 }

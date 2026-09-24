@@ -22,6 +22,7 @@ import {
 } from "../../../__tests__/helpers/embedded-postgres.js";
 import { createPostgresRunDispatchAdapter } from "./postgres.js";
 import { getExecutionBlocker } from "../../../services/execution-blocker.js";
+import { legacyExecutionNeedsReconciliation } from "../../../services/legacy-execution-recovery.js";
 
 // Proves the DB-to-facts mapping this adapter owns for each state the two
 // run-dispatch gates decide on. `application/use-cases.test.ts` and
@@ -768,6 +769,18 @@ describeEmbeddedPostgres("run-dispatch postgres adapter", () => {
     expect(await getExecutionBlocker(db, randomUUID(), issueId)).toBeNull();
     const adapter = createPostgresRunDispatchAdapter(db);
     await expect(adapter.cancelStaleQueuedRun({ companyId, runId, expectedStatus: "queued", now: new Date() })).resolves.toMatchObject({ outcome: "cancelled", errorCode: "execution_reconciliation_required" });
+  });
+
+  it("records bootstrap evidence when the gate cancels a never-started run", async () => {
+    const { companyId, agentId } = await seedCompanyAndAgent();
+    const issueId = randomUUID(), runId = randomUUID();
+    await db.insert(issues).values({ id: issueId, companyId, title: "Held task", status: "in_progress", assigneeAgentId: agentId });
+    await db.insert(heartbeatRuns).values({ id: runId, companyId, agentId, status: "queued", contextSnapshot: { issueId } });
+    await db.insert(issueRecoveryActions).values({ companyId, sourceIssueId: issueId, kind: "active_run_watchdog", ownerType: "board", cause: "legacy_execution_requires_reconciliation", status: "resolved", evidence: { automaticRecovery: { replay: "blocked" } }, fingerprint: runId, nextAction: "Reconcile." });
+    await createPostgresRunDispatchAdapter(db).cancelStaleQueuedRun({ companyId, runId, expectedStatus: "queued", now: new Date() });
+    const [run] = await db.select().from(heartbeatRuns).where(eq(heartbeatRuns.id, runId));
+    expect(run).toMatchObject({ status: "cancelled", resultJson: { executionRecovery: { kind: "bootstrap", providerWorkStarted: false } } });
+    expect(legacyExecutionNeedsReconciliation(run!)).toBe(false);
   });
 
   it("links the stopped run's agent instead of its return owner, within the same company", async () => {

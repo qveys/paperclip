@@ -9,6 +9,7 @@ import {
   markExecutionReconciliation,
   deliverReconciledExecutions,
 } from "../execution-recovery-resolution.js";
+import { getExecutionBlocker } from "../execution-blocker.js";
 import { randomUUID } from "node:crypto";
 import { tmpdir } from "node:os";
 import { and, eq, inArray } from "drizzle-orm";
@@ -223,6 +224,22 @@ const support = externalDatabaseUrl
       expect(actions).toHaveLength(1);
       expect(actions[0]).toMatchObject({ status: "resolved", evidence: { continuationDelivery: "pending", executionReconciliation: { runId: source.runId } } });
       await db.update(issueRecoveryActions).set({ evidence: { ...actions[0]!.evidence, continuationDelivery: "invalidated" } }).where(eq(issueRecoveryActions.id, action!.id));
+    });
+    it("clears every accumulated no-replay hold on the task when one is reconciled", async () => {
+      const source = await seed();
+      const hold = (runId: string) => ({ companyId: source.companyId, sourceIssueId: source.issueId, kind: "active_run_watchdog" as const,
+        ownerType: "board" as const, returnOwnerAgentId: source.agentId, cause: "legacy_execution_requires_reconciliation", status: "resolved" as const,
+        outcome: "blocked" as const, fingerprint: `legacy-execution:${runId}`, nextAction: "Reconcile",
+        evidence: { runId, automaticRecovery: { policy: "preserve_without_replay_v1", runId, replay: "blocked", actionOutcome: "unknown" } } });
+      const [older] = await db.insert(issueRecoveryActions).values(hold(randomUUID())).returning();
+      const [latest] = await db.insert(issueRecoveryActions).values(hold(source.runId)).returning();
+      expect(await getExecutionBlocker(db, source.companyId, source.issueId)).not.toBeNull();
+      await markExecutionReconciliation(db, latest!, { runId: source.runId, providerStopped: true, actionOutcome: "not_performed", outcomeEvidence: "The deterministic fixture never started its provider." }, "board");
+      expect(await getExecutionBlocker(db, source.companyId, source.issueId)).toBeNull();
+      const [kept] = await db.select().from(issueRecoveryActions).where(eq(issueRecoveryActions.id, older!.id));
+      expect(kept!.evidence).toMatchObject({ supersededAutomaticRecovery: { replay: "blocked" } });
+      expect(kept!.evidence).not.toHaveProperty("automaticRecovery");
+      await db.update(issueRecoveryActions).set({ evidence: { ...latest!.evidence, continuationDelivery: "invalidated" } }).where(eq(issueRecoveryActions.id, latest!.id));
     });
     it("surfaces a failed current reviewer without transferring the original assignment", async () => {
       const source = await seed();
