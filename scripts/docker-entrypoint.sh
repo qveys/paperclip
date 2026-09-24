@@ -38,6 +38,11 @@ mkdir -p /paperclip /app/data
 [ -d /paperclip/.paperclip ] && [ ! -d /app/data/.paperclip ] && ln -sfn /paperclip/.paperclip /app/data/.paperclip
 [ -d /paperclip/adapter-plugins ] && [ ! -d /app/data/adapter-plugins ] && ln -sfn /paperclip/adapter-plugins /app/data/adapter-plugins
 [ -d /app/data/adapter-plugins ] && [ ! -d /paperclip/adapter-plugins ] && ln -sfn /app/data/adapter-plugins /paperclip/adapter-plugins
+# Codex shared login: gosu resets HOME to /paperclip (ephemeral layer), so the
+# codex_local adapter looks for ~/.codex there. Keep it on the volume so one
+# login serves every company-managed codex-home.
+mkdir -p /app/data/.codex && chown node:node /app/data/.codex
+[ ! -e /paperclip/.codex ] && ln -sfn /app/data/.codex /paperclip/.codex
 
 if [ -d /app/packages/plugins/examples/plugin-file-browser-example ]; then
     mkdir -p /app/packages/plugins/examples/plugin-file-browser-example/node_modules/@paperclipai
