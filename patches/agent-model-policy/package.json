@@ -1,9 +1,0 @@
-{
-  "name": "agent-model-policy-patch",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Payload deps for the agent-model-policy boot patch. pg is owned here because the server does not depend on it (only a transitive pnpm copy exists, whose path is not stable).",
-  "dependencies": {
-    "pg": "^8.18.0"
-  }
-}

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Expose Omniroute à junie_local via custom models (OpenAICompletion).
-# Écrit un profil par modèle de la politique agent-model-policy (allowlist).
+# Écrit un profil par modèle de l'allowlist ci-dessous.
 # Fail-soft, idempotent.
 set -uo pipefail
 source "$(dirname "$(readlink -f "$0")")/../lib/common.sh"
@@ -9,7 +9,7 @@ PC_LOG_PREFIX="junie-omniroute-models"
 MODELS_DIR="${PAPERCLIP_HOME:-/paperclip}/.junie/models"
 mkdir -p "$MODELS_DIR" || { pc_log "mkdir $MODELS_DIR échoué, abandon"; exit 0; }
 
-# Allowlist alignée sur patches/agent-model-policy/policy.json
+# Allowlist des combos Omniroute exposés à junie_local
 MODELS=(
   "best-free:auto/best-free"
   "claude-sonnet:auto/claude-sonnet"
@@ -32,22 +32,6 @@ MODELS=(
   "sonnet:auto/claude-sonnet"
   "opus:auto/claude-opus"
   "reasoning:auto/pro-reasoning"
-
-  "paperclip-ceo:paperclip/ceo"
-  "paperclip-cto:paperclip/cto"
-  "paperclip-security:paperclip/security"
-  "paperclip-engineer:paperclip/engineer"
-  "paperclip-architect:paperclip/architect"
-  "paperclip-code-reviewer:paperclip/code-reviewer"
-  "paperclip-designer:paperclip/designer"
-  "paperclip-ux:paperclip/ux"
-  "paperclip-pm:paperclip/pm"
-  "paperclip-cmo:paperclip/cmo"
-  "paperclip-writer:paperclip/writer"
-  "paperclip-analyst:paperclip/analyst"
-  "paperclip-qa:paperclip/qa"
-  "paperclip-operator:paperclip/operator"
-  "paperclip-triage:paperclip/triage"
 )
 
 write_profile() {
