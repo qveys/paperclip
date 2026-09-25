@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# Operator unhold for Paperclip issues stuck in execution reconciliation.
+# Usage: unhold OPE-2,OPE-22             dry run (always rolled back), prints the count
+#        unhold OPE-2,OPE-22 <count>     commits only if exactly <count> actions are reconciled
+# The JS runs inside the paperclip container, fed on stdin: nothing is copied there.
+exec docker exec -i -u node -w /app paperclip node - "$@" <<'JS'
+// Operator reconciliation for issues stuck in the no-replay loop, in one transaction:
+//  - every hold of the issue (replay-blocked, or cleared earlier without a decision) gets an
+//    executionReconciliation {not_performed} for ITS run, so revisits see the run as reconciled;
+//    refuses if any of those runs produced model output (stdout or usage) — that needs a human;
+//  - gate-cancelled never-started runs get bootstrap evidence (fixed in code by 3ba518b00);
+//  - the issue goes back to todo.
+// Rolls back unless the number of reconciled actions equals the expected count (run without it first).
+const { Client } = require(require('child_process')
+  .execSync('ls -d /app/node_modules/.pnpm/pg@*/node_modules/pg | sort -V | tail -1').toString().trim());
+const idents = (process.argv[2] || '').split(',').filter(Boolean);
+const expected = process.argv[3] ? Number(process.argv[3]) : null;
+if (!idents.length) { console.error('usage: unhold OPE-2[,..] [expectedCount]'); process.exit(1); }
+const HOLD = `(ra.evidence->'automaticRecovery'->>'replay' = 'blocked'
+               or (ra.evidence ? 'operatorClearedAutomaticRecovery' and not ra.evidence ? 'executionReconciliation'))`;
+(async () => {
+  const c = new Client({ host: '127.0.0.1', port: 54329, user: 'paperclip', password: 'paperclip', database: 'paperclip' });
+  await c.connect();
+  await c.query('BEGIN');
+  const out = await c.query(`
+    select i.identifier, h.id from issue_recovery_actions ra
+      join issues i on i.id = ra.source_issue_id
+      join heartbeat_runs h on h.id::text = ra.evidence->>'runId'
+     where i.identifier = any($1) and ${HOLD}
+       and (coalesce(h.result_json->>'stdout', '') <> '' or h.usage_json is not null)`, [idents]);
+  if (out.rowCount) {
+    await c.query('ROLLBACK');
+    console.log('REFUSED: runs with model output need a human:', out.rows.map(r => `${r.identifier}:${r.id}`).join(' '));
+    process.exit(1);
+  }
+  const ra = await c.query(`
+    update issue_recovery_actions ra
+       set evidence = (ra.evidence - 'automaticRecovery')
+                      || case when ra.evidence ? 'automaticRecovery'
+                           then jsonb_build_object('operatorClearedAutomaticRecovery', ra.evidence->'automaticRecovery')
+                           else '{}'::jsonb end
+                      || jsonb_build_object('executionReconciliation', jsonb_build_object(
+                           'runId', ra.evidence->>'runId', 'providerStopped', true, 'actionOutcome', 'not_performed',
+                           'outcomeEvidence', 'Operator check: the run produced no model output (empty stdout, no usage); it failed on provider quota/auth/setup or was cancelled before start.',
+                           'actorId', 'operator:unhold', 'recordedAt', now()::text)),
+           updated_at = now()
+      from issues i
+     where i.id = ra.source_issue_id and i.identifier = any($1) and ${HOLD}
+    returning i.identifier, ra.id`, [idents]);
+  const runs = await c.query(`
+    update heartbeat_runs h
+       set result_json = coalesce(h.result_json, '{}'::jsonb)
+                         || '{"executionRecovery":{"kind":"bootstrap","providerWorkStarted":false}}'::jsonb
+      from issues i
+     where i.identifier = any($1) and h.context_snapshot->>'issueId' = i.id::text
+       and h.status = 'cancelled' and h.error_code = 'execution_reconciliation_required'
+       and h.started_at is null and h.process_pid is null and coalesce(h.runtime_mode, '') <> 'native'
+       and h.result_json->'executionRecovery' is null
+    returning h.id`, [idents]);
+  console.log('gate-cancelled runs backfilled:', runs.rowCount);
+  const iss = await c.query(`update issues set status = 'todo', execution_run_id = null, checkout_run_id = null, updated_at = now()
+     where identifier = any($1) and status = 'blocked' returning identifier`, [idents]);
+  const per = {};
+  for (const r of ra.rows) per[r.identifier] = (per[r.identifier] || 0) + 1;
+  console.log('reconciled actions:', ra.rowCount, JSON.stringify(per), '| issues -> todo:', iss.rows.map(r => r.identifier).join(','));
+  if (expected === null || ra.rowCount !== expected) {
+    await c.query('ROLLBACK'); console.log(expected === null ? 'DRY (rolled back)' : `ROLLBACK: expected ${expected}`);
+    process.exit(expected === null ? 0 : 1);
+  }
+  await c.query('COMMIT'); console.log('COMMIT');
+  console.log('Next: agents with heartbeat disabled will not pick these up alone — wake each assignee (POST /api/agents/:id/wakeup with payload.issueId).');
+  await c.end();
+})().catch(e => { console.error('ERR', e.message); process.exit(1); });
+JS
