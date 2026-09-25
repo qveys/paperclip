@@ -307,6 +307,9 @@ function renderTools() {
 # Tools
 
 - Paperclip API via env (\`PAPERCLIP_API_URL\`, \`PAPERCLIP_API_KEY\`, \`PAPERCLIP_RUN_ID\`).
+- Never hardcode a Paperclip host or port: always call \`"$PAPERCLIP_API_URL"\` with \`Authorization: Bearer $PAPERCLIP_API_KEY\`.
+- If a Paperclip API call fails, stop and report the failure in your final message (it is posted on the issue). Never publish to GitHub as a substitute.
+- Paperclip identifiers (\`ABC-123\`) are not GitHub numbers (\`#123\`): never map one to the other.
 - \`hindsight_recall\` / \`hindsight_retain\` for long-term memory (on demand).
 - Project CLI/tools as needed for the issue — don't inventory tools every heartbeat.
 `;
