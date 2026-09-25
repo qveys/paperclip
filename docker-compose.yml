@@ -24,6 +24,7 @@ services:
     ports:
       - "3100:3100"
     restart: unless-stopped
+    mem_limit: 8g
     volumes:
       - paperclip-data:/app/data
       # GitHub App private key (my-paperclip-company). Own copy under this project's own data/
