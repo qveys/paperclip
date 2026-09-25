@@ -3,6 +3,27 @@
 # Authenticates every `gh` call with a fresh GitHub App installation token.
 # Fail-soft: if minting yields nothing, fall through to the ambient gh auth so a
 # misconfig degrades to "not logged in" rather than breaking the shell.
+
+# `gh auth setup-git` is intercepted, not forwarded. Real gh rewrites the global
+# credential helper to `!/usr/bin/gh auth git-credential`, which calls the system
+# gh directly — bypassing this shim, so it never receives a GH_TOKEN and every
+# subsequent git fetch/push over HTTPS is unauthenticated. An agent running it
+# silently undid entrypoint.d/50-github-app.sh's helper (MYH-337). Re-assert the
+# App helper instead, which is what the caller actually wants, and say so.
+if [ "${1:-}" = "auth" ] && [ "${2:-}" = "setup-git" ]; then
+  for host in github.com gist.github.com; do
+    git config --global --unset-all "credential.https://${host}.helper" 2>/dev/null || true
+    git config --global --add    "credential.https://${host}.helper" ''
+    git config --global --add    "credential.https://${host}.helper" '!/opt/paperclip/bin/github-app-token.sh get'
+    git config --global "credential.https://${host}.useHttpPath" false 2>/dev/null || true
+  done
+  echo "gh (paperclip shim): 'auth setup-git' re-pointed git at the GitHub App token helper" >&2
+  echo "  (credential.https://github.com.helper = !/opt/paperclip/bin/github-app-token.sh get)" >&2
+  echo "  Upstream gh would have installed '!/usr/bin/gh auth git-credential', which bypasses" >&2
+  echo "  this shim and leaves git unauthenticated. See entrypoint.d/50-github-app.sh." >&2
+  exit 0
+fi
+
 t="$(/opt/paperclip/bin/github-app-token.sh 2>/dev/null || true)"
 [ -n "$t" ] && export GH_TOKEN="$t"
 exec /usr/bin/gh "$@"
