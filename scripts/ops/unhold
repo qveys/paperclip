@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Operator unhold for Paperclip issues stuck in execution reconciliation.
-# Usage: unhold OPE-2,OPE-22             dry run (always rolled back), prints the count
-#        unhold OPE-2,OPE-22 <count>     commits only if exactly <count> actions are reconciled
+# Usage: unhold <IDENT>[,<IDENT>...]        dry run (always rolled back), prints the count
+#        unhold <IDENT>[,<IDENT>...] <count> commits only if exactly <count> actions are reconciled
 # The JS runs inside the paperclip container, fed on stdin: nothing is copied there.
 exec docker exec -i -u node -w /app paperclip node - "$@" <<'JS'
 // Operator reconciliation for issues stuck in the no-replay loop, in one transaction:
@@ -15,7 +15,7 @@ const { Client } = require(require('child_process')
   .execSync('ls -d /app/node_modules/.pnpm/pg@*/node_modules/pg | sort -V | tail -1').toString().trim());
 const idents = (process.argv[2] || '').split(',').filter(Boolean);
 const expected = process.argv[3] ? Number(process.argv[3]) : null;
-if (!idents.length) { console.error('usage: unhold OPE-2[,..] [expectedCount]'); process.exit(1); }
+if (!idents.length) { console.error('usage: unhold <IDENT>[,<IDENT>...] [expectedCount]'); process.exit(1); }
 const HOLD = `(ra.evidence->'automaticRecovery'->>'replay' = 'blocked'
                or (ra.evidence ? 'operatorClearedAutomaticRecovery' and not ra.evidence ? 'executionReconciliation'))`;
 (async () => {
