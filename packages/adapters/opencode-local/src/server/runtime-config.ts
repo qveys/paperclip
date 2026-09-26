@@ -129,7 +129,11 @@ export async function prepareOpenCodeRuntimeConfig(input: {
     };
   }
 
-  const sourceConfigDir = path.join(resolveXdgConfigHome(input.env), "opencode");
+  // Resolve a symlinked config dir (e.g. bridged to a volume): with
+  // `dereference: false`, fs.cp would copy the link itself over the runtime
+  // dir created below and fail with ENOTDIR.
+  const configDirPath = path.join(resolveXdgConfigHome(input.env), "opencode");
+  const sourceConfigDir = await fs.realpath(configDirPath).catch(() => configDirPath);
   const runtimeConfigHome = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-opencode-config-"));
   const runtimeConfigDir = path.join(runtimeConfigHome, "opencode");
   const runtimeConfigPath = path.join(runtimeConfigDir, "opencode.json");
