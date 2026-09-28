@@ -1,5 +1,6 @@
 export interface ExecutionBlocker {
-  recoveryActionId: string;
+  /** Null when live execution authority itself blocks continuation. */
+  recoveryActionId: string | null;
   runId: string | null;
   agentId: string | null;
   cause: string;
@@ -63,4 +64,6 @@ export interface ExecutionReconciliation {
   providerStopped: true;
   actionOutcome: "completed" | "not_performed" | "mixed";
   outcomeEvidence: string;
+  /** Operator evidence bound to this failed run; required after workspace restore failure. */
+  workspaceRepairEvidence?: string;
 }

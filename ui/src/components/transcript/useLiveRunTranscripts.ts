@@ -1,3 +1,4 @@
+import { usePageVisibility } from "../../lib/page-visibility";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { readTranscriptRequest } from "./read-transcript-request";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +9,7 @@ import { heartbeatsApi } from "../../api/heartbeats";
 import { buildTranscript, getUIAdapter, onAdapterChange, type RunLogChunk, type TranscriptEntry } from "../../adapters";
 import { queryKeys } from "../../lib/queryKeys";
 import { buildSameOriginWebSocketUrl } from "../../lib/websocket-url";
+import { tryCreateWebSocket } from "../../lib/websocket";
 import {
   mergeRunLogChunks,
   parsePersistedLogContent,
@@ -19,6 +21,8 @@ import {
 // durable fix is server push (SSE/websocket) for transcript deltas so idle tabs
 // do no periodic work at all; the constants below only reduce the churn of the
 // current polling approach.
+const SOCKET_CONNECTING = 0;
+const SOCKET_OPEN = 1;
 const LOG_POLL_INTERVAL_MS = 2000;
 const LOG_READ_LIMIT_BYTES = 256_000;
 // When realtime websocket updates are enabled, the frequent log poll is
@@ -102,6 +106,7 @@ export function useLiveRunTranscripts({
 }: UseLiveRunTranscriptsOptions) {
   // Ticker consumers opt into the silent chunk-count cap; full task views use a
   // byte budget that collapses (not discards) the oldest output when exceeded.
+  const { visible } = usePageVisibility();
   const retentionBudget: ChunkRetentionBudget = useMemo(
     () =>
       typeof maxChunksPerRun === "number"
@@ -293,6 +298,7 @@ export function useLiveRunTranscripts({
   }, [normalizedRuns, pruneTick]);
 
   useEffect(() => {
+    if (!visible) return;
     const readableRuns = normalizedRuns.filter(canReadPersistedLog);
     if (readableRuns.length === 0) return;
 
@@ -383,10 +389,10 @@ export function useLiveRunTranscripts({
       controller.abort();
       if (interval !== null) window.clearInterval(interval);
     };
-  }, [enableRealtimeUpdates, logPollIntervalMs, logReadLimitBytes, normalizedRuns, runIdsKey, retryGeneration]);
+  }, [visible, enableRealtimeUpdates, logPollIntervalMs, logReadLimitBytes, normalizedRuns, runIdsKey, retryGeneration]);
 
   useEffect(() => {
-    if (!enableRealtimeUpdates) return;
+    if (!visible || !enableRealtimeUpdates) return;
     if (!companyId || activeRunIds.size === 0) return;
 
     let closed = false;
@@ -417,7 +423,11 @@ export function useLiveRunTranscripts({
       const url = buildSameOriginWebSocketUrl(
         `/api/companies/${encodeURIComponent(companyId)}/events/ws`,
       );
-      socket = new WebSocket(url);
+      socket = tryCreateWebSocket(url);
+      if (!socket) {
+        scheduleReconnect();
+        return;
+      }
 
       socket.onopen = () => {
         if (closed) return;
@@ -503,19 +513,19 @@ export function useLiveRunTranscripts({
         socket.onmessage = null;
         socket.onerror = null;
         socket.onclose = null;
-        if (socket.readyState === WebSocket.CONNECTING) {
+        if (socket.readyState === SOCKET_CONNECTING) {
           // Defer the close until the handshake completes so the browser
           // does not emit a noisy "closed before the connection is established"
           // warning during rapid run teardown.
           socket.onopen = () => {
             socket?.close(1000, "live_run_transcripts_unmount");
           };
-        } else if (socket.readyState === WebSocket.OPEN) {
+        } else if (socket.readyState === SOCKET_OPEN) {
           socket.close(1000, "live_run_transcripts_unmount");
         }
       }
     };
-  }, [activeRunIds, companyId, enableRealtimeUpdates, runById]);
+  }, [visible, activeRunIds, companyId, enableRealtimeUpdates, runById]);
 
   const transcriptByRun = useMemo(() => {
     const next = new Map<string, TranscriptEntry[]>();

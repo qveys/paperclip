@@ -78,6 +78,7 @@ describe("useLiveRunTranscripts", () => {
   const OriginalWebSocket = globalThis.WebSocket;
 
   beforeEach(() => {
+    vi.spyOn(document, "visibilityState", "get").mockReturnValue("visible");
     FakeWebSocket.instances = [];
     useQueryMock.mockClear();
     logMock.mockReset();
@@ -88,6 +89,45 @@ describe("useLiveRunTranscripts", () => {
 
   afterEach(() => {
     globalThis.WebSocket = OriginalWebSocket;
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
+  it("pauses hidden-tab reads and resumes at the retained log offset", async () => {
+    vi.useFakeTimers();
+    const visibility = vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
+    logMock.mockResolvedValue({ runId: "run-1", store: "memory", logRef: "log-1", content: "", nextOffset: 42 });
+    const runs = [{ id: "run-1", status: "running", adapterType: "codex_local" }];
+    function Harness() {
+      useLiveRunTranscripts({ companyId: "company-1", runs, enableRealtimeUpdates: false });
+      return null;
+    }
+    const container = document.createElement("div");
+    const root = createRoot(container);
+    try {
+      await act(async () => root.render(<Harness />));
+      await act(async () => vi.advanceTimersByTimeAsync(10_000));
+      expect(logMock).not.toHaveBeenCalled();
+      expect(FakeWebSocket.instances).toHaveLength(0);
+      await act(async () => {
+        visibility.mockReturnValue("visible");
+        document.dispatchEvent(new Event("visibilitychange"));
+      });
+      expect(logMock).toHaveBeenCalledTimes(1);
+      await act(async () => {
+        visibility.mockReturnValue("hidden");
+        document.dispatchEvent(new Event("visibilitychange"));
+      });
+      await act(async () => vi.advanceTimersByTimeAsync(10_000));
+      expect(logMock).toHaveBeenCalledTimes(1);
+      await act(async () => {
+        visibility.mockReturnValue("visible");
+        document.dispatchEvent(new Event("visibilitychange"));
+      });
+      expect(logMock).toHaveBeenLastCalledWith("run-1", 42, 256_000, expect.anything());
+    } finally {
+      await act(async () => root.unmount());
+    }
   });
 
   it("waits for a connecting socket to open before closing it during cleanup", async () => {
@@ -694,6 +734,37 @@ describe("useLiveRunTranscripts", () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  it("keeps HTTP log polling when the socket constructor fails and retries later", async () => {
+    vi.useFakeTimers();
+    globalThis.WebSocket = class {
+      constructor() { throw new TypeError("WebSocket is not a constructor"); }
+    } as unknown as typeof WebSocket;
+    const runs = [{ id: "run-1", status: "running", adapterType: "codex_local" }];
+    function Harness() {
+      useLiveRunTranscripts({ companyId: "company-1", runs });
+      return null;
+    }
+    const root = createRoot(document.createElement("div"));
+    try {
+      await act(async () => root.render(<Harness />));
+      expect(logMock).toHaveBeenCalledTimes(1);
+      await act(async () => vi.advanceTimersByTimeAsync(30_000));
+      expect(logMock.mock.calls.length).toBeGreaterThan(1);
+      globalThis.WebSocket = FakeWebSocket as unknown as typeof WebSocket;
+      await act(async () => vi.advanceTimersByTimeAsync(15_000));
+      expect(FakeWebSocket.instances).toHaveLength(1);
+      await act(async () => FakeWebSocket.instances[0].triggerOpen());
+      // Cleanup must not depend on the global constructor remaining available.
+      globalThis.WebSocket = undefined as unknown as typeof WebSocket;
+    } finally {
+      await act(async () => root.unmount());
+    }
+    const calls = logMock.mock.calls.length;
+    await act(async () => vi.advanceTimersByTimeAsync(30_000));
+    expect(logMock).toHaveBeenCalledTimes(calls);
+    expect(FakeWebSocket.instances[0].closeCalls).toHaveLength(1);
   });
 
   it("backs off exponentially when the live event socket keeps failing", async () => {

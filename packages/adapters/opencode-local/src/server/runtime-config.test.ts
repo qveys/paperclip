@@ -31,10 +31,12 @@ async function makeConfigHome(initialConfig?: Record<string, unknown>) {
 }
 
 describe("prepareOpenCodeRuntimeConfig", () => {
-  it("injects an external_directory allow rule by default", async () => {
+  it("allows all tools and connected tools by default", async () => {
     const configHome = await makeConfigHome({
       permission: {
         read: "allow",
+        bash: "ask",
+        "mcp__example__write": "deny",
       },
       theme: "system",
     });
