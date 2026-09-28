@@ -8,8 +8,9 @@ exec docker exec -i -u node -w /app paperclip node - "$@" <<'JS'
 //  - every hold of the issue (replay-blocked, or cleared earlier without a decision) gets an
 //    executionReconciliation {not_performed} for ITS run, so revisits see the run as reconciled;
 //    refuses if any of those runs produced model output (stdout or usage) — that needs a human;
-//    exception: an adapter_failed run with 0 input/output tokens whose error is a provider auth rejection
-//    (its stdout is only the provider's error body, the model never answered);
+//    exception: an adapter_failed run with 0 input/output tokens whose error is a provider auth
+//    rejection or a rate-limit/quota rejection (its stdout is only the provider's error body,
+//    the model never answered);
 //  - gate-cancelled never-started runs get bootstrap evidence (fixed in code by 3ba518b00);
 //  - the issue goes back to todo.
 // Rolls back unless the number of reconciled actions equals the expected count (run without it first).
@@ -33,7 +34,7 @@ const HOLD = `(ra.evidence->'automaticRecovery'->>'replay' = 'blocked'
        and not (coalesce((h.usage_json->>'inputTokens')::bigint, 0) = 0
                 and coalesce((h.usage_json->>'outputTokens')::bigint, 0) = 0
                 and h.error_code = 'adapter_failed'
-                and h.error ~* '(api[- ]?key|unauthori[sz]ed|authentication|invalid_api_key)')`, [idents]);
+                and h.error ~* '(api[- ]?key|unauthori[sz]ed|authentication|invalid_api_key|rate.?limit|\y429\y|free-models-per-day)')`, [idents]);
   if (out.rowCount) {
     await c.query('ROLLBACK');
     console.log('REFUSED: runs with model output need a human:', out.rows.map(r => `${r.identifier}:${r.id}`).join(' '));
@@ -47,7 +48,7 @@ const HOLD = `(ra.evidence->'automaticRecovery'->>'replay' = 'blocked'
                            else '{}'::jsonb end
                       || jsonb_build_object('executionReconciliation', jsonb_build_object(
                            'runId', ra.evidence->>'runId', 'providerStopped', true, 'actionOutcome', 'not_performed',
-                           'outcomeEvidence', 'Operator check: the run produced no model output (no tokens used; stdout empty or only a provider auth error); it failed on provider quota/auth/setup or was cancelled before start.',
+                           'outcomeEvidence', 'Operator check: the run produced no model output (no tokens used; stdout empty or only a provider auth/rate-limit error); it failed on provider quota/auth/setup or was cancelled before start.',
                            'actorId', 'operator:unhold', 'recordedAt', now()::text)),
            updated_at = now()
       from issues i
