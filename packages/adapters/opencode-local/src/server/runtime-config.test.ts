@@ -52,17 +52,79 @@ describe("prepareOpenCodeRuntimeConfig", () => {
         "utf8",
       ),
     ) as Record<string, unknown>;
-    expect(runtimeConfig).toMatchObject({
-      theme: "system",
-      permission: {
-        read: "allow",
-        external_directory: "allow",
-      },
+    expect(runtimeConfig.theme).toBe("system");
+    expect(runtimeConfig.permission).toBeUndefined();
+    expect(runtimeConfig.permissions).toContainEqual({ action: "read", resource: "*", effect: "allow" });
+    // The external_directory rule must be LAST: permissions are evaluated
+    // last-match-wins, so it always overrides any earlier rule for the same action.
+    expect((runtimeConfig.permissions as unknown[]).at(-1)).toEqual({
+      action: "external_directory",
+      resource: "*",
+      effect: "allow",
     });
 
     await prepared.cleanup();
     cleanupPaths.delete(prepared.env.XDG_CONFIG_HOME);
     await expect(fs.access(prepared.env.XDG_CONFIG_HOME)).rejects.toThrow();
+  });
+
+  it("converts a nested-object-form permission (per-pattern) into one rule per pattern", async () => {
+    const configHome = await makeConfigHome({
+      permission: {
+        bash: { "git push*": "deny", "*": "allow" },
+      },
+    });
+
+    const prepared = await prepareOpenCodeRuntimeConfig({
+      env: { XDG_CONFIG_HOME: configHome },
+      config: {},
+    });
+    cleanupPaths.add(prepared.env.XDG_CONFIG_HOME);
+
+    const runtimeConfig = JSON.parse(
+      await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
+    ) as { permissions: unknown[] };
+    // `bash` renames to `shell` in OpenCode V2.
+    expect(runtimeConfig.permissions).toContainEqual({ action: "shell", resource: "git push*", effect: "deny" });
+    expect(runtimeConfig.permissions).toContainEqual({ action: "shell", resource: "*", effect: "allow" });
+    expect(runtimeConfig.permissions.at(-1)).toEqual({
+      action: "external_directory",
+      resource: "*",
+      effect: "allow",
+    });
+    await prepared.cleanup();
+  });
+
+  it("merges into an already V2-native permissions/providers config instead of reconverting", async () => {
+    const configHome = await makeConfigHome({
+      permissions: [{ action: "edit", resource: "*", effect: "allow" }],
+      providers: {
+        openrouter: { package: "@ai-sdk/openai-compatible", models: { "x/y": {} } },
+      },
+    });
+
+    const prepared = await prepareOpenCodeRuntimeConfig({
+      env: { XDG_CONFIG_HOME: configHome },
+      config: {},
+    });
+    cleanupPaths.add(prepared.env.XDG_CONFIG_HOME);
+
+    const runtimeConfig = JSON.parse(
+      await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
+    ) as { permission?: unknown; provider?: unknown; permissions: unknown[]; providers: Record<string, unknown> };
+    expect(runtimeConfig.permission).toBeUndefined();
+    expect(runtimeConfig.provider).toBeUndefined();
+    expect(runtimeConfig.permissions).toContainEqual({ action: "edit", resource: "*", effect: "allow" });
+    expect(runtimeConfig.permissions.at(-1)).toEqual({
+      action: "external_directory",
+      resource: "*",
+      effect: "allow",
+    });
+    expect(runtimeConfig.providers.openrouter).toEqual({
+      package: "@ai-sdk/openai-compatible",
+      models: { "x/y": {} },
+    });
+    await prepared.cleanup();
   });
 
   it("merges custom providers from PAPERCLIP_OPENCODE_PROVIDERS into the config", async () => {
@@ -91,9 +153,19 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
     ) as Record<string, unknown>;
+    // OpenCode V2 renames provider `npm` -> `package` and `options` -> `settings`.
     expect(runtimeConfig).toMatchObject({
-      permission: { read: "allow", external_directory: "allow" },
-      provider: providers,
+      providers: {
+        bifrost: {
+          package: "@ai-sdk/openai-compatible",
+          name: "Bifrost EU",
+          settings: {
+            baseURL: "http://gateway.example.svc.cluster.local:8080/v1",
+            apiKey: "{env:ANTHROPIC_API_KEY}",
+          },
+          models: { "example/model-a": { name: "Model A" } },
+        },
+      },
     });
     expect(prepared.notes.some((n) => n.includes("bifrost"))).toBe(true);
     await prepared.cleanup();
@@ -112,7 +184,9 @@ describe("prepareOpenCodeRuntimeConfig", () => {
       const runtimeConfig = JSON.parse(
         await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
       ) as Record<string, unknown>;
-      expect(runtimeConfig).toMatchObject({ provider: providers });
+      expect(runtimeConfig).toMatchObject({
+        providers: { bifrost: { package: "@ai-sdk/openai-compatible", models: { "example/model-a": {} } } },
+      });
       await prepared.cleanup();
     } finally {
       delete process.env.PAPERCLIP_OPENCODE_PROVIDERS;
@@ -135,10 +209,10 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     cleanupPaths.add(prepared.env.XDG_CONFIG_HOME);
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
-    ) as { provider: { bifrost: { options: { apiKey: string } } } };
+    ) as { providers: { bifrost: { settings: { apiKey: string } } } };
     // The {env:...} placeholder must be replaced with the literal value, so OpenCode
     // does not depend on its sandboxed process env carrying the key.
-    expect(runtimeConfig.provider.bifrost.options.apiKey).toBe("sk-bf-REALVK");
+    expect(runtimeConfig.providers.bifrost.settings.apiKey).toBe("sk-bf-REALVK");
     await prepared.cleanup();
   });
 
@@ -152,8 +226,8 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     cleanupPaths.add(prepared.env.XDG_CONFIG_HOME);
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
-    ) as { provider: { bifrost: { options: { apiKey: string } } } };
-    expect(runtimeConfig.provider.bifrost.options.apiKey).toBe("{env:DEFINITELY_UNSET_VAR_XYZ}");
+    ) as { providers: { bifrost: { settings: { apiKey: string } } } };
+    expect(runtimeConfig.providers.bifrost.settings.apiKey).toBe("{env:DEFINITELY_UNSET_VAR_XYZ}");
     await prepared.cleanup();
   });
 
@@ -171,7 +245,7 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     await prepared.cleanup();
   });
 
-  it("ignores malformed PAPERCLIP_OPENCODE_PROVIDERS without writing a provider block and surfaces a note", async () => {
+  it("ignores malformed PAPERCLIP_OPENCODE_PROVIDERS without writing a providers block and surfaces a note", async () => {
     const configHome = await makeConfigHome({ permission: { read: "allow" } });
     const prepared = await prepareOpenCodeRuntimeConfig({
       env: { XDG_CONFIG_HOME: configHome, PAPERCLIP_OPENCODE_PROVIDERS: "not json" },
@@ -181,7 +255,7 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
     ) as Record<string, unknown>;
-    expect(runtimeConfig.provider).toBeUndefined();
+    expect(runtimeConfig.providers).toBeUndefined();
     expect(prepared.notes).toContain(
       "PAPERCLIP_OPENCODE_PROVIDERS contains invalid JSON; custom providers ignored.",
     );
@@ -198,7 +272,7 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
     ) as Record<string, unknown>;
-    expect(runtimeConfig.provider).toBeUndefined();
+    expect(runtimeConfig.providers).toBeUndefined();
     expect(prepared.notes).toContain(
       "PAPERCLIP_OPENCODE_PROVIDERS is set but is not a JSON object; custom providers ignored.",
     );
@@ -220,9 +294,9 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     cleanupPaths.add(prepared.env.XDG_CONFIG_HOME);
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
-    ) as { provider?: Record<string, unknown> };
-    expect(runtimeConfig.provider?.usable).toBeDefined();
-    expect(runtimeConfig.provider?.bifrost).toBeUndefined();
+    ) as { providers?: Record<string, unknown> };
+    expect(runtimeConfig.providers?.usable).toBeDefined();
+    expect(runtimeConfig.providers?.bifrost).toBeUndefined();
     expect(prepared.notes).toContain(
       "PAPERCLIP_OPENCODE_PROVIDERS: skipped provider(s) with non-object values: bifrost.",
     );
@@ -242,7 +316,7 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
     ) as Record<string, unknown>;
-    expect(runtimeConfig.provider).toBeUndefined();
+    expect(runtimeConfig.providers).toBeUndefined();
     expect(prepared.notes).toContain(
       "PAPERCLIP_OPENCODE_PROVIDERS: skipped provider(s) with non-object values: bifrost.",
     );
@@ -258,8 +332,8 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     cleanupPaths.add(prepared.env.XDG_CONFIG_HOME);
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
-    ) as { provider?: Record<string, { models?: Record<string, unknown> }> };
-    expect(runtimeConfig.provider?.openrouter?.models).toEqual({
+    ) as { providers?: Record<string, { models?: Record<string, unknown> }> };
+    expect(runtimeConfig.providers?.openrouter?.models).toEqual({
       "openai/gpt-oss-120b:nitro": {},
     });
     expect(prepared.notes).toContain(
@@ -288,8 +362,8 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     cleanupPaths.add(prepared.env.XDG_CONFIG_HOME);
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
-    ) as { provider?: Record<string, { models?: Record<string, unknown> }> };
-    expect(runtimeConfig.provider?.openrouter?.models).toEqual(providers.openrouter.models);
+    ) as { providers?: Record<string, { models?: Record<string, unknown> }> };
+    expect(runtimeConfig.providers?.openrouter?.models).toEqual(providers.openrouter.models);
     expect(
       prepared.notes.some((note) => note.startsWith("Registered configured model")),
     ).toBe(false);
@@ -306,7 +380,7 @@ describe("prepareOpenCodeRuntimeConfig", () => {
     const runtimeConfig = JSON.parse(
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
     ) as Record<string, unknown>;
-    expect(runtimeConfig.provider).toBeUndefined();
+    expect(runtimeConfig.providers).toBeUndefined();
     await prepared.cleanup();
   });
 

@@ -174,6 +174,141 @@ describe("OpenCode local skill injection", () => {
   });
 });
 
+describe("OpenCode local buildArgs (OpenCode V2)", () => {
+  // V2's `run`/`models` share a background service by default; --standalone
+  // isolates the invocation, which this adapter's process-per-run XDG
+  // isolation depends on. It must sit right after `run`.
+  it("positions --standalone immediately after `run`", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-opencode-standalone-"));
+    const workspace = path.join(root, "workspace");
+    const commandPath = path.join(root, "opencode");
+    await fs.mkdir(workspace, { recursive: true });
+    await fs.writeFile(commandPath, "#!/bin/sh\nexit 0\n", "utf8");
+    await fs.chmod(commandPath, 0o755);
+    runProcessMock.mockReset();
+    runProcessMock.mockResolvedValueOnce(probeResult({
+      stdout: JSON.stringify({ type: "text", sessionID: "session-standalone", part: { text: "done" } }),
+    }));
+
+    try {
+      await execute({
+        runId: "run-standalone",
+        agent: {
+          id: "agent-standalone",
+          companyId: "company-1",
+          name: "OpenCode Coder",
+          adapterType: "opencode_local",
+          adapterConfig: {},
+        },
+        runtime: { sessionId: null, sessionParams: null, sessionDisplayId: null, taskKey: null },
+        config: {
+          command: commandPath,
+          cwd: workspace,
+          model: "openai/gpt-5",
+          env: { OPENCODE_ALLOW_ALL_MODELS: "1" },
+          promptTemplate: "Run the task.",
+        },
+        context: {},
+        authToken: "run-jwt-token",
+        onLog: async () => {},
+      });
+
+      const args = runProcessMock.mock.calls.at(-1)![3] as string[];
+      expect(args[0]).toBe("run");
+      expect(args[1]).toBe("--standalone");
+    } finally {
+      await fs.rm(root, { recursive: true, force: true });
+    }
+  });
+
+  // V2 dropped --variant: a variant is now a `#variant` suffix on --model.
+  it("suffixes the model with #variant when a variant is configured", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-opencode-variant-"));
+    const workspace = path.join(root, "workspace");
+    const commandPath = path.join(root, "opencode");
+    await fs.mkdir(workspace, { recursive: true });
+    await fs.writeFile(commandPath, "#!/bin/sh\nexit 0\n", "utf8");
+    await fs.chmod(commandPath, 0o755);
+    runProcessMock.mockReset();
+    runProcessMock.mockResolvedValueOnce(probeResult({
+      stdout: JSON.stringify({ type: "text", sessionID: "session-variant", part: { text: "done" } }),
+    }));
+
+    try {
+      await execute({
+        runId: "run-variant",
+        agent: {
+          id: "agent-variant",
+          companyId: "company-1",
+          name: "OpenCode Coder",
+          adapterType: "opencode_local",
+          adapterConfig: {},
+        },
+        runtime: { sessionId: null, sessionParams: null, sessionDisplayId: null, taskKey: null },
+        config: {
+          command: commandPath,
+          cwd: workspace,
+          model: "openai/gpt-5",
+          variant: "high",
+          env: { OPENCODE_ALLOW_ALL_MODELS: "1" },
+          promptTemplate: "Run the task.",
+        },
+        context: {},
+        authToken: "run-jwt-token",
+        onLog: async () => {},
+      });
+
+      const args = runProcessMock.mock.calls.at(-1)![3] as string[];
+      expect(args[args.indexOf("--model") + 1]).toBe("openai/gpt-5#high");
+    } finally {
+      await fs.rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it("does not double-suffix a model that already carries a #variant", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-opencode-variant-explicit-"));
+    const workspace = path.join(root, "workspace");
+    const commandPath = path.join(root, "opencode");
+    await fs.mkdir(workspace, { recursive: true });
+    await fs.writeFile(commandPath, "#!/bin/sh\nexit 0\n", "utf8");
+    await fs.chmod(commandPath, 0o755);
+    runProcessMock.mockReset();
+    runProcessMock.mockResolvedValueOnce(probeResult({
+      stdout: JSON.stringify({ type: "text", sessionID: "session-variant-explicit", part: { text: "done" } }),
+    }));
+
+    try {
+      await execute({
+        runId: "run-variant-explicit",
+        agent: {
+          id: "agent-variant-explicit",
+          companyId: "company-1",
+          name: "OpenCode Coder",
+          adapterType: "opencode_local",
+          adapterConfig: {},
+        },
+        runtime: { sessionId: null, sessionParams: null, sessionDisplayId: null, taskKey: null },
+        config: {
+          command: commandPath,
+          cwd: workspace,
+          model: "openai/gpt-5#low",
+          variant: "high",
+          env: { OPENCODE_ALLOW_ALL_MODELS: "1" },
+          promptTemplate: "Run the task.",
+        },
+        context: {},
+        authToken: "run-jwt-token",
+        onLog: async () => {},
+      });
+
+      const args = runProcessMock.mock.calls.at(-1)![3] as string[];
+      expect(args[args.indexOf("--model") + 1]).toBe("openai/gpt-5#low");
+    } finally {
+      await fs.rm(root, { recursive: true, force: true });
+    }
+  });
+});
+
 describe("ensureRemoteOpenCodeModelConfiguredAndAvailable", () => {
   afterEach(() => {
     delete process.env.OPENCODE_ALLOW_ALL_MODELS;

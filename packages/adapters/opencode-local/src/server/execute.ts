@@ -590,12 +590,22 @@ export async function execute(ctx: AdapterExecutionContext): Promise<AdapterExec
     const printLogs = isTruthyEnvFlag(
       env.PAPERCLIP_OPENCODE_PRINT_LOGS ?? process.env.PAPERCLIP_OPENCODE_PRINT_LOGS,
     );
+    // OpenCode V2: `run` and `models` share a background service by default;
+    // --standalone runs an isolated per-invocation service instead, which is what
+    // this adapter's process-per-run model (and its XDG_CONFIG_HOME isolation) needs.
+    // V2 also dropped --variant: a variant is now addressed as a `#variant` suffix
+    // on the model string. A variant with no model has nothing to suffix, so it is
+    // dropped rather than passed as its own (now-removed) flag.
+    const modelArg = model
+      ? variant && !model.includes("#")
+        ? `${model}#${variant}`
+        : model
+      : null;
     const buildArgs = (resumeSessionId: string | null) => {
-      const args = ["run", "--format", "json"];
+      const args = ["run", "--standalone", "--format", "json"];
       if (printLogs) args.push("--print-logs");
       if (resumeSessionId) args.push("--session", resumeSessionId);
-      if (model) args.push("--model", model);
-      if (variant) args.push("--variant", variant);
+      if (modelArg) args.push("--model", modelArg);
       if (extraArgs.length > 0) args.push(...extraArgs);
       return args;
     };

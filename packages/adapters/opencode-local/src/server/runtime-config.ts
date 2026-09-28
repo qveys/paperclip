@@ -102,6 +102,54 @@ async function readJsonObject(filepath: string): Promise<Record<string, unknown>
   }
 }
 
+// OpenCode V2's `permissions` is an ordered array of {action,resource,effect}
+// rules (last match wins), replacing V1's `permission` object of
+// `tool: effect` (or `tool: {pattern: effect}`) entries. A handful of tool
+// names were renamed between the two CLI generations.
+function renamePermissionAction(tool: string): string {
+  if (tool === "bash") return "shell";
+  if (tool === "task") return "subagent";
+  if (tool === "write" || tool === "patch") return "edit";
+  return tool;
+}
+
+type PermissionRule = { action: string; resource: string; effect: string };
+
+function convertV1PermissionToRules(permission: Record<string, unknown>): PermissionRule[] {
+  const rules: PermissionRule[] = [];
+  for (const [tool, value] of Object.entries(permission)) {
+    const action = renamePermissionAction(tool);
+    if (typeof value === "string") {
+      rules.push({ action, resource: "*", effect: value });
+    } else if (isPlainObject(value)) {
+      for (const [pattern, effect] of Object.entries(value)) {
+        if (typeof effect === "string") rules.push({ action, resource: pattern, effect });
+      }
+    }
+  }
+  return rules;
+}
+
+// OpenCode V2's provider entries rename `npm` to `package` and `options` to
+// `settings`; `models` and every other key are unchanged.
+function convertProviderEntryToV2(entry: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(entry)) {
+    if (key === "npm") out.package = value;
+    else if (key === "options") out.settings = value;
+    else out[key] = value;
+  }
+  return out;
+}
+
+function convertV1ProvidersToV2(provider: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(provider)) {
+    out[key] = isPlainObject(value) ? convertProviderEntryToV2(value) : value;
+  }
+  return out;
+}
+
 export async function prepareOpenCodeRuntimeConfig(input: {
   env: Record<string, string>;
   config: Record<string, unknown>;
@@ -153,15 +201,24 @@ export async function prepareOpenCodeRuntimeConfig(input: {
   }
 
   const existingConfig = await readJsonObject(runtimeConfigPath);
-  const existingPermission = isPlainObject(existingConfig.permission)
-    ? existingConfig.permission
-    : {};
   const notes = [
     "Injected runtime OpenCode config with permission.external_directory=allow to avoid headless approval prompts.",
   ];
 
+  // Convert a V1-shaped `permission` object to V2 `permissions` rules rather
+  // than mixing the two shapes; a config that is already V2-native (has
+  // `permissions`) is merged into as-is.
+  const existingPermissionsV2 = Array.isArray(existingConfig.permissions)
+    ? (existingConfig.permissions as unknown[]).filter(isPlainObject)
+    : [];
+  const existingPermissionV1 = isPlainObject(existingConfig.permission) ? existingConfig.permission : {};
+  const basePermissionRules = [
+    ...existingPermissionsV2,
+    ...convertV1PermissionToRules(existingPermissionV1),
+  ] as PermissionRule[];
+
   // Merge gateway/custom provider definitions supplied via PAPERCLIP_OPENCODE_PROVIDERS
-  // (a JSON object in OpenCode's `provider` shape). OpenCode resolves a `--model
+  // (a JSON object in OpenCode's V1 `provider` shape). OpenCode resolves a `--model
   // provider/model` only when that model exists in a provider's `models` map, and
   // OPENCODE_ALLOW_ALL_MODELS does NOT bypass its internal getModel(). So routing a
   // gateway model (e.g. an EU LLM gateway exposing OpenAI-compatible /v1) requires a
@@ -173,10 +230,19 @@ export async function prepareOpenCodeRuntimeConfig(input: {
     resolveEnv,
     notes,
   );
-  const existingProvider = isPlainObject(existingConfig.provider) ? existingConfig.provider : {};
-  let nextProvider = gatewayProviders
-    ? { ...existingProvider, ...gatewayProviders }
-    : existingProvider;
+
+  // Convert a V1-shaped `provider` object (or PAPERCLIP_OPENCODE_PROVIDERS,
+  // always V1-shaped) to V2 `providers`; a config that is already V2-native
+  // (has `providers`) is merged into as-is.
+  const existingProvidersV2 = isPlainObject(existingConfig.providers) ? existingConfig.providers : {};
+  const existingProviderV1 = isPlainObject(existingConfig.provider) ? existingConfig.provider : {};
+  const baseProviders = {
+    ...convertV1ProvidersToV2(existingProviderV1),
+    ...existingProvidersV2,
+  };
+  let nextProviders = gatewayProviders
+    ? { ...baseProviders, ...convertV1ProvidersToV2(gatewayProviders) }
+    : baseProviders;
   if (gatewayProviders) {
     notes.push(
       `Injected ${Object.keys(gatewayProviders).length} custom OpenCode provider(s) from PAPERCLIP_OPENCODE_PROVIDERS: ${Object.keys(gatewayProviders).join(", ")}.`,
@@ -193,8 +259,8 @@ export async function prepareOpenCodeRuntimeConfig(input: {
   // user config or PAPERCLIP_OPENCODE_PROVIDERS.
   const configuredModel = parseConfiguredModelRef(input.config.model);
   if (configuredModel) {
-    const providerEntry = isPlainObject(nextProvider[configuredModel.provider])
-      ? { ...(nextProvider[configuredModel.provider] as Record<string, unknown>) }
+    const providerEntry = isPlainObject(nextProviders[configuredModel.provider])
+      ? { ...(nextProviders[configuredModel.provider] as Record<string, unknown>) }
       : {};
     const providerModels = isPlainObject(providerEntry.models)
       ? { ...(providerEntry.models as Record<string, unknown>) }
@@ -202,22 +268,29 @@ export async function prepareOpenCodeRuntimeConfig(input: {
     if (!isPlainObject(providerModels[configuredModel.model])) {
       providerModels[configuredModel.model] = {};
       providerEntry.models = providerModels;
-      nextProvider = { ...nextProvider, [configuredModel.provider]: providerEntry };
+      nextProviders = { ...nextProviders, [configuredModel.provider]: providerEntry };
       notes.push(
         `Registered configured model ${configuredModel.provider}/${configuredModel.model} in the runtime OpenCode config.`,
       );
     }
   }
 
-  const nextConfig: Record<string, unknown> = {
-    ...existingConfig,
-    permission: {
-      ...existingPermission,
-      external_directory: "allow",
-    },
-  };
-  if (Object.keys(nextProvider).length > 0) {
-    nextConfig.provider = nextProvider;
+  // Append the external_directory allow rule LAST: `permissions` is evaluated
+  // last-match-wins, so this always overrides any earlier/existing rule for
+  // the same action, regardless of what the source config already declared.
+  const nextPermissions: PermissionRule[] = [
+    ...basePermissionRules,
+    { action: "external_directory", resource: "*", effect: "allow" },
+  ];
+
+  // Never emit both the V1 and V2 shapes for the same concept.
+  const nextConfig: Record<string, unknown> = { ...existingConfig };
+  delete nextConfig.permission;
+  delete nextConfig.provider;
+  delete nextConfig.providers;
+  nextConfig.permissions = nextPermissions;
+  if (Object.keys(nextProviders).length > 0) {
+    nextConfig.providers = nextProviders;
   }
 
   // Pin OpenCode's auxiliary "small" model (used for session-title generation and
