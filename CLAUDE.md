@@ -43,14 +43,14 @@ Run a single Vitest test file directly (bypasses the stable-runner wrapper) with
 - `ui/` — React 19 + Vite board UI, served by the API server in dev middleware mode (same origin as the API). Storybook lives under `ui/storybook/` (not app routes).
 - `packages/db/` — Drizzle ORM schema (`src/schema/`), migrations, and DB clients. Migrations are generated from *compiled* schema (`dist/schema/*.js`), so `pnpm db:generate` builds the package first.
 - `packages/shared/` — types, constants, validators, and API path constants shared between `server` and `ui`. This is the contract layer both sides import from.
-- `packages/adapters/*` — one package per agent runtime integration (`claude-local`, `codex-local`, `cursor-local`, `cursor-cloud`, `gemini-local`, `grok-local`, `hermes`, `hermes-gateway`, `openclaw-gateway`, `opencode-local`, `pi-local`). See `packages/adapters/AUTHORING.md` for the adapter contract.
+- `packages/adapters/*` — one package per agent runtime integration (see `ls packages/adapters/`). See `packages/adapters/AUTHORING.md` for the adapter contract.
 - `packages/adapter-utils/` — shared helpers for adapter packages.
 - `packages/plugins/*` — the instance-wide plugin system (out-of-process workers, capability-gated host services, job scheduling, tool exposure, UI contributions).
 - `packages/skills-catalog/`, `packages/teams-catalog/` — app-shipped catalogs of skills/teams surfaced in the product UI (distinct from `skills/`, which are Paperclip's own operational skills for working *in* this repo).
 - `cli/` — the published `paperclipai` CLI (bin), used for onboarding, doctor/repair, auth bootstrap, and running the server.
 - `doc/` — operational and product docs; `doc/plans/` for dated repo planning docs (`YYYY-MM-DD-slug.md`).
 
-**Cross-cutting invariant**: everything in the domain model is company-scoped, and a schema/behavior change typically touches four layers together — `packages/db` schema → `packages/shared` types/constants/validators → `server` routes/services → `ui` API clients/pages. AGENTS.md §5 calls this out explicitly as "keep contracts synchronized"; when planning a change, expect to touch all four.
+**Cross-cutting invariant**: everything in the domain model is company-scoped, and a schema/behavior change typically touches four layers together — `packages/db` schema → `packages/shared` types/constants/validators → `server` routes/services → `ui` API clients/pages.
 
 **Heartbeat execution** is the core runtime loop: a DB-backed wakeup queue (with coalescing) drives budget checks, workspace resolution, secret injection, skill loading, and adapter invocation for each agent run; runs produce structured logs, cost events, session state, and audit trails, with orphaned-run recovery on restart. Most "agent does work" features touch this path (`server/src/services`, the relevant `packages/adapters/*` package, and `packages/db` heartbeat/run tables).
 

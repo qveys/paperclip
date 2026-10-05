@@ -82,3 +82,4 @@ test-results/
 
 # Retained local lifecycle behavior measurements
 .lifecycle-baseline/
+.worktrees/
