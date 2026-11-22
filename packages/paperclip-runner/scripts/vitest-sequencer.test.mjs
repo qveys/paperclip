@@ -14,6 +14,7 @@ const files = [
 const ctx = {
   config: { root: "/repo", shard: { index: 1, count: 2 } },
   cache: {
+    getTestSpecificationResult: () => undefined,
     getFileTestResults: () => undefined,
     getFileStats: (key) => ({ size: 100 - files.findIndex((file) => key.endsWith(file.moduleId.slice(6))) }),
   },
