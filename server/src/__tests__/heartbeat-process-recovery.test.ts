@@ -14604,6 +14604,7 @@ describeEmbeddedPostgres("heartbeat orphaned process recovery", () => {
         error: "Workspace occupied",
         runtimeMode: mode === "native" ? "native" : "legacy",
         nativeIssueId: mode === "native" ? source.issueId : null,
+        startedAt: mode === "legacy_unknown" ? new Date() : null,
         resultJson: mode === "legacy_pre_provider"
           ? { executionRecovery: { kind: "bootstrap", providerWorkStarted: false } }
           : null,

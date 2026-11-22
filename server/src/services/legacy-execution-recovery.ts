@@ -5,7 +5,7 @@ import { notifyInstructionCollection } from "./instruction-collection-notificati
 import { notifyExecutionRunWork } from "./execution-control-notifications.js";
 import { hasRequiredWorkspaceRecovery, preserveWorkspaceRestoreRecoveryMetadata, LEGACY_WORKSPACE_RECOVERY_SCHEMA } from "./workspace-restore-recovery-state.js";
 import { hasUnrestoredRemoteWorkspace, preserveLegacyWorkspaceRestoreSources, type LegacyWorkspaceRestoreSource } from "./legacy-workspace-restore-recovery.js";
-import { isPreDispatchReviewWaitVerified } from "./pre-dispatch-review-wait.js";
+import { isPreDispatchReviewWait, isPreDispatchReviewWaitVerified } from "./pre-dispatch-review-wait.js";
 import { isPreDispatchExecutionWaitVerified } from "./pre-dispatch-execution-wait.js";
 import { REMOTE_WORKSPACE_PREPARATION_TIMEOUT_CODE, REMOTE_WORKSPACE_RESTORE_FAILED_CODE } from "./remote-workspace-transport.js";
 import { REUSABLE_SANDBOX_RESUME_FAILED_CODE } from "./reusable-sandbox-resume-error.js";
@@ -110,8 +110,13 @@ export function legacyExecutionNeedsReconciliation(
  * The synchronous classifier stays conservative for callers without a DB proof. */
 export async function legacyExecutionNeedsReconciliationWithEvidence(db: Db, run: Run): Promise<boolean> {
   if (await isInterruptedNativePreparation(db, run)) return false;
+  const verifiedReviewWait = await isPreDispatchReviewWaitVerified(db, run);
+  // A pre-dispatch receipt is safe only when the database agrees there was no
+  // dispatch. Contradictory process, provider, or cleanup evidence overrides
+  // a missing startedAt timestamp and keeps legacy work behind reconciliation.
+  if (isPreDispatchReviewWait(run) && !verifiedReviewWait) return true;
   return await hasUnrestoredRemoteWorkspace(db, run) ||
-    (legacyExecutionNeedsReconciliation(run) && !(await isPreDispatchReviewWaitVerified(db, run))
+    (legacyExecutionNeedsReconciliation(run) && !verifiedReviewWait
       && !(await isPreDispatchExecutionWaitVerified(db, run)));
 }
 

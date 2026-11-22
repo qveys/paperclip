@@ -3,7 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 const repositoryRoot = path.resolve(import.meta.dirname, "../..");
-// PR #13470 uses the code-owner-reviewed default branch for this first-party workflow.
+// The fork's protected default branch owns the reusable trusted workflow.
 const ordinaryPrTrustedWorkflowRevision = "master";
 const fullStackTestNeeds =
   /needs:\s*\[\s*authorize,\s*target_lock,\s*catalog,\s*daytona_image,\s*build_runner_artifacts,\s*build_remote_provider_pack,?\s*\]/u;
@@ -69,13 +69,13 @@ describe("public repository paid workflow security", () => {
     );
     const trustedWorkflowCalls = [
       ...ordinaryPrWorkflow.matchAll(
-        /^\s+uses:\s+(paperclipai\/paperclip\/\.github\/workflows\/pr-trusted\.yml)@([^\s#]+)$/gmu,
+        /^\s+uses:\s+(qveys\/paperclip\/\.github\/workflows\/pr-trusted\.yml)@([^\s#]+)$/gmu,
       ),
     ];
 
     expect(trustedWorkflowCalls).toHaveLength(1);
     expect(trustedWorkflowCalls[0]?.[1]).toBe(
-      "paperclipai/paperclip/.github/workflows/pr-trusted.yml",
+      "qveys/paperclip/.github/workflows/pr-trusted.yml",
     );
     expect(trustedWorkflowCalls[0]?.[2]).toBe(
       ordinaryPrTrustedWorkflowRevision,
