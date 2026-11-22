@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause the previous release while this migration replaces a shared function and trigger
 -- Environment requirements use the same durable runtime journal as explicit skill assignments.
 CREATE OR REPLACE FUNCTION paperclip_environment_selects_runtime_skill(p_company uuid, p_environment uuid, p_skill uuid) RETURNS boolean
 LANGUAGE sql STABLE SET search_path = public, pg_temp AS $$

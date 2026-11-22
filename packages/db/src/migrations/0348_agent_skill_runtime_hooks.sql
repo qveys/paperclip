@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause the previous release while this migration replaces shared functions and triggers
 CREATE OR REPLACE FUNCTION paperclip_invalidate_company_agent_runtimes(p_company uuid) RETURNS void
 LANGUAGE plpgsql SET search_path = public, pg_temp AS $$
 DECLARE candidate uuid;

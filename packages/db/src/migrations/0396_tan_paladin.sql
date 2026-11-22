@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause writers while this migration runs a procedural backfill against existing rows
 ALTER TABLE "chat_voice_inbound_calls" ADD COLUMN IF NOT EXISTS "provider_account_id" text;--> statement-breakpoint
 ALTER TABLE "chat_voice_inbound_calls" ADD COLUMN IF NOT EXISTS "cleanup_confirmed_at" timestamp with time zone;--> statement-breakpoint
 ALTER TABLE "chat_voice_inbound_calls" ADD COLUMN IF NOT EXISTS "cleanup_next_attempt_at" timestamp with time zone;--> statement-breakpoint

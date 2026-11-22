@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause writers while this migration backfills existing rows
 UPDATE "heartbeat_runs" AS "run"
 SET "process_pid" = NULL, "process_group_id" = NULL, "process_started_at" = NULL
 WHERE "run"."runtime_mode" = 'native'

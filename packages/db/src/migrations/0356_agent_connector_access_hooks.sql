@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause the previous release while this migration replaces shared functions and triggers
 CREATE OR REPLACE FUNCTION paperclip_connector_runtime_changed() RETURNS trigger
 LANGUAGE plpgsql SET search_path = public, pg_temp AS $$
 DECLARE company uuid; query text; target record; binding record; candidate uuid;

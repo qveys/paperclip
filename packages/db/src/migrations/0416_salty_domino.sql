@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause writers while this migration drops and rebuilds indexes on existing tables
 DROP INDEX "heartbeat_runs_cancelled_workspace_preservation_idx";--> statement-breakpoint
 CREATE INDEX "heartbeat_runs_cancelled_workspace_preservation_idx" ON "heartbeat_runs" USING btree ("id","company_id") WHERE "heartbeat_runs"."runtime_mode" = 'native' AND "heartbeat_runs"."status" = 'cancelled'
         AND "heartbeat_runs"."runner_profile_json"->'nativeWorkspaceSync'->>'state' = 'prepared'

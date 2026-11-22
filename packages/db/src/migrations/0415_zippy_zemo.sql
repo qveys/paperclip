@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause the previous release while this migration changes defaults and replaces shared hooks and constraints
 CREATE TABLE IF NOT EXISTS "skill_package_deletions" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"company_id" uuid NOT NULL,

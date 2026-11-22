@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause table writers while PostgreSQL validates foreign keys on existing rows
 ALTER TABLE "chat_voice_phone_lines" ADD COLUMN IF NOT EXISTS "low_trust_environment_id" uuid;
 --> statement-breakpoint
 DO $$ BEGIN

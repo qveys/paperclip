@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause writers while this migration backfills existing rows
 -- Native Codex, OpenCode and Claude agents stored lifecycleMode = 'per_turn'
 -- because agent creation wrote the old default. Clear it so the agent follows
 -- the product default (warm for local Codex and OpenCode; per-turn elsewhere,

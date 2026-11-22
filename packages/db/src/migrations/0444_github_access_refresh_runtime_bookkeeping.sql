@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause the previous release while this migration replaces a shared function
 -- A GitHub access refresh (scheduled health checks and continuity renewal)
 -- rewrites the grant's access fence, refresh time, and webhook binding debt even
 -- when the installation and repository view is unchanged. Those fields are

@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause lifecycle writers while this migration copies existing events into the cursor table
 CREATE TABLE "plugin_lifecycle_resource_cursors" (
 	"plugin_id" uuid NOT NULL,
 	"company_id" uuid NOT NULL,

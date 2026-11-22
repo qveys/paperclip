@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause the previous release while this migration replaces shared functions and triggers
 CREATE OR REPLACE FUNCTION paperclip_bump_issue_assignment_version()
 RETURNS trigger AS $$
 BEGIN

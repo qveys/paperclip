@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause writers while this migration backfills existing rows
 WITH added AS (
   INSERT INTO principal_permission_grants (
     company_id, principal_type, principal_id, permission_key, scope

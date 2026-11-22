@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause writers while this migration changes existing records
 INSERT INTO "principal_permission_grants" (
   "company_id",
   "principal_type",

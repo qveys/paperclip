@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause the previous release while this migration replaces shared functions used by writes
 CREATE OR REPLACE FUNCTION paperclip_connector_policy_targets(p_company uuid, selectors jsonb)
 RETURNS TABLE(target_type text, target_id text)
 LANGUAGE plpgsql IMMUTABLE SET search_path = public, pg_temp AS $$

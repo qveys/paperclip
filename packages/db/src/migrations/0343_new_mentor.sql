@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause writers while this migration backfills existing rows
 ALTER TABLE "agents" ADD COLUMN IF NOT EXISTS "created_by_user_id" text;
 --> statement-breakpoint
 UPDATE "agents" SET "created_by_user_id" = (

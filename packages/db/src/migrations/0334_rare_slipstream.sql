@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause table writers while PostgreSQL validates foreign keys on existing rows
 CREATE TABLE "company_skill_repository_snapshots" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"company_id" uuid NOT NULL,
