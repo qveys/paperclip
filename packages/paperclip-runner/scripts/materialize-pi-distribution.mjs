@@ -21,7 +21,7 @@ const securityPatchPath = join(workspaceRoot, "patches/brace-expansion@5.0.9.pat
 export const PI_BRACE_SECURITY_PATCH_SHA256 = "5273a195b952f233336122842faaf650193c04f36b9359d20d4d63079b0ce814";
 const supportedTargets = new Set(["darwin-arm64", "darwin-x64", "linux-x64"]);
 export const PI_DISTRIBUTION_PINS = Object.freeze({
-  wrapper: "0.0.33", runtime: "1.0.0", sdk: "0.26.0", zod: "3.25.76", nodeVersion: PI_NODE_VERSION, undici: "8.10.2", nodeBundledUndici: "7.29.1",
+  wrapper: "0.0.33", runtime: "1.6.0", sdk: "0.26.0", zod: "4.6.6", nodeVersion: PI_NODE_VERSION, undici: "8.13.1", nodeBundledUndici: "7.29.1",
   wrapperSha256: "9d129b3d38772e93e97080aa6c4e574ac5df4e47ce5bc331a484a9fbf8188b36",
   helperSha256: "41e0490b617da0d60e0c8ec58ef311236f945129d99f816cff6897f78da7f91d",
 });
@@ -54,20 +54,14 @@ export async function verifyLockedPiPackageGraph(root, lock, target = { platform
     verified++;
   }
   const piPath = "node_modules/@earendil-works/pi-coding-agent";
-  const shrinkwrap = JSON.parse(await readFile(join(root, piPath, "npm-shrinkwrap.json"), "utf8"));
-  if (shrinkwrap.version !== PI_DISTRIBUTION_PINS.runtime || shrinkwrap.lockfileVersion !== 3) throw new Error("Pi upstream shrinkwrap is missing or changed");
-  for (const [path, entry] of Object.entries(shrinkwrap.packages)) {
-    if (!path) continue;
-    const pinned = lock.packages[`${piPath}/${path}`];
-    // Pi bundles its dependency payload, so npm overrides do not replace it.
-    // Only this reviewed build-owned patch may differ from the upstream graph.
-    if (path === "node_modules/brace-expansion" && entry.version === "5.0.9"
-      && entry.integrity === "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg=="
-      && entry.resolved === "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.9.tgz"
-      && pinned?.version === "5.0.12"
-      && pinned.integrity === "sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ=="
-      && pinned.resolved === "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.12.tgz") continue;
-    if (!pinned || pinned.version !== entry.version || (entry.integrity !== undefined && pinned.integrity !== entry.integrity) || pinned.resolved !== entry.resolved) throw new Error(`Pi distribution dropped or changed shrinkwrapped package ${path}`);
+  const piPackage = JSON.parse(await readFile(join(root, piPath, "package.json"), "utf8"));
+  if (piPackage.version !== PI_DISTRIBUTION_PINS.runtime || lock.packages[piPath].version !== piPackage.version) throw new Error("Pi runtime version differs from its integrity-locked package");
+  // The published npm tarball has no shrinkwrap. npm's integrity-checked lock is
+  // the authoritative complete graph; require every Pi-declared dependency to
+  // have a matching locked package entry, including the reviewed brace fix.
+  for (const [name, version] of Object.entries({ ...piPackage.dependencies, ...piPackage.optionalDependencies })) {
+    const nested = lock.packages[`${piPath}/node_modules/${name}`] ?? lock.packages[`node_modules/${name}`];
+    if (!nested || nested.version !== version) throw new Error(`Pi distribution lock is missing or changes Pi dependency ${name}`);
   }
   return verified;
 }
