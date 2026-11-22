@@ -16,7 +16,7 @@ const PROJECT_ENVIRONMENT_OVERLAP = {
   dropFile: "0466_drop_project_environment.sql",
   dropSha256: "07ca1c666c6471fdb9ce7a0a5fb31bf1a074138466fa8daae50b53199b8e0d7c",
   repairFile: "0467_fair_human_torch.sql",
-  repairSha256: "50ce0eb2567570b098bea1de92fe6a220d139e4ba83438195fbbad1be51e31a1",
+  repairSha256: "ff4c8bdd4c7b896ec14783127fb8d5a74ddf9becef3935805ddf39d27fba8b07",
 } as const;
 
 function createUtilitySql(url: string) {
