@@ -30,10 +30,10 @@ function readTrustedPrWorkflow() {
   const caller = readFileSync(prCallerWorkflow, "utf8");
   assert.match(
     caller,
-    /^\s+uses: \.\/\.github\/workflows\/pr-trusted\.yml\s*$/m,
-    "fork pr.yml must call its local trusted workflow",
+    /^\s+uses: qveys\/paperclip\/\.github\/workflows\/pr-trusted\.yml@master\s*$/m,
+    "fork pr.yml must call the trusted workflow from qveys/paperclip master",
   );
-  // The fork validates and runs its own trusted workflow copy.
+  // The fork's runner authorization allows its protected master workflow.
   return readFileSync(trustedPrWorkflow, "utf8");
 }
 
