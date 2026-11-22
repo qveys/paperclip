@@ -1,0 +1,23 @@
+{
+  "name": "paperclip-pi-runtime-distribution",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@agentclientprotocol/sdk": "0.26.0",
+    "@earendil-works/pi-coding-agent": "1.6.0",
+    "pi-acp": "0.0.33",
+    "zod": "4.6.6"
+  },
+  "engines": {
+    "node": ">=24.11.0"
+  },
+  "overrides": {
+    "@earendil-works/pi-coding-agent": {
+      "undici": "8.13.1"
+    },
+    "pi-acp": {
+      "zod": "4.6.6"
+    }
+  }
+}

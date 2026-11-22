@@ -1,7 +1,9 @@
+import { isOpenRouterUrl, openRouterAttributionHeaders } from "@paperclipai/adapter-utils/openrouter-attribution";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { asBoolean } from "@paperclipai/adapter-utils/server-utils";
+import { installSandboxToolMemoryPreference } from "./sandbox-tool-memory.js";
 
 type PreparedOpenCodeRuntimeConfig = {
   env: Record<string, string>;
@@ -153,29 +155,9 @@ function convertV1ProvidersToV2(provider: Record<string, unknown>): Record<strin
 export async function prepareOpenCodeRuntimeConfig(input: {
   env: Record<string, string>;
   config: Record<string, unknown>;
-  targetIsRemote?: boolean;
+  sandboxToolOomPreference?: boolean;
 }): Promise<PreparedOpenCodeRuntimeConfig> {
   const skipPermissions = asBoolean(input.config.dangerouslySkipPermissions, true);
-  if (!skipPermissions) {
-    return {
-      env: input.env,
-      notes: [],
-      cleanup: async () => {},
-    };
-  }
-
-  // For remote execution targets the host XDG_CONFIG_HOME path is meaningless
-  // (and actively harmful — it leaks a macOS-only path into the remote Linux
-  // env). Callers that need to ship a runtime opencode config to the remote
-  // box do that via prepareAdapterExecutionTargetRuntime in execute.ts; this
-  // host-fs helper is local-only.
-  if (input.targetIsRemote) {
-    return {
-      env: input.env,
-      notes: [],
-      cleanup: async () => {},
-    };
-  }
 
   // Resolve a symlinked config dir (e.g. bridged to a volume): with
   // `dereference: false`, fs.cp would copy the link itself over the runtime
@@ -202,7 +184,7 @@ export async function prepareOpenCodeRuntimeConfig(input: {
 
   const existingConfig = await readJsonObject(runtimeConfigPath);
   const notes = [
-    "Injected runtime OpenCode config with permission=allow for all tools and connections.",
+    skipPermissions ? "Injected runtime OpenCode config with permission=allow for all tools and connections." : "Prepared isolated OpenCode provider configuration.",
   ];
 
   // Convert a V1-shaped `permission` object to V2 `permissions` rules rather
@@ -278,17 +260,34 @@ export async function prepareOpenCodeRuntimeConfig(input: {
   // Append the external_directory allow rule LAST: `permissions` is evaluated
   // last-match-wins, so this always overrides any earlier/existing rule for
   // the same action, regardless of what the source config already declared.
-  const nextPermissions: PermissionRule[] = [
-    ...basePermissionRules,
-    { action: "external_directory", resource: "*", effect: "allow" },
-  ];
+  // Only when permissions are skipped; otherwise keep the operator's rules.
+  const nextPermissions: PermissionRule[] = skipPermissions
+    ? [...basePermissionRules, { action: "external_directory", resource: "*", effect: "allow" }]
+    : basePermissionRules;
+
+  const inlineContent = input.env.OPENCODE_CONFIG_CONTENT ?? process.env.OPENCODE_CONFIG_CONTENT;
+  let inlineConfig: Record<string, unknown> | undefined;
+  if (inlineContent) {
+    try {
+      const parsed: unknown = JSON.parse(inlineContent);
+      if (isPlainObject(parsed)) inlineConfig = parsed;
+    } catch {
+      // OpenCode must still report invalid operator configuration.
+    }
+  }
+  // Inline config may be V1 (`provider`) or V2 (`providers`) shaped.
+  const inlineProviders = {
+    ...(isPlainObject(inlineConfig?.provider) ? convertV1ProvidersToV2(inlineConfig.provider) : {}),
+    ...(isPlainObject(inlineConfig?.providers) ? inlineConfig.providers : {}),
+  };
+  nextProviders = attributeOpenCodeProviders(mergeConfigObjects(nextProviders, inlineProviders));
 
   // Never emit both the V1 and V2 shapes for the same concept.
   const nextConfig: Record<string, unknown> = { ...existingConfig };
   delete nextConfig.permission;
   delete nextConfig.provider;
   delete nextConfig.providers;
-  nextConfig.permissions = nextPermissions;
+  if (nextPermissions.length > 0) nextConfig.permissions = nextPermissions;
   if (Object.keys(nextProviders).length > 0) {
     nextConfig.providers = nextProviders;
   }
@@ -305,11 +304,21 @@ export async function prepareOpenCodeRuntimeConfig(input: {
     notes.push(`Pinned OpenCode small_model to ${smallModel}.`);
   }
   await fs.writeFile(runtimeConfigPath, `${JSON.stringify(nextConfig, null, 2)}\n`, "utf8");
+  if (input.sandboxToolOomPreference) {
+    try {
+      await installSandboxToolMemoryPreference(runtimeConfigDir);
+      notes.push("Prepared sandbox Bash tool memory preference; shell commands are preferred OOM victims over OpenCode.");
+    } catch {
+      notes.push("Could not prepare sandbox Bash tool memory preference; continuing with the existing shell behavior.");
+    }
+  }
 
   return {
     env: {
       ...input.env,
       XDG_CONFIG_HOME: runtimeConfigHome,
+      ...(inlineContent ? { OPENCODE_CONFIG_CONTENT: inlineConfig
+        ? JSON.stringify(withV2Providers(inlineConfig, nextProviders)) : inlineContent } : {}),
     },
     notes,
     cleanup: async () => {
@@ -336,4 +345,35 @@ export function prepareManagedOpenCodeRemoteHomes(input: {
     XDG_CACHE_HOME: path.posix.join(home, "cache"),
     XDG_STATE_HOME: path.posix.join(home, "state"),
   });
+}
+
+function withV2Providers(config: Record<string, unknown>, providers: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = { ...config, providers };
+  delete out.provider;
+  return out;
+}
+
+/** Native provider defaults and per-model headers can both carry harness attribution (V2 `settings`). */
+function attributeOpenCodeProviders(providers: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = { openrouter: {}, ...providers };
+  for (const [name, value] of Object.entries(result)) {
+    if (!isPlainObject(value)) continue;
+    const options = isPlainObject(value.settings) ? value.settings : {};
+    if (!isOpenRouterUrl(options.baseURL) && !(name === "openrouter" && options.baseURL === undefined)) continue;
+    const headers = isPlainObject(options.headers) ? options.headers as Record<string, string> : {};
+    const models = isPlainObject(value.models) ? Object.fromEntries(Object.entries(value.models).map(([id, model]) => [id,
+      isPlainObject(model) ? { ...model, headers: openRouterAttributionHeaders(isPlainObject(model.headers) ? model.headers as Record<string, string> : {}) } : model,
+    ])) : undefined;
+    result[name] = { ...value, settings: { ...options, headers: openRouterAttributionHeaders(headers) }, ...(models ? { models } : {}) };
+  }
+  return result;
+}
+
+function mergeConfigObjects(base: Record<string, unknown>, override: Record<string, unknown>): Record<string, unknown> {
+  const entries = Object.entries(override).map(([key, value]) => {
+    const previous = base[key];
+    return [key, isPlainObject(previous) && isPlainObject(value)
+      ? mergeConfigObjects(previous, value) : value];
+  });
+  return { ...base, ...Object.fromEntries(entries) };
 }

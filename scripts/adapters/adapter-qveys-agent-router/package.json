@@ -3,6 +3,9 @@
   "version": "0.1.2",
   "description": "Paperclip adapter that delegates execution to qveys-agent-router.",
   "license": "MIT",
+  "engines": {
+    "node": ">=24.11.0"
+  },
   "type": "module",
   "main": "./index.js",
   "exports": {
