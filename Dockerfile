@@ -154,6 +154,11 @@ COPY --from=runner-artifacts-identity-compute /runner-image-identity.json /runne
 # compiler is the one packages/paperclip-runner/rust-toolchain.toml names. The
 # base image supplies the C toolchain.
 FROM runner-artifacts-node AS runner-artifacts-toolchain
+# The verified Pi and ACPX distribution patches are applied with `git apply`
+# during materialization; this stage needs git even though the final image does not.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends git \
+  && rm -rf /var/lib/apt/lists/*
 # cargo strips the release binary itself. The Runner's build stamp records the
 # size of every file under dist, so the binary must not change after the build.
 ENV RUSTUP_HOME=/usr/local/rustup \
