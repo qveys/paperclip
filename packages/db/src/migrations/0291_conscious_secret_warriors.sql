@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause skill-source writers while this migration backfills existing GitHub skills into source records
 CREATE TABLE IF NOT EXISTS "company_skill_source_entries" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"company_id" uuid NOT NULL,

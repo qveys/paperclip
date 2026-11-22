@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause the previous release while this migration rewrites existing tool, cost and finance records for Browser Use Cloud
 CREATE TABLE IF NOT EXISTS "browser_use_browsers" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"company_id" uuid NOT NULL,

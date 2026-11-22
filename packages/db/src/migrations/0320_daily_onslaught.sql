@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause agent-lifecycle writers while this migration indexes and backfills existing agent state
 ALTER TABLE "agents" ADD COLUMN "lifecycle_state" text DEFAULT 'ready' NOT NULL;--> statement-breakpoint
 ALTER TABLE "agents" ADD COLUMN "lifecycle_required_plugin_ids" jsonb;--> statement-breakpoint
 ALTER TABLE "agents" ADD COLUMN "lifecycle_holds" jsonb DEFAULT '[]'::jsonb NOT NULL;--> statement-breakpoint

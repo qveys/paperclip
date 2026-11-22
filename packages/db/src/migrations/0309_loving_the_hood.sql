@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause lifecycle writers while this migration locks, indexes and seeds existing lifecycle history
 -- Lock resource writers before the journal foreign key and index take locks.
 LOCK TABLE "agents", "projects" IN SHARE ROW EXCLUSIVE MODE;--> statement-breakpoint
 CREATE TABLE "plugin_lifecycle_acknowledgments" (

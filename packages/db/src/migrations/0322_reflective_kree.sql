@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause cost-event writers while PostgreSQL validates the foreign key and builds the existing-table index
 CREATE TABLE IF NOT EXISTS "ai_subscription_connections" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"company_id" uuid NOT NULL,

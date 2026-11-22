@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause asset and issue-attachment writers while the draft-asset backfill runs in batches
 -- Runs through the Paperclip migration executor outside a file-wide transaction.
 -- Each idempotent keyset batch commits before advancing; history is recorded last.
 -- Bind historical inline draft images to their first owned task. Unbound drafts

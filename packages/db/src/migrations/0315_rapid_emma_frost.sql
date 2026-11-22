@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause agent-creation writers while this migration backfills preferences from activity history
 CREATE TABLE IF NOT EXISTS "user_company_preferences" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"company_id" uuid NOT NULL,

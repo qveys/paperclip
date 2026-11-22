@@ -1,3 +1,4 @@
+-- paperclip:migration-compat requires_staging: pause token-refresh workers while this migration changes expiry semantics and backfills active tokens
 ALTER TABLE "mcp_oauth_tokens" ALTER COLUMN "expires_at" DROP NOT NULL;
 --> statement-breakpoint
 -- Active Dot connections keep working without another consent flow. Expired
