@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -407,30 +407,9 @@ for (const [name, vars, github, expected = "ubuntu-latest"] of notifierPlacement
   });
 }
 
-const reviewJob = readFileSync(new URL("../../workflows/commitperclip-review.yml", import.meta.url), "utf8")
-  .split(/^jobs:\n/m)[1];
-const reviewEvent = (pullRequest = {}, sender = ownerRun) => ({
-  event_name: "pull_request_target",
-  event: { pull_request: { user: ownerRun, head: { repo: ownRepository }, ...pullRequest }, sender },
+test("fork does not require the upstream Commitperclip app private key", () => {
+  assert.equal(existsSync(new URL("../../workflows/commitperclip-review.yml", import.meta.url)), false);
 });
-const reviewPlacementCases = [
-  ["CODEOWNER PR", shortJobVars, reviewEvent(), reservedFleet],
-  ["not yet enabled", {}, reviewEvent()],
-  ["AWS CI disabled", { ...shortJobVars, AWS_CI_ENABLED: "false" }, reviewEvent()],
-  ["missing admission members", { ...shortJobVars, AWS_CI_ROUTING_USER_IDS: "" }, reviewEvent()],
-  ["community author", shortJobVars, reviewEvent({ user: { id: 999 } })],
-  ["community sender on an owner PR", shortJobVars, reviewEvent({}, { id: 999 })],
-  ["owner PR from a fork", shortJobVars, reviewEvent({ head: { repo: { id: 999 } } })],
-  ["deleted fork", shortJobVars, reviewEvent({ head: { repo: {} } })],
-  ["other event", shortJobVars, { ...reviewEvent(), event_name: "pull_request" }],
-  ["different repository ID", shortJobVars, { ...reviewEvent(), repository_id: "999" }],
-];
-
-for (const [name, vars, github, expected = "ubuntu-latest"] of reviewPlacementCases) {
-  test(`commitperclip review placement: ${name}`, () => {
-    assert.equal(routingPlacement(vars, github, reviewJob), expected);
-  });
-}
 
 test("GitHub-hosted PR runs queue at most four jobs per matrix", () => {
   const trusted = readFileSync(new URL("../../workflows/pr-trusted.yml", import.meta.url), "utf8");
