@@ -288,7 +288,7 @@ jobs:
           EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PROFILE_CI: ${{ steps.profile.outputs.profile_ci }}
           FORCE_FULL_CI: ${{ contains(github.event.pull_request.labels.*.name, 'full-ci') }}
-          CI_INCREMENTAL_MODE: ${{ vars.CI_INCREMENTAL_MODE || 'enabled' }}
+          CI_INCREMENTAL_MODE: full
           STACK_JSON: ${{ toJSON(github.event.pull_request.stack) }}
           PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
@@ -376,7 +376,7 @@ jobs:
           FULL_CI: ${{ steps.scope.outputs.full_ci }}
           PROFILE_CI: ${{ steps.profile.outputs.profile_ci }}
           FORCE_FULL_CI: ${{ contains(github.event.pull_request.labels.*.name, 'full-ci') }}
-          CI_INCREMENTAL_MODE: ${{ vars.CI_INCREMENTAL_MODE || 'enabled' }}
+          CI_INCREMENTAL_MODE: full
           STACK_JSON: ${{ toJSON(github.event.pull_request.stack) }}
           EVENT_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           EVENT_MERGE_SHA: ${{ github.sha }}
@@ -407,4 +407,8 @@ jobs:
           export CI_TASK_CONFIG="$directory/turbo.json"
           export CI_TASK_MATRIX="$directory/ci-task-matrix.json"
           export CI_DIFF_REPOSITORY="$directory/repository.git"
-          node "$directory/ci-plan.mjs" || fallback
+          raw_plan="$(env -u GITHUB_OUTPUT -u GITHUB_STEP_SUMMARY node "$directory/ci-plan.mjs")" || fallback
+          compact_plan="$(jq -c '{version, mode, forceReason, jobs}' <<< "$raw_plan")" || fallback
+          printf 'plan=%s\n' "$compact_plan" >> "$GITHUB_OUTPUT"
+          printf 'Full CI selected for this fork synchronization; %s changed paths.\n' \
+            "$(jq '.changed | length' <<< "$raw_plan")" >> "$GITHUB_STEP_SUMMARY"
