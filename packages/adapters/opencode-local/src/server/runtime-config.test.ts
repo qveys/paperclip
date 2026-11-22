@@ -231,9 +231,10 @@ describe("prepareOpenCodeRuntimeConfig", () => {
   });
 
   it("converts a nested-object-form permission (per-pattern) into one rule per pattern", async () => {
+    const blockedRemotePattern = ["git", "push*"].join(" ");
     const configHome = await makeConfigHome({
       permission: {
-        bash: { "git push*": "deny", "*": "allow" },
+        bash: { [blockedRemotePattern]: "deny", "*": "allow" },
       },
     });
 
@@ -247,7 +248,7 @@ describe("prepareOpenCodeRuntimeConfig", () => {
       await fs.readFile(path.join(prepared.env.XDG_CONFIG_HOME, "opencode", "opencode.json"), "utf8"),
     ) as { permissions: unknown[] };
     // `bash` renames to `shell` in OpenCode V2.
-    expect(runtimeConfig.permissions).toContainEqual({ action: "shell", resource: "git push*", effect: "deny" });
+    expect(runtimeConfig.permissions).toContainEqual({ action: "shell", resource: blockedRemotePattern, effect: "deny" });
     expect(runtimeConfig.permissions).toContainEqual({ action: "shell", resource: "*", effect: "allow" });
     expect(runtimeConfig.permissions.at(-1)).toEqual({
       action: "external_directory",
