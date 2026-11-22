@@ -410,5 +410,7 @@ jobs:
           raw_plan="$(env -u GITHUB_OUTPUT -u GITHUB_STEP_SUMMARY node "$directory/ci-plan.mjs")" || fallback
           compact_plan="$(jq -c '{version, mode, forceReason, jobs}' <<< "$raw_plan")" || fallback
           printf 'plan=%s\n' "$compact_plan" >> "$GITHUB_OUTPUT"
-          printf 'Full CI selected for this fork synchronization; %s changed paths.\n' \
-            "$(jq '.changed | length' <<< "$raw_plan")" >> "$GITHUB_STEP_SUMMARY"
+          if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+            printf 'Full CI selected for this fork synchronization; %s changed paths.\n' \
+              "$(jq '.changed | length' <<< "$raw_plan")" >> "$GITHUB_STEP_SUMMARY"
+          fi

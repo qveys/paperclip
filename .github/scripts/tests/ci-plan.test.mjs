@@ -232,7 +232,7 @@ test("required aggregates reject omitted, failed and cancelled selected work", (
   }
 });
 
-test("the real routing step uses pinned trusted definitions and defaults to full on fetch failure", () => {
+test("the real routing step publishes a compact full plan and defaults to full on fetch failure", () => {
   const workflow = readFileSync(new URL(".github/workflows/ci-routing.yml", root), "utf8");
   const block = workflow.split("      - name: Plan affected CI tasks from trusted definitions\n")[1];
   const shell = block.split("        run: |\n")[1].split("\n").map((line) => line.slice(10)).join("\n");
@@ -252,7 +252,6 @@ test("the real routing step uses pinned trusted definitions and defaults to full
     git("checkout", "-q", "main");
     writeFileSync(path.join(repository, "unrelated-master"), "already merged");
     git("add", "."); git("commit", "-qm", "advance base");
-    const base = git("rev-parse", "HEAD");
     git("merge", "--no-ff", "pr", "-m", "tested merge");
     const merge = git("rev-parse", "HEAD");
     writeFileSync(path.join(directory, "git"), `#!/usr/bin/env node
@@ -282,7 +281,7 @@ else process.exit(3);
       const result = spawnSync("bash", ["-c", shell], { encoding: "utf8", env: {
         ...process.env, PATH: `${directory}:${process.env.PATH}`, TEST_TRUSTED_ROOT: root.pathname,
         RUNNER_TEMP: directory, FULL_CI: "true", PROFILE_CI: "false", FORCE_FULL_CI: "false",
-        CI_INCREMENTAL_MODE: "enabled", STACK_JSON: "null", EVENT_BASE_SHA: "b".repeat(40), EVENT_HEAD_SHA: prHead, EVENT_MERGE_SHA: merge,
+        CI_INCREMENTAL_MODE: "full", STACK_JSON: "null", EVENT_BASE_SHA: "b".repeat(40), EVENT_HEAD_SHA: prHead, EVENT_MERGE_SHA: merge,
         TEST_GIT_REPOSITORY: repository,
         GITHUB_OUTPUT: output, GITHUB_STEP_SUMMARY: "", ...overrides,
       } });
@@ -292,9 +291,14 @@ else process.exit(3);
       else {
         assert.notEqual(value, "plan=", `${JSON.stringify(overrides)}: ${result.stderr}`);
         const resultPlan = JSON.parse(value.slice("plan=".length));
-        assert.equal(resultPlan.jobs.general_tests.selected, overrides.PROFILE_CI || overrides.STACK_JSON ? 19 : 2);
-        assert.equal(resultPlan.diff.base, base);
-        assert.deepEqual(resultPlan.changed, ["ui/src/components/Sidebar.tsx"]);
+        assert.equal(resultPlan.mode, "full");
+        assert.ok(resultPlan.forceReason);
+        assert.equal(resultPlan.jobs.general_tests.selected, 19);
+        assert.equal(resultPlan.jobs.general_tests.run, true);
+        assert.equal(resultPlan.jobs.general_tests.matrix.include.length, 19);
+        assert.ok(!("changed" in resultPlan));
+        assert.ok(!("diff" in resultPlan));
+        assert.ok(value.length < 1_048_576, "the job output must stay under GitHub's limit");
       }
     }
   } finally { rmSync(directory, { recursive: true, force: true }); }
