@@ -15,10 +15,10 @@ services:
       - traefik.http.services.${NAME:-paperclip}.loadbalancer.server.port=${PORT:-3100}
       # Router webhook GitHub (priorité 20, route vers le serveur interne port 3101)
       # Cloudflare Access doit avoir un bypass "Bypass" pour ce path.
-      #- traefik.http.routers.${NAME:-paperclip}-wh.rule=Host(`${NAME:-paperclip}.${HOST:-qveys.cloud}`) && Path(`/webhooks/github`)
-      #- traefik.http.routers.${NAME:-paperclip}-wh.entrypoints=web
-      #- traefik.http.routers.${NAME:-paperclip}-wh.service=${NAME:-paperclip}-wh
-      #- traefik.http.services.${NAME:-paperclip}-wh.loadbalancer.server.port=3101
+      - traefik.http.routers.${NAME:-paperclip}-wh.rule=Host(`${NAME:-paperclip}.${HOST:-qveys.cloud}`) && Path(`/webhooks/github`)
+      - traefik.http.routers.${NAME:-paperclip}-wh.entrypoints=web
+      - traefik.http.routers.${NAME:-paperclip}-wh.service=${NAME:-paperclip}-wh
+      - traefik.http.services.${NAME:-paperclip}-wh.loadbalancer.server.port=3101
     networks:
       - internal
     ports:
@@ -35,6 +35,7 @@ services:
       - ./data/.config/github-app:/paperclip/.config/github-app:ro
     env_file:
       - .env
+      - /run/user/1000/paperclip.env
 
 networks:
   internal:
