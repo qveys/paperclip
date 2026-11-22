@@ -1,0 +1,30 @@
+# Hourly thinning of Paperclip database dumps. Separate compose project so it
+# never touches the Paperclip stack: `docker compose up -d` here does not
+# restart Paperclip.
+name: paperclip-backup-thinning
+
+services:
+  backup-thinning:
+    image: paperclip:local
+    container_name: paperclip-backup-thinning
+    restart: unless-stopped
+    network_mode: none
+    read_only: true
+    user: "1000:1000"
+    entrypoint: ["sh", "/thin-backups.sh"]
+    environment:
+      KEEP_HOURS: "24"
+      INTERVAL_SECONDS: "3600"
+    volumes:
+      - paperclip-data:/data
+      - ./thin-backups.sh:/thin-backups.sh:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        max-file: "3"
+
+volumes:
+  paperclip-data:
+    external: true
+    name: paperclip_paperclip-data
