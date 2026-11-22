@@ -11,7 +11,7 @@ const jobNames = [...workflow.matchAll(/^    name: (.+)$/gm)].map(match => match
 test("the merge queue reports the check names that pull requests report", () => {
   const caller = readFileSync(path.join(workflows, "pr.yml"), "utf8");
   const trusted = readFileSync(path.join(workflows, "pr-trusted.yml"), "utf8");
-  assert.match(caller, /^  ci:\n(?: {4}.*\n)*? {4}uses: .+\/pr-trusted\.yml@/m, "pr.yml reports its checks under the ci job");
+  assert.match(caller, /^  ci:\n(?: {4}.*\n)*? {4}uses: \.\/\.github\/workflows\/pr-trusted\.yml\s*$/m, "fork pr.yml reports its checks under the ci job");
   for (const job of ["verify", "e2e"]) {
     assert.match(trusted, new RegExp(`^  ${job}:\\n    name: ${job}$`, "m"), `pull requests report ci / ${job}`);
   }
